@@ -30,6 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
             sectionView("Detail Screen", () {
               ScreenNavigator.gotoDetailScreen(context);
             }),
+            sectionView("Custom Screen", () {
+              ScreenNavigator.gotoCustomScreen(context);
+            }),
           ],
         ),
       ),

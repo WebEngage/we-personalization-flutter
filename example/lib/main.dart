@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/src/observer/RouteObserver.dart';
+import 'package:flutter_personalization_sdk_example/src/screens/CustomScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/DetailScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/HomeScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/ListScreen.dart';
@@ -36,7 +37,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         ScreenNavigator.SCREEN_HOME: (context) => const HomeScreen(),
         ScreenNavigator.SCREEN_LIST: (context) => const ListScreen(),
-        ScreenNavigator.SCREEN_DETAIL: (context) => const DetailScreen()
+        ScreenNavigator.SCREEN_DETAIL: (context) => const DetailScreen(),
+        ScreenNavigator.SCREEN_CUSTOM:(context) => const CustomInlineScreen()
       },
       navigatorObservers: [MyRouteObserver()],
     );

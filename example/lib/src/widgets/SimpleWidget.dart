@@ -1,42 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/AppColor.dart';
 
+enum WidgetType { none, image, text, mixed }
+
 class SimpleWidget extends StatefulWidget {
-  const SimpleWidget({Key? key}) : super(key: key);
+  WidgetType widgetType;
+  int index;
+
+  SimpleWidget({Key? key, this.widgetType = WidgetType.none, this.index = 0})
+      : super(key: key);
 
   @override
   State<SimpleWidget> createState() => _SimpleWidgetState();
 }
 
-class _SimpleWidgetState extends State<SimpleWidget> {
+class _SimpleWidgetState extends State<SimpleWidget>
+    with AutomaticKeepAliveClientMixin {
   @override
+  bool get wantKeepAlive => false;
 
+  var viewHeight = 70.0;
+
+  @override
   void initState() {
-    print("Init called");
-    WidgetsBinding.instance.addPostFrameCallback((_) => onScreenReturn());
+    print("Init ${widget.index}");
     super.initState();
-
-
   }
-
-  void onScreenReturn() {
-    print("On screen return");
-  }
-
-
 
   @override
   void dispose() {
-
-    print("Dispose called");
+    print("Dispose ${widget.index}");
     super.dispose();
   }
 
   Widget build(BuildContext context) {
-    return  Container(
-      height: 100,
-      width: 100,
-      color: themeColor,
-    );
+    switch (widget.widgetType) {
+      case WidgetType.image:
+        return image();
+      case WidgetType.text:
+        return text();
+      default:
+        return baseWidget(Container());
+    }
   }
+
+  Widget image() =>
+      baseWidget(Image.network(
+          fit: BoxFit.cover,
+          'https://t4.ftcdn.net/jpg/04/95/28/65/240_F_495286577_rpsT2Shmr6g81hOhGXALhxWOfx1vOQBa.jpg'),);
+
+  Widget text() =>
+      baseWidget(Text(
+        "The default Image.network constructor doesn’t handle more advanced functionality, such as fading images in after loading, or caching images to the device after they’re downloaded. To accomplish these tasks, see the following recipes:",
+        style: TextStyle(),
+      ));
+
+  Widget baseWidget(Widget _widget) =>
+      Container(
+        margin: EdgeInsets.all(5),
+        padding: EdgeInsets.all(5),
+        //height: viewHeight,
+        decoration: const BoxDecoration(color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(10))
+        ),
+        child: Row(
+          children: [
+            Text("${widget.index}",style: TextStyle(fontSize: 30),),
+            SizedBox(width: 20,),
+            Expanded(child: _widget),
+          ],
+        ),
+      );
 }
