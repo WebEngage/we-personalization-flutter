@@ -1,25 +1,31 @@
+import '../../src/utils/Constants.dart';
+
 import '../callbacks/WEPlaceholderCallback.dart';
 import '../utils/Utils.dart';
 
-class WEGInline{
+class WEGInline {
   int id = -1;
   String screenName;
-  String propertyID;
+  String androidPropertyID;
+  int iosPropertyId;
   Function? callback;
   WEPlaceholderCallback? wePlaceholderCallback;
 
-  WEGInline({
-    required this.screenName,
-    required this.propertyID,this.callback}){
-    id  = Utils().getCurrentNewIndex();
+  WEGInline(
+      {required this.screenName,
+      required this.iosPropertyId,
+      required this.androidPropertyID,
+      this.callback,
+      this.wePlaceholderCallback}) {
+    id = Utils().getCurrentNewIndex();
   }
 
-  dynamic toJSON(){
+  Map<String,dynamic> toJSON() {
     return {
-      "id":id,
-      "screenName":screenName,
-      "propertyID":propertyID
+      PAYLOAD_ID: id,
+      PAYLOAD_SCREEN_NAME: screenName,
+      PAYLOAD_ANDROID_PROPERTY_ID: androidPropertyID,
+      PAYLOAD_IOS_PROPERTY_ID:iosPropertyId
     };
   }
-
 }

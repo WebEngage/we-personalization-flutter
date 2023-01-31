@@ -16,12 +16,11 @@ class WEPersonalization {
     FlutterPersonalizationSdkPlatform.instance.initPersonalization();
   }
 
-  void registerWEPlaceholderCallback(String? androidPropertyId,
-      int iosPropertyId,
-      String name,
+  void registerWEPlaceholderCallback(
+      String? androidPropertyId, int iosPropertyId, String screenName,
       {WEPlaceholderCallback? placeholderCallback}) async {
     DataRegistry().registerWEPlaceholderCallback(
-        androidPropertyId!, placeholderCallback: placeholderCallback);
+        screenName, androidPropertyId!, iosPropertyId,
+        placeholderCallback: placeholderCallback);
   }
-
 }
