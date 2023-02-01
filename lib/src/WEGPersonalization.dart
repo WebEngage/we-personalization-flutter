@@ -1,3 +1,4 @@
+import 'package:flutter_personalization_sdk/src/callbacks/WECampaignCallback.dart';
 import 'package:flutter_personalization_sdk/src/data/data_registry.dart';
 import 'package:flutter_personalization_sdk/src/flutter_personalization_sdk_platform_interface.dart';
 
@@ -23,4 +24,9 @@ class WEPersonalization {
         screenName, androidPropertyId!, iosPropertyId,
         placeholderCallback: placeholderCallback);
   }
+
+  void registerWECampaignCallback(WECampaignCallback weCampaignCallback){
+    DataRegistry().registerWECampaignCallback(weCampaignCallback);
+  }
+
 }

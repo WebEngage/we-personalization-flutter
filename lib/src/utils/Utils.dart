@@ -24,6 +24,7 @@ class Utils {
       PAYLOAD_VIEW_WIDTH: viewWidth,
       PAYLOAD_VIEW_HEIGHT: viewHeight,
     });
+    print("data $map");
     return map;
   }
 }

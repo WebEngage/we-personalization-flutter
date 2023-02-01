@@ -1,10 +1,11 @@
-class WEPlaceholderCallback {
-  WEPlaceholderCallback();
+import 'package:flutter_personalization_sdk/src/model/WECampaignData.dart';
 
-  void onDataReceived(dynamic data) {}
+class WEPlaceholderCallback {
+
+  void onDataReceived(WECampaignData data) {}
 
   void onPlaceholderException(
       String campaignId, String targetViewId, String error) {}
 
-  void onRendered(dynamic data) {}
+  void onRendered(WECampaignData data) {}
 }

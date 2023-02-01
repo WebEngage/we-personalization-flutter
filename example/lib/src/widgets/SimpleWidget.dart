@@ -23,13 +23,11 @@ class _SimpleWidgetState extends State<SimpleWidget>
 
   @override
   void initState() {
-    print("Init ${widget.index}");
     super.initState();
   }
 
   @override
   void dispose() {
-    print("Dispose ${widget.index}");
     super.dispose();
   }
 

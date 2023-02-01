@@ -17,9 +17,10 @@ class DataRegistry {
     }
 
     private var registryMap: HashMap<Int, WEGInline> = hashMapOf()
+    private var registryMapForViews : HashMap<Int,WEGInline> = hashMapOf()
     private var flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin? = null
 
-    fun initFlutterPlugin(flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin) {
+    fun initFlutterPlugin(flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin?) {
         this.flutterPersonalizationSdkPlugin = flutterPersonalizationSdkPlugin
     }
 

@@ -26,7 +26,7 @@ class WEGInlineWidget extends StatefulWidget {
   State<WEGInlineWidget> createState() => _WEGInlineWidgetState();
 }
 
-class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAliveClientMixin {
+class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAliveClientMixin,WEPlaceholderCallback {
   final GlobalKey _platformViewKey = GlobalKey();
   WEGInline? wegInline;
   var defaultViewHeight = 0.1;
@@ -39,7 +39,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
         screenName: widget.screenName,
         androidPropertyID: widget.androidPropertyId,
         iosPropertyId: widget.iosPropertyId,
-        wePlaceholderCallback: widget.placeholderCallback);
+        wePlaceholderCallback: this);
   }
 
   @override
@@ -53,8 +53,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: widget.viewHeight,
-        color: Colors.blue,
+        height: defaultViewHeight,
         child: InlineWidget(
           wegInline: wegInline!,
           key: _platformViewKey,
@@ -68,4 +67,29 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void onDataReceived(data) {
+    super.onDataReceived(data);
+    widget.placeholderCallback?.onDataReceived(data);
+  }
+
+  @override
+  void onPlaceholderException(String campaignId, String targetViewId, String error) {
+    super.onPlaceholderException(campaignId, targetViewId, error);
+    widget.placeholderCallback?.onPlaceholderException(campaignId, targetViewId, error);
+  }
+
+  @override
+  void onRendered(data) {
+    if(defaultViewHeight != widget.viewHeight){
+      setState(() {
+        defaultViewHeight = widget.viewHeight;
+      });
+    }
+
+    super.onRendered(data);
+    widget.placeholderCallback?.onRendered(data);
+  }
+
 }

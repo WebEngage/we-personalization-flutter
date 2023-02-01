@@ -5,9 +5,10 @@ import 'package:flutter_personalization_sdk_example/src/utils/Utils.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/customWidgets/Edittext.dart';
 
 class CustomModelWidget extends StatefulWidget {
-  CustomModel? customModel;
+  CustomModel? customModel = Utils.getScreenData();
 
-  CustomModelWidget({Key? key, this.customModel}) : super(key: key);
+  CustomModelWidget({Key? key, this.customModel,this.save}) : super(key: key);
+  Function? save;
 
   @override
   State<CustomModelWidget> createState() => _CustomModelWidgetState();
@@ -16,60 +17,60 @@ class CustomModelWidget extends StatefulWidget {
 class _CustomModelWidgetState extends State<CustomModelWidget> {
   @override
   void initState() {
-   init();
-   super.initState();
-
+    super.initState();
   }
-
-  Future<void> init()  async {
-    widget.customModel = await Utils.getScreenData();
-    print("${widget.customModel?.screenName}");
-    setState(() {
-      widget.customModel = widget.customModel;
-    });
-
-  }
-
 
   @override
   Widget build(BuildContext context) {
-    return widget.customModel == null ? SizedBox() : Column(
-      children: [
-        Edittext(
-          title: "Enter the List Size",
-          defaultValue: getValue(widget.customModel!.listSize),
-          textInputType: TextInputType.number,
-          onChange: (text) {
-            if (text.toString().isNotEmpty) {
-              widget.customModel?.listSize = int.parse(text);
-            }
-          },
-        ),
-        Edittext(
-          title: "Enter Screen Name",
-          defaultValue: getValue(widget.customModel!.screenName),
-          onChange: (text) {
-            if (text.toString().isNotEmpty) {
-              widget.customModel?.screenName = text;
-            }
-          },
-        ),
-       ElevatedButton(onPressed: _addData, child: Text("Add data")),
-        widget.customModel == null ? SizedBox() : Expanded(
-          child: ListView.builder(
-              itemCount: widget.customModel?.list.length,
-              itemBuilder: (context, index) {
-                return draw(widget.customModel!.list[index]);
-              }),
-        ),
-        ElevatedButton(onPressed: (){
-          Utils.saveScreenData(widget.customModel!);
-        }, child: Text("Save for Future")),
-        ElevatedButton(onPressed: (){
-          ScreenNavigator.gotoCustomListScreen(context, widget.customModel!);
-        }, child: Text("Test")),
-      ],
-    );
+    return widget.customModel == null
+        ? Container(
+      child: Text("NULL"),
+    )
+        : Column(
+            children: [
+              Edittext(
+                title: "Enter the List Size",
+                defaultValue: getValue(widget.customModel!.listSize),
+                textInputType: TextInputType.number,
+                onChange: (text) {
+                  if (text.toString().isNotEmpty) {
+                    widget.customModel?.listSize = int.parse(text);
+                  }
+                },
+              ),
+              Edittext(
+                title: "Enter Screen Name",
+                defaultValue: getValue(widget.customModel!.screenName),
+                onChange: (text) {
+                  if (text.toString().isNotEmpty) {
+                    widget.customModel?.screenName = text;
+                  }
+                },
+              ),
+              ElevatedButton(onPressed: _addData, child: Text("Add data")),
+              widget.customModel == null
+                  ? SizedBox()
+                  : Expanded(
+                      child: ListView.builder(
+                          itemCount: widget.customModel?.list.length,
+                          itemBuilder: (context, index) {
+                            return draw(widget.customModel!.list[index]);
+                          }),
+                    ),
+              ElevatedButton(
+                  onPressed: () {
+                    widget.save!(widget.customModel);
+                    //Utils.saveScreenData(widget.customModel!);
+                  },
+                  child: Text("Save")),
+              // ElevatedButton(
+              //     onPressed: () {
+              //       ScreenNavigator.gotoCustomListScreen(
+              //           context, widget.customModel!);
+              //     },
+              //     child: Text("Test")),
+            ],
+          );
   }
 
   Widget draw(CustomWidgetData customWidgetData) {
@@ -83,15 +84,18 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("position - ${customWidgetData.position}"),
-                Text("Android property id - ${customWidgetData.androidPropertyId}"),
+                Text(
+                    "Android property id - ${customWidgetData.androidPropertyId}"),
                 Text("ios property id - ${customWidgetData.iosPropertyID}"),
                 Text("View Height - ${customWidgetData.viewHeight}")
               ],
             ),
           ),
-          ElevatedButton(onPressed: (){
-            showDialogToAddData(customWidgetData);
-          }, child: Text("Edit"))
+          ElevatedButton(
+              onPressed: () {
+                showDialogToAddData(customWidgetData);
+              },
+              child: Text("Edit"))
         ],
       ),
     );
@@ -102,7 +106,7 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
     showDialogToAddData(_customWidgetData);
   }
 
-  void showDialogToAddData(CustomWidgetData _customWidgetData){
+  void showDialogToAddData(CustomWidgetData _customWidgetData) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -113,14 +117,12 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
             actions: [
               ElevatedButton(
                   onPressed: () {
-                    if(widget.customModel!.list.contains(_customWidgetData)){
+                    if (widget.customModel!.list.contains(_customWidgetData)) {
+                      setState(() {});
+                    } else
                       setState(() {
-
+                        widget.customModel?.list.add(_customWidgetData);
                       });
-                    }else
-                    setState(() {
-                      widget.customModel?.list.add(_customWidgetData);
-                    });
                     FocusManager.instance.primaryFocus?.unfocus();
                     Navigator.pop(context);
                   },
@@ -153,8 +155,6 @@ class _DataEntryState extends State<DataEntry> {
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -171,12 +171,22 @@ class _DataEntryState extends State<DataEntry> {
           },
         ),
         Edittext(
-          defaultValue: getValue(widget.customWidgetData?.viewHeight),
+          defaultValue: getValue(widget.customWidgetData?.viewHeight.toInt()),
           title: "View Height",
           textInputType: TextInputType.number,
           onChange: (text) {
             if (text.toString().isNotEmpty) {
-              widget.customWidgetData?.viewHeight = int.parse(text);
+              widget.customWidgetData?.viewHeight = double.parse(text);
+            }
+          },
+        ),
+        Edittext(
+          defaultValue: getValue(widget.customWidgetData?.viewWidth.toInt()),
+          title: "View Width",
+          textInputType: TextInputType.number,
+          onChange: (text) {
+            if (text.toString().isNotEmpty) {
+              widget.customWidgetData?.viewWidth = double.parse(text);
             }
           },
         ),
@@ -201,12 +211,14 @@ class _DataEntryState extends State<DataEntry> {
     );
   }
 }
-String getValue(dynamic data){
-  if(data is int){
-    if(data == -1) {
+
+String getValue(dynamic data) {
+  if (data is int) {
+    if (data == -1) {
       return "";
-    } else return "$data";
-  }else if(data is String){
+    } else
+      return "$data";
+  } else if (data is String) {
     return data;
   }
   return "";
