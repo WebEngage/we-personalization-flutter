@@ -157,57 +157,59 @@ class _DataEntryState extends State<DataEntry> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Edittext(
-          defaultValue: getValue(widget.customWidgetData?.position),
-          title: "Position to display",
-          textInputType: TextInputType.number,
-          onChange: (text) {
-            if (text.toString().isNotEmpty) {
-              widget.customWidgetData?.position = int.parse(text);
-            }
-          },
-        ),
-        Edittext(
-          defaultValue: getValue(widget.customWidgetData?.viewHeight.toInt()),
-          title: "View Height",
-          textInputType: TextInputType.number,
-          onChange: (text) {
-            if (text.toString().isNotEmpty) {
-              widget.customWidgetData?.viewHeight = double.parse(text);
-            }
-          },
-        ),
-        Edittext(
-          defaultValue: getValue(widget.customWidgetData?.viewWidth.toInt()),
-          title: "View Width",
-          textInputType: TextInputType.number,
-          onChange: (text) {
-            if (text.toString().isNotEmpty) {
-              widget.customWidgetData?.viewWidth = double.parse(text);
-            }
-          },
-        ),
-        Edittext(
-          defaultValue: getValue(widget.customWidgetData?.androidPropertyId),
-          title: "Android Property Id",
-          onChange: (text) {
-            widget.customWidgetData?.androidPropertyId = text;
-          },
-        ),
-        Edittext(
-          defaultValue: getValue(widget.customWidgetData?.iosPropertyID),
-          title: "IOS Property Id",
-          textInputType: TextInputType.number,
-          onChange: (text) {
-            if (text.toString().isNotEmpty) {
-              widget.customWidgetData?.iosPropertyID = int.parse(text);
-            }
-          },
-        )
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Edittext(
+            defaultValue: getValue(widget.customWidgetData?.position),
+            title: "Position to display",
+            textInputType: TextInputType.number,
+            onChange: (text) {
+              if (text.toString().isNotEmpty) {
+                widget.customWidgetData?.position = int.parse(text);
+              }
+            },
+          ),
+          Edittext(
+            defaultValue: getValue(widget.customWidgetData?.viewHeight.toInt()),
+            title: "View Height",
+            textInputType: TextInputType.number,
+            onChange: (text) {
+              if (text.toString().isNotEmpty) {
+                widget.customWidgetData?.viewHeight = double.parse(text);
+              }
+            },
+          ),
+          Edittext(
+            defaultValue: getValue(widget.customWidgetData?.viewWidth.toInt()),
+            title: "View Width",
+            textInputType: TextInputType.number,
+            onChange: (text) {
+              if (text.toString().isNotEmpty) {
+                widget.customWidgetData?.viewWidth = double.parse(text);
+              }
+            },
+          ),
+          Edittext(
+            defaultValue: getValue(widget.customWidgetData?.androidPropertyId),
+            title: "Android Property Id",
+            onChange: (text) {
+              widget.customWidgetData?.androidPropertyId = text;
+            },
+          ),
+          Edittext(
+            defaultValue: getValue(widget.customWidgetData?.iosPropertyID),
+            title: "IOS Property Id",
+            textInputType: TextInputType.number,
+            onChange: (text) {
+              if (text.toString().isNotEmpty) {
+                widget.customWidgetData?.iosPropertyID = int.parse(text);
+              }
+            },
+          )
+        ],
+      ),
     );
   }
 }

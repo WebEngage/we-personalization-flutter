@@ -50,6 +50,13 @@ class InlineWidget extends StatelessWidget {
                 ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
                 ..create();
             });
+      case TargetPlatform.iOS:
+        return UiKitView(
+          viewType: CHANNEL_INLINE_VIEW,
+          creationParams: payload,
+          creationParamsCodec: const StandardMessageCodec(),
+          onPlatformViewCreated: _onPlatformViewCreated,
+        );
     }
 
     return const Placeholder();
@@ -78,6 +85,7 @@ class WEGInlineViewController {
   }
 
   Future _platformCallHandler(MethodCall call) async {
+    print("_platformCallHandler ${wegInline.id}");
     DataRegistry().platformCallHandler(call, wegInline);
   }
 }

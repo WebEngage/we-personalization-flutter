@@ -47,5 +47,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+    <key>WEGLicenseCode</key>
+        <string>~47b66161</string>
+        <key>WEGLogLevel</key>
+        <string>VERBOSE</string>
 </dict>
 </plist>

@@ -1,5 +1,8 @@
+
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
-import 'package:flutter_personalization_sdk/src/utils/Utils.dart';
+import '../../src/utils/Utils.dart';
 import '../../src/callbacks/WEPlaceholderCallback.dart';
 import '../../src/widget/InlineWidget.dart';
 import '../model/WEGInline.dart';
@@ -26,7 +29,8 @@ class WEGInlineWidget extends StatefulWidget {
   State<WEGInlineWidget> createState() => _WEGInlineWidgetState();
 }
 
-class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAliveClientMixin,WEPlaceholderCallback {
+class _WEGInlineWidgetState extends State<WEGInlineWidget>
+    with AutomaticKeepAliveClientMixin, WEPlaceholderCallback {
   final GlobalKey _platformViewKey = GlobalKey();
   WEGInline? wegInline;
   var defaultViewHeight = 0.1;
@@ -35,6 +39,9 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
   @override
   void initState() {
     super.initState();
+    if(Platform.isIOS){
+      defaultViewHeight = widget.viewHeight;
+    }
     wegInline = WEGInline(
         screenName: widget.screenName,
         androidPropertyID: widget.androidPropertyId,
@@ -52,17 +59,24 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: defaultViewHeight,
-        child: InlineWidget(
-          wegInline: wegInline!,
-          key: _platformViewKey,
-          payload: Utils().generateWidgetPayload(
-              wegInline!, widget.viewWidth, widget.viewHeight),
-          wegInlineHandler: (controller) async {
-            this.controller = controller;
-          },
-        ));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if(widget.viewWidth == 0){
+          widget.viewWidth = constraints.maxWidth;
+        }
+        return Container(
+            height: defaultViewHeight,
+            child: InlineWidget(
+              wegInline: wegInline!,
+              key: _platformViewKey,
+              payload: Utils().generateWidgetPayload(
+                  wegInline!, widget.viewWidth, widget.viewHeight),
+              wegInlineHandler: (controller) async {
+                this.controller = controller;
+              },
+            ));
+      },
+    );
   }
 
   @override
@@ -75,14 +89,16 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
   }
 
   @override
-  void onPlaceholderException(String campaignId, String targetViewId, String error) {
+  void onPlaceholderException(
+      String campaignId, String targetViewId, String error) {
     super.onPlaceholderException(campaignId, targetViewId, error);
-    widget.placeholderCallback?.onPlaceholderException(campaignId, targetViewId, error);
+    widget.placeholderCallback
+        ?.onPlaceholderException(campaignId, targetViewId, error);
   }
 
   @override
   void onRendered(data) {
-    if(defaultViewHeight != widget.viewHeight){
+    if (defaultViewHeight != widget.viewHeight) {
       setState(() {
         defaultViewHeight = widget.viewHeight;
       });
@@ -91,5 +107,4 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget> with AutomaticKeepAli
     super.onRendered(data);
     widget.placeholderCallback?.onRendered(data);
   }
-
 }

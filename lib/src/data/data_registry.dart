@@ -81,9 +81,10 @@ class DataRegistry {
     final methodName = call.method;
     final data = call.arguments.cast<String, dynamic>();
     final payload = data[PAYLOAD];
-    print("_callHandler ${payload}");
+
     final id = payload[PAYLOAD_ID];
     var wEGInline = wegInline ?? mapOfRegistry[id];
+    print("_callHandler ${methodName} ${payload} ${wegInline?.id} ${mapOfRegistry.length}");
     switch (methodName) {
       case METHOD_NAME_DATA_LISTENER:
         _passDataToWidget(id, payload);

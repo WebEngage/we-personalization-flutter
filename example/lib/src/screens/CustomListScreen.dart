@@ -106,6 +106,8 @@ class _CustomListScreenState extends State<CustomListScreen>
     super.onDataReceived(data);
   }
 
+
+
   int checkIfContains(index) {
     var list = widget.customModel.list;
     int count = 0;

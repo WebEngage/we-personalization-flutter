@@ -8,13 +8,13 @@ class WECampaignData {
   WECampaignData();
 
   WECampaignData.fromJson(dynamic data) {
-
-    var parsedJson = jsonDecode(data);
-  //  print("onDataReceived 123 ${parsedJson["content"]}");
-    campaignId = parsedJson["campaignId"];
-    targetViewId = parsedJson["targetViewId"];
-    weCampaignContent =
-        WECampaignContent.fromJson(parsedJson["content"]);
+    if (data != null) {
+      var parsedJson = jsonDecode(data);
+      //  print("onDataReceived 123 ${parsedJson["content"]}");
+      campaignId = parsedJson["campaignId"];
+      targetViewId = parsedJson["targetViewId"];
+      weCampaignContent = WECampaignContent.fromJson(parsedJson["content"]);
+    }
   }
 
 //trackClick
@@ -34,8 +34,8 @@ class WECampaignContent {
   WECampaignContent.fromJson(Map<String, dynamic> parsedJson) {
     layoutType = parsedJson["layoutType"] as String?;
     subLayoutType = parsedJson["subLayoutType"] as String?;
-    properties = parsedJson["properties"] as Map<String, dynamic>;
-    customData = parsedJson["customData"] as Map<String, dynamic>;
+    properties = parsedJson["properties"] as Map<String, dynamic>?;
+    customData = parsedJson["customData"] as Map<String, dynamic>?;
     var _children = parsedJson["children"];
     if (_children != null) {
       children = <WECampaignContent>[];
