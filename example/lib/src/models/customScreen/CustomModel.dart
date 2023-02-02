@@ -2,6 +2,7 @@ class CustomModel {
   int listSize = 20;
   List<CustomWidgetData> list = [];
   String screenName = "";
+  String event = "";
 
   CustomModel();
 
@@ -9,6 +10,7 @@ class CustomModel {
     var customModel = CustomModel();
     customModel.listSize = parsedJson["listSize"] ?? -1;
     customModel.screenName = parsedJson["screenName"] ?? "";
+    customModel.event = parsedJson["event"] ?? "";
     if (parsedJson["list"] != null) {
       parsedJson["list"].forEach((v) {
         customModel.list.add(CustomWidgetData.fromJson(v));
@@ -23,6 +25,7 @@ class CustomModel {
   Map<String, dynamic> toJson() {
     return {
       "listSize": listSize,
+      "event":event,
       "screenName": screenName,
       "list": list.map<Map<String, dynamic>>((data) => data.toJson()).toList(),
     };

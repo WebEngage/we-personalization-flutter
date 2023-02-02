@@ -58,7 +58,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
         margin: EdgeInsets.all(5),
         padding: EdgeInsets.all(5),
         //height: viewHeight,
-        decoration: const BoxDecoration(color: Colors.white,
+        decoration: const BoxDecoration(color: Colors.grey,
         borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         child: Row(

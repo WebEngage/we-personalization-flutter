@@ -33,14 +33,17 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+
         children: [
           widget.isDialog
               ? SizedBox()
               : Container(
-                  height: 40,
+                  height: 50,
+                  color: Colors.orange,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
+                      screenType == ScreenType.detail ? IconButton(
                           onPressed: () {
                             if (screenType == ScreenType.detail) {
                               setState(() {
@@ -48,7 +51,7 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
                               });
                             }
                           },
-                          icon: Icon(Icons.arrow_back)),
+                          icon: Icon(Icons.arrow_back)) : SizedBox(),
                       screenType == ScreenType.list
                           ? ElevatedButton(
                               onPressed: () {
@@ -77,7 +80,11 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
                         },
                         child: Container(
                           padding: EdgeInsets.all(10),
-                          color: Colors.grey,
+                          margin: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10)
+                          ),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

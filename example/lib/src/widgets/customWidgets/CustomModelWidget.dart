@@ -47,6 +47,15 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                   }
                 },
               ),
+              Edittext(
+                title: "Enter Event Name",
+                defaultValue: getValue(widget.customModel!.event),
+                onChange: (text) {
+                  if (text.toString().isNotEmpty) {
+                    widget.customModel?.event = text;
+                  }
+                },
+              ),
               ElevatedButton(onPressed: _addData, child: Text("Add data")),
               widget.customModel == null
                   ? SizedBox()
@@ -87,7 +96,8 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                 Text(
                     "Android property id - ${customWidgetData.androidPropertyId}"),
                 Text("ios property id - ${customWidgetData.iosPropertyID}"),
-                Text("View Height - ${customWidgetData.viewHeight}")
+                Text("View Height - ${customWidgetData.viewHeight}"),
+                Text("View Width - ${customWidgetData.viewWidth}")
               ],
             ),
           ),

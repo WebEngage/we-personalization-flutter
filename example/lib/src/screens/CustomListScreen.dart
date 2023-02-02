@@ -41,6 +41,9 @@ class _CustomListScreenState extends State<CustomListScreen>
   void didPopNext() {
     super.didPopNext();
     WebEngagePlugin.trackScreen(widget.customModel.screenName);
+    if(widget.customModel.event.isNotEmpty){
+      WebEngagePlugin.trackEvent(widget.customModel.event);
+    }
   }
 
   void _openDialog() {
@@ -75,6 +78,7 @@ class _CustomListScreenState extends State<CustomListScreen>
         ],
       ),
       body: Container(
+
           padding: EdgeInsets.all(10),
           child: ListView.builder(
               itemCount:
