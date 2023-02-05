@@ -2,8 +2,9 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import '../../src/utils/Utils.dart';
+
 import '../../src/callbacks/WEPlaceholderCallback.dart';
+import '../../src/utils/Utils.dart';
 import '../../src/widget/InlineWidget.dart';
 import '../model/WEGInline.dart';
 
@@ -31,10 +32,12 @@ class WEGInlineWidget extends StatefulWidget {
 
 class _WEGInlineWidgetState extends State<WEGInlineWidget>
     with AutomaticKeepAliveClientMixin, WEPlaceholderCallback {
+
   final GlobalKey _platformViewKey = GlobalKey();
   WEGInline? wegInline;
   var defaultViewHeight = 0.1;
   WEGInlineViewController? controller;
+
 
   @override
   void initState() {
@@ -65,7 +68,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
           widget.viewWidth = constraints.maxWidth;
         }
         return Container(
-            height: defaultViewHeight,
+            height: widget.viewHeight,
             child: InlineWidget(
               wegInline: wegInline!,
               key: _platformViewKey,

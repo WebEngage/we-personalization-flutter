@@ -22,6 +22,9 @@ class _CustomListScreenState extends State<CustomListScreen>
   void initState() {
     WebEngagePlugin.trackScreen(widget.customModel.screenName);
     super.initState();
+    if(widget.customModel.event.isNotEmpty){
+      WebEngagePlugin.trackEvent(widget.customModel.event);
+    }
   }
 
   @override
@@ -41,9 +44,6 @@ class _CustomListScreenState extends State<CustomListScreen>
   void didPopNext() {
     super.didPopNext();
     WebEngagePlugin.trackScreen(widget.customModel.screenName);
-    if(widget.customModel.event.isNotEmpty){
-      WebEngagePlugin.trackEvent(widget.customModel.event);
-    }
   }
 
   void _openDialog() {

@@ -46,6 +46,14 @@ class DataRegistry {
     mapOfRegistry.remove(id);
   }
 
+  void deRegisterWEPlaceholderCallbackByScreenName(String screenName) async {
+    mapOfRegistry.forEach((key, value) {
+      if (value.screenName == screenName) {
+        deregisterInlineWidget(value);
+      }
+    });
+  }
+
   Future<void> registerInlineWidget(WEGInline wegInline) async {
     var success = await FlutterPersonalizationSdkPlatform.instance
         .registerInline(wegInline);
@@ -84,13 +92,15 @@ class DataRegistry {
 
     final id = payload[PAYLOAD_ID];
     var wEGInline = wegInline ?? mapOfRegistry[id];
-    print("_callHandler ${methodName} ${payload} ${wegInline?.id} ${mapOfRegistry.length}");
+    print(
+        "_callHandler ${methodName} ${payload} ${wegInline?.id} ${mapOfRegistry.length}");
     switch (methodName) {
       case METHOD_NAME_DATA_LISTENER:
         _passDataToWidget(id, payload);
         break;
       case METHOD_NAME_ON_DATA_RECEIVED:
-        wEGInline?.wePlaceholderCallback?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+        wEGInline?.wePlaceholderCallback
+            ?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
         break;
       case METHOOD_NAME_ON_PLACEHOLDER_CALLBACK:
         wEGInline?.wePlaceholderCallback?.onPlaceholderException(
@@ -99,10 +109,12 @@ class DataRegistry {
             payload[PAYLOAD_ERROR]);
         break;
       case METHOD_NAME_ON_RENDERED:
-        wEGInline?.wePlaceholderCallback?.onRendered(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+        wEGInline?.wePlaceholderCallback
+            ?.onRendered(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
         break;
       case METHOD_NAME_ON_CAMPAIGN_PREPARED:
-        weCampaignCallback?.onCampaignPrepared(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+        weCampaignCallback?.onCampaignPrepared(
+            WECampaignData.fromJson(payload[PAYLOAD_DATA]));
         break;
       case METHOD_NAME_ON_CAMPAIGN_EXCEPTION:
         var campaignId = payload[PAYLOAD_CAMPAIGN_ID];
@@ -112,12 +124,14 @@ class DataRegistry {
             campaignId, targetViewId, error);
         break;
       case METHOD_NAME_ON_CAMPAIGN_SHOWN:
-        weCampaignCallback?.onCampaignShown(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+        weCampaignCallback
+            ?.onCampaignShown(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
         break;
       case METHOD_NAME_ON_CAMPAIGN_CLICKED:
         var actionId = payload[PAYLOAD_ACTION_ID];
         var deepLink = payload[PAYLOAD_DEEPLINK];
-        weCampaignCallback?.onCampaignClicked(actionId, deepLink, WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+        weCampaignCallback?.onCampaignClicked(
+            actionId, deepLink, WECampaignData.fromJson(payload[PAYLOAD_DATA]));
         break;
     }
   }

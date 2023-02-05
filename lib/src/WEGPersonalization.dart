@@ -25,8 +25,11 @@ class WEPersonalization {
         placeholderCallback: placeholderCallback);
   }
 
-  void registerWECampaignCallback(WECampaignCallback weCampaignCallback){
+  void registerWECampaignCallback(WECampaignCallback weCampaignCallback) {
     DataRegistry().registerWECampaignCallback(weCampaignCallback);
   }
 
+  void deregisterWEPlaceholderCallback(String screenName) {
+    DataRegistry().deRegisterWEPlaceholderCallbackByScreenName(screenName);
+  }
 }
