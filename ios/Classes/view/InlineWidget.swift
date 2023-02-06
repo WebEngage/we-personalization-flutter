@@ -4,7 +4,7 @@ import WEPersonalization
 import WebEngage
 import Flutter
 
-public class InlineViewWidget:UIView{
+public class InlineViewWidget:UIView,ScreenNavigatorCallback{
     var _inlineView:WEInlineView? = nil
     var map :Dictionary<String,Any?>? = nil
     var methodChannel:FlutterMethodChannel? = nil
@@ -12,6 +12,7 @@ public class InlineViewWidget:UIView{
 
     func setMap(map : Dictionary<String,Any?>) {
         self.map = map
+        CallbackHandler.instance.setScreenNavigatorCallback(screenName: map[Constants.PAYLOAD_SCREEN_NAME] as! String, screenNavigatedCallback: self)
         setupView()
       }
     
@@ -67,6 +68,13 @@ extension InlineViewWidget : WEPlaceholderCallback{
                                                                 campaignId: campaignId,
                                                                 targetViewId: targetViewId,
                                                                 error: exception))
+    }
+    
+    func screenNavigated(screenName: String) {
+        print("WEP H screenNavigated \(screenName)")
+        if(_inlineView != nil){
+            _inlineView?.load(tag: _inlineView!.tag, callbacks: self)
+        }
     }
 }
 

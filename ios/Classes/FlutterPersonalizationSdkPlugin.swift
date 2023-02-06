@@ -27,6 +27,7 @@ public class FlutterPersonalizationSdkPlugin: NSObject, FlutterPlugin {
     case Constants.METHOD_NAME_INIT:
         UserDefaults.standard.set(false, forKey: WEPersonalization.Constants.KEY_SHOULD_AUTO_TRACK_IMPRESSIONS)
         WEPersonalization.shared.registerWECampaignCallback(CallbackHandler.instance)
+        WEPersonalization.shared.registerPropertyRegistryCallbacks(CallbackHandler.instance)
         WEPersonalization.shared.initialise()
     case Constants.METHOD_AUTO_HANDLE_CLICK:
         CallbackHandler.instance.autoHandleClick = call.arguments as! Bool

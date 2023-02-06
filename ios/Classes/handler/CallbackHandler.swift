@@ -1,5 +1,8 @@
 import WEPersonalization
 class CallbackHandler : WECampaignCallback{
+    
+    var mapOfScreenNavigatedCallback = [String:[ScreenNavigatorCallback]]()
+    
     private init(){}
     
     static let instance = CallbackHandler()
@@ -35,4 +38,43 @@ class CallbackHandler : WECampaignCallback{
         return autoHandleClick
     }
     
+    func setScreenNavigatorCallback(screenName:String,screenNavigatedCallback:ScreenNavigatorCallback){
+        if(mapOfScreenNavigatedCallback.contains(where: {$0.key == screenName})){
+            var list = mapOfScreenNavigatedCallback[screenName]
+            list?.append(screenNavigatedCallback)
+        }else{
+            mapOfScreenNavigatedCallback[screenName] = []
+            var list = mapOfScreenNavigatedCallback[screenName]
+            list?.append(screenNavigatedCallback)
+        }
+    }
+    
+    func removeScreenNavigatorCallback(screenName:String,screenNavigatedCallback:ScreenNavigatorCallback){
+//        if(mapOfScreenNavigatedCallback.contains(where: {$0.key == screenName})){
+//            var array = mapOfScreenNavigatedCallback[screenName]
+//            if let index = array?.firstIndex(of: screenNavigatedCallback) {
+//                array.remove(at: index)
+//            }
+        }
+    }
+    
+
+
+extension CallbackHandler:PropertyRegistryCallback{
+    func onPropertyCacheCleared(for screenDetails: [AnyHashable : Any]) {
+        print("WEP H \(screenDetails["screen_name"]!)")
+        if let screenName = screenDetails["screen_name"] as? String{
+            let list = mapOfScreenNavigatedCallback[screenName]
+            if(list != nil){
+                for callback in list!{
+                    callback.screenNavigated(screenName: screenName)
+                }
+            }
+           
+        }
+    }
+}
+
+protocol ScreenNavigatorCallback{
+     func screenNavigated(screenName:String)
 }

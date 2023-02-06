@@ -68,7 +68,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
           widget.viewWidth = constraints.maxWidth;
         }
         return Container(
-            height: widget.viewHeight,
+            height: defaultViewHeight,
             child: InlineWidget(
               wegInline: wegInline!,
               key: _platformViewKey,
