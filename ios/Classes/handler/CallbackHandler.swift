@@ -63,6 +63,7 @@ class CallbackHandler : WECampaignCallback{
 extension CallbackHandler:PropertyRegistryCallback{
     func onPropertyCacheCleared(for screenDetails: [AnyHashable : Any]) {
         print("WEP H \(screenDetails["screen_name"]!)")
+        DataRegistry.instance.impressionTrackedForTargetviews.removeAll()
         if let screenName = screenDetails["screen_name"] as? String{
             let list = mapOfScreenNavigatedCallback[screenName]
             if(list != nil){

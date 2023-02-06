@@ -6,6 +6,7 @@ class DataRegistry{
     static let instance = DataRegistry()
     
     private var registryMap = [Int:WEGHInline]()
+    internal var impressionTrackedForTargetviews:[String] = []
     
     
     public func registerData(map:[String:Any]){
@@ -39,6 +40,29 @@ class DataRegistry{
         }
         return nil
     }
+    
+    internal func setImpressionTrackedDetails(forTag:Int,campaignId:String){
+        let key = "\(forTag)_\(campaignId)"
+        self.impressionTrackedForTargetviews.append(key)
+    }
+    
+    func isImpressionAlreadyTracked(forTag:Int,campaignId:String)->Bool{
+        var shouldReturn = false
+//        self.serialQueue.sync {
+            let key = "\(forTag)_\(campaignId)"
+            if self.impressionTrackedForTargetviews.first(where: {$0 == key}) != nil{
+                shouldReturn = true
+            }else if let trackedCampaign = self.impressionTrackedForTargetviews.first(where: { $0.hasPrefix("\(forTag)_") }) {
+                // Over here we can find same property has the impression tracked for another campaign
+                // so remove that tracked entry and return as false as we haven't tracked the new campaign
+                // new campaign is diff to track
+                self.impressionTrackedForTargetviews.removeAll(where: {$0 == trackedCampaign})
+                shouldReturn = false
+            }
+//        }
+        return shouldReturn
+    }
+    
     
 }
 
