@@ -1,7 +1,7 @@
 package com.example.flutter_personalization_sdk.handler
 
-import android.util.Log
 import com.example.flutter_personalization_sdk.FlutterPersonalizationSdkPlugin
+import com.example.flutter_personalization_sdk.registry.DataRegistry
 import com.example.flutter_personalization_sdk.utils.*
 import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.callbacks.WEPropertyRegistryCallback
@@ -53,7 +53,8 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     }
 
     override fun onPropertyCacheCleared(screenName: String) {
-        Logger.e("onPropertyCacheCleared",screenName);
+        Logger.e("onPropertyCacheCleared",screenName)
+        DataRegistry.instance.clearCacheData()
         screenName.let {
             val list = mapOfScreenNavigatedCallbacks!![it]
             list?.let {
@@ -74,7 +75,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
             METHOD_NAME_ON_CAMPAIGN_CLICKED,
             Utils.generateMap(actionId, deepLink, data)
         )
-        return true
+        return false
     }
 
     override fun onCampaignException(

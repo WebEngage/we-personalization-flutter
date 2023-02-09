@@ -83,7 +83,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   @override
   void onDataReceived(data) {

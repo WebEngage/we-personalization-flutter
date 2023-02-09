@@ -1,8 +1,10 @@
 package com.example.flutter_personalization_sdk.view
 
 import android.content.Context
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import com.example.flutter_personalization_sdk.R
@@ -15,16 +17,18 @@ import com.example.flutter_personalization_sdk.utils.*
 import com.webengage.personalization.WEInlineView
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
 import com.webengage.personalization.data.WECampaignData
+import com.webengage.personalization.utils.TAG
 import java.lang.Exception
 
 class InlineViewWidget(
     context: Context,
-    val payload: HashMap<String, Any>?,
-    val parentWidget: InlineWidget
+    private val payload: HashMap<String, Any>?,
+    private val parentWidget: InlineWidget
 
 ) : FrameLayout(context), WEPlaceholderCallback, ScreenNavigatorCallback {
 
-    val wegInline: WEGInline;
+    private val wegInline: WEGInline;
+    var weInlineView: WEInlineView? = null
 
     init {
         wegInline = generateWEInline()
@@ -32,7 +36,7 @@ class InlineViewWidget(
     }
 
     private fun initView(payload: HashMap<String, Any>?) {
-
+        Logger.e("initView", "InitView called for $payload")
         val tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
         val viewWidth = payload[PAYLOAD_VIEW_WIDTH] as Double
         val viewHeight = payload[PAYLOAD_VIEW_HEIGHT] as Double
@@ -45,10 +49,10 @@ class InlineViewWidget(
             this, false
         )
 
-        val weInlineView = view.findViewById<WEInlineView>(R.id.weinline_widget)
-        weInlineView.tag = tag
+        weInlineView = view.findViewById(R.id.weinline_widget)
+        weInlineView!!.tag = tag
 
-        val param = weInlineView.layoutParams
+        val param = weInlineView!!.layoutParams
 
         if (viewHeight > 0) {
             val height = TypedValue.applyDimension(
@@ -67,16 +71,15 @@ class InlineViewWidget(
             )
             param.width = width.toInt()
         }
-
         addView(view)
-        loadView(weInlineView)
+        loadView(weInlineView!!)
     }
 
     private fun generateWEInline(): WEGInline {
         return WEGInline(
             id = payload!![PAYLOAD_ID] as Int,
-            screenName = payload!![PAYLOAD_SCREEN_NAME] as String,
-            propertyID = payload!![PAYLOAD_ANDROID_PROPERTY_ID] as String
+            screenName = payload[PAYLOAD_SCREEN_NAME] as String,
+            propertyID = payload[PAYLOAD_ANDROID_PROPERTY_ID] as String
         )
     }
 
@@ -103,32 +106,40 @@ class InlineViewWidget(
     }
 
     override fun onRendered(data: WECampaignData) {
-        Logger.e("onRendered", "${data.targetViewId}")
-        sendImpression(data)
+        Logger.e("onRendered", data.targetViewId)
+        if (!DataRegistry.instance.isImpressionAlreadyTracked(data.targetViewId, data.campaignId)) {
+            sendImpression(data)
+        } else {
+            Logger.d(TAG, "Impression for ${data.targetViewId} has already tracked")
+        }
         parentWidget.sendCallback(METHOD_NAME_ON_RENDERED, Utils.generateMap(wegInline, data))
     }
 
     private fun sendImpression(data: WECampaignData) {
+        Logger.d("sendImpression", "called")
         if (isVisible()) {
             data.trackImpression()
-            Logger.e("sendImpression", "${data.targetViewId}")
+            DataRegistry.instance.setImpressionTrackedDetails(data.targetViewId, data.campaignId)
+            Logger.e("sendImpression direct", data.targetViewId)
         } else {
-            viewTreeObserver.addOnGlobalLayoutListener(object :
+            val v = findViewWithTag<View>("INLINE_PERSONALIZATION_TAG")
+            Logger.d("sendImpression", "inside viewTreeObserver")
+            v.viewTreeObserver.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    if (isVisible()) {
+                    if (v.isVisible()) {
                         Logger.e("sendImpression", "${data.targetViewId}")
                         data.trackImpression()
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        DataRegistry.instance.setImpressionTrackedDetails(data.targetViewId, data.campaignId)
+                        v.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
                 }
-
             })
         }
     }
 
     override fun screenNavigated(screenName: String) {
-        loadView(findViewById(R.id.weinline_widget))
+        loadView(weInlineView!!)
     }
 
     override fun onDetachedFromWindow() {
@@ -138,7 +149,6 @@ class InlineViewWidget(
                 this
             )
         }
-
         super.onDetachedFromWindow()
     }
 

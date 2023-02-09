@@ -34,8 +34,7 @@ class FlutterPersonalizationSdkPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    val methodName = call.method
-    when(methodName){
+    when(call.method){
       METHOD_NAME_REGISTER -> {
         val registered = DataRegistry.instance.registerData(call.arguments as HashMap<String,Any>)
         return result.success(registered)
@@ -45,7 +44,6 @@ class FlutterPersonalizationSdkPlugin: FlutterPlugin, MethodCallHandler {
         return result.success(remove)
       }
       METHOD_NAME_INIT -> {
-
         val sharedPrefsManager: SharedPreferences =
           context.getSharedPreferences("we_shared_storage", Context.MODE_PRIVATE)
         sharedPrefsManager.edit().putBoolean("com.webengage.personalization.auto_track_impression", false)

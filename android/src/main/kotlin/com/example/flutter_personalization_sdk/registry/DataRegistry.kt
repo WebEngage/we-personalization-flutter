@@ -10,7 +10,7 @@ import com.webengage.personalization.data.WECampaignData
 import java.lang.Exception
 import java.util.logging.Logger
 
-class DataRegistry {
+internal class DataRegistry {
 
     companion object {
         val instance = DataRegistry()
@@ -18,6 +18,7 @@ class DataRegistry {
 
     private var registryMap: HashMap<Int, WEGInline> = hashMapOf()
     private var flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin? = null
+    private val impressionTrackedForTargetViews: MutableList<String> = mutableListOf()
 
     fun initFlutterPlugin(flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin?) {
         this.flutterPersonalizationSdkPlugin = flutterPersonalizationSdkPlugin
@@ -95,5 +96,15 @@ class DataRegistry {
         )
     }
 
+    fun setImpressionTrackedDetails(targetViewId: String, campaignId: String) {
+        impressionTrackedForTargetViews.add("${targetViewId}_${campaignId}")
+    }
 
+    fun isImpressionAlreadyTracked(targetViewId: String, campaignId: String): Boolean {
+        return impressionTrackedForTargetViews.contains("${targetViewId}_${campaignId}")
+    }
+
+    fun clearCacheData() {
+        impressionTrackedForTargetViews.clear()
+    }
 }

@@ -78,8 +78,7 @@ class _CustomListScreenState extends State<CustomListScreen>
         ],
       ),
       body: Container(
-
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: ListView.builder(
               itemCount:
                   widget.customModel.listSize + widget.customModel.list.length,

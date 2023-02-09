@@ -18,8 +18,6 @@ class InlineWidget internal constructor(
     id: Int,
     payload: Any?
 ) : PlatformView, MethodCallHandler {
-
-
     private val inlineView: InlineViewWidget
     private val methodChannel: MethodChannel
 

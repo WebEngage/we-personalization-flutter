@@ -60,6 +60,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    configurations.all {
+        exclude group: 'com.webengage', module: 'android-sdk'
+    }
 }
 
 flutter {

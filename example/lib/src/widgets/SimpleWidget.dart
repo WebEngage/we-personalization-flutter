@@ -41,7 +41,13 @@ class _SimpleWidgetState extends State<SimpleWidget>
         return baseWidget(Container());
     }
   }
-
+  Widget cont(Color color) {
+    return Container(
+      height: 200,
+      width: 400,
+      color: color,
+    );
+  }
   Widget image() =>
       baseWidget(Image.network(
           fit: BoxFit.cover,
