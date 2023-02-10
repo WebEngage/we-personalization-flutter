@@ -43,6 +43,10 @@ class FlutterPersonalizationSdkPlugin: FlutterPlugin, MethodCallHandler {
         val remove = DataRegistry.instance.removeData(call.arguments as HashMap<String, Any>)
         return result.success(remove)
       }
+      METHOD_NAME_AUTO_HANDLE_CLICK->{
+        var autoHandleClick = call.arguments as Boolean
+        CallbackHandler.instance.autoHandleClick = autoHandleClick
+      }
       METHOD_NAME_INIT -> {
         val sharedPrefsManager: SharedPreferences =
           context.getSharedPreferences("we_shared_storage", Context.MODE_PRIVATE)

@@ -12,6 +12,7 @@ const METHOD_NAME_ON_CAMPAIGN_CLICKED = "onCampaignClicked";
 const METHOD_NAME_ON_CAMPAIGN_EXCEPTION = "onCampaignException";
 const METHOD_NAME_ON_CAMPAIGN_PREPARED = "onCampaignPrepared";
 const METHOD_NAME_ON_CAMPAIGN_SHOWN = "onCampaignShown";
+const METHOD_NAME_AUTO_HANDLE_CLICK = "autoHandleClick";
 
 const PAYLOAD_ANDROID_PROPERTY_ID = "androidPropertyId";
 const PAYLOAD_IOS_PROPERTY_ID = "iosPropertyId";
@@ -28,3 +29,5 @@ const PAYLOAD_DATA = "data";
 const PAYLOAD = "payload";
 
 const CHANNEL_INLINE_VIEW = "channel_inline_view";
+
+

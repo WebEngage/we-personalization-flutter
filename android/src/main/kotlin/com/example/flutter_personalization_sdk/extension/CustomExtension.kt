@@ -23,8 +23,6 @@ fun View.isVisible(): Boolean {
     val isVisible: Boolean = getGlobalVisibleRect(actualPosition)
     val isVisibleLocal: Boolean = getLocalVisibleRect(actualPosition)
 
-    Logger.d("isVisible global rect", "${actualPosition.intersect(screen)} isVisibleLocal: $isVisibleLocal")
-
     return isVisibleLocal
 }
 

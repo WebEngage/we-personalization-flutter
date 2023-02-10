@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
     WebEngagePlugin _webenagePlugin = WebEngagePlugin();
     WEPersonalization().init();
     WEPersonalization().registerWECampaignCallback(this);
+    WEPersonalization().autoHandleCampaignClick(true);
     initSharedPref();
   }
 

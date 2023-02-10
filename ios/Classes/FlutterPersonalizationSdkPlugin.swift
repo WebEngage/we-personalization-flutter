@@ -29,8 +29,9 @@ public class FlutterPersonalizationSdkPlugin: NSObject, FlutterPlugin {
         WEPersonalization.shared.registerWECampaignCallback(CallbackHandler.instance)
         WEPersonalization.shared.registerPropertyRegistryCallbacks(CallbackHandler.instance)
         WEPersonalization.shared.initialise()
-    case Constants.METHOD_AUTO_HANDLE_CLICK:
+    case Constants.METHOD_NAME_AUTO_HANDLE_CLICK:
         CallbackHandler.instance.autoHandleClick = call.arguments as! Bool
+        result(true)
     default:
       result(FlutterMethodNotImplemented)
     }

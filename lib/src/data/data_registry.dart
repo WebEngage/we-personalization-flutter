@@ -54,6 +54,8 @@ class DataRegistry {
     });
   }
 
+
+
   Future<void> registerInlineWidget(WEGInline wegInline) async {
     var success = await FlutterPersonalizationSdkPlatform.instance
         .registerInline(wegInline);
@@ -135,4 +137,9 @@ class DataRegistry {
         break;
     }
   }
+
+  void autoHandleClick(bool auto){
+    FlutterPersonalizationSdkPlatform.instance.autoHandleClick(auto);
+  }
+
 }

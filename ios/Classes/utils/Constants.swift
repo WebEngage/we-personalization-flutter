@@ -27,5 +27,5 @@ struct Constants{
     static let METHOD_NAME_ON_CAMPAIGN_PREPARED = "onCampaignPrepared"
     static let METHOD_NAME_ON_CAMPAIGN_SHOWN = "onCampaignShown"
     
-    static let METHOD_AUTO_HANDLE_CLICK = "autoHandleClick"
+    static let METHOD_NAME_AUTO_HANDLE_CLICK = "autoHandleClick"
 }

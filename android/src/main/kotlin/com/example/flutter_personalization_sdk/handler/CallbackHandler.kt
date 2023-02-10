@@ -17,10 +17,12 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     private var flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin? = null
     private var mapOfScreenNavigatedCallbacks: HashMap<String, ArrayList<ScreenNavigatorCallback>>? =
         null
-
+    var autoHandleClick = false
     companion object {
         val instance: CallbackHandler by lazy { CallbackHandler() }
     }
+
+
 
     init {
         if (mapOfScreenNavigatedCallbacks == null)
@@ -75,7 +77,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
             METHOD_NAME_ON_CAMPAIGN_CLICKED,
             Utils.generateMap(actionId, deepLink, data)
         )
-        return false
+        return autoHandleClick
     }
 
     override fun onCampaignException(

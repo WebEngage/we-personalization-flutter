@@ -32,4 +32,9 @@ class WEPersonalization {
   void deregisterWEPlaceholderCallback(String screenName) {
     DataRegistry().deRegisterWEPlaceholderCallbackByScreenName(screenName);
   }
+
+  void autoHandleCampaignClick(bool auto){
+    DataRegistry().autoHandleClick(auto);
+  }
+
 }

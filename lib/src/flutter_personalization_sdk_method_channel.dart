@@ -31,4 +31,12 @@ class MethodChannelFlutterPersonalizationSdk extends FlutterPersonalizationSdkPl
         wegInline.toJSON());
     return deregistered as bool;
   }
+
+  Future<bool> autoHandleClick(bool autoHandleClick) async{
+    final result = await methodChannel.invokeMethod<dynamic>(
+        METHOD_NAME_AUTO_HANDLE_CLICK,
+       autoHandleClick);
+    return result as bool;
+  }
+
 }

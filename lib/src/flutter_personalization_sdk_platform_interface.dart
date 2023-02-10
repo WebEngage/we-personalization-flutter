@@ -30,5 +30,9 @@ abstract class FlutterPersonalizationSdkPlatform extends PlatformInterface {
     throw UnimplementedError('deregisterPersonalization has not been implemented');
   }
 
+  Future<bool> autoHandleClick(bool autoHandleClick){
+    throw UnimplementedError("auto handle click has not been implemented");
+  }
+
 
 }

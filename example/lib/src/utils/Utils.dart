@@ -31,7 +31,24 @@ class Utils {
           .map<CustomModel>((item) => CustomModel.fromJson(item))
           .toList();
     }
-    return [CustomModel()];
+    return [_defaultCustomModel()];
+  }
+
+  static CustomModel _defaultCustomModel() {
+    var model = CustomModel();
+    model.screenName = "screen1";
+    model.event = "dummy";
+    model.listSize = 10;
+    model.list = [];
+    var data = CustomWidgetData();
+    data.screenName = model.screenName;
+    data.viewHeight = 100;
+    data.viewWidth = 0;
+    data.iosPropertyID = 1;
+    data.androidPropertyId = "S1P1";
+    data.position = 1;
+    model.list.add(data);
+    return model;
   }
 
   static CustomModel getScreenData() {
