@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/AppColor.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/SimpleWidget.dart';
@@ -12,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
+  bool autoHandleClick = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,30 @@ class _HomeScreenState extends State<HomeScreen> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
+
+            Row(
+              children: [SizedBox(
+                width: 10,
+              ), //SizedBox
+                Expanded(
+                  child: Text(
+                    'Auto Handle push click',
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                ), //Text
+                SizedBox(width: 10),
+                Checkbox(
+                  value: this.autoHandleClick,
+                  onChanged: (value) {
+                    WEPersonalization().autoHandleCampaignClick(value as bool);
+                    setState(() {
+                      autoHandleClick = value as bool;
+                    });
+                  },
+                ),
+              ],
+            ),
+
             sectionView("List Screen", () {
               ScreenNavigator.gotoListScreen(context);
             }),

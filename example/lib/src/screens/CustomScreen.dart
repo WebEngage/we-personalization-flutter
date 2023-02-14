@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
@@ -33,7 +35,6 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-
         children: [
           widget.isDialog
               ? SizedBox()
@@ -110,10 +111,12 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
                         ),
                       );
                     })
-                : CustomModelWidget(
-                    save: _save,
-                    customModel: selectedCustomModel,
-                  ),
+                : Container(
+                  child: CustomModelWidget(
+                      save: _save,
+                      customModel: selectedCustomModel,
+                    ),
+                ),
           )
         ],
       ),

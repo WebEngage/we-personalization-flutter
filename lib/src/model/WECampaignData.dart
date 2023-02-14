@@ -10,16 +10,12 @@ class WECampaignData {
   WECampaignData.fromJson(dynamic data) {
     if (data != null) {
       var parsedJson = jsonDecode(data);
-      //  print("onDataReceived 123 ${parsedJson["content"]}");
       campaignId = parsedJson["campaignId"];
       targetViewId = parsedJson["targetViewId"];
       weCampaignContent = WECampaignContent.fromJson(parsedJson["content"]);
     }
   }
 
-//trackClick
-//trackImpression
-//stopRendering
 }
 
 class WECampaignContent {

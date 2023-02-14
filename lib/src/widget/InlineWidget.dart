@@ -3,9 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_personalization_sdk/src/data/data_registry.dart';
-import 'package:flutter_personalization_sdk/src/model/WEGInline.dart';
-import 'package:flutter_personalization_sdk/src/utils/Constants.dart';
+import '../../src/data/data_registry.dart';
+import '../../src/model/WEGInline.dart';
+import '../../src/utils/Constants.dart';
+import '../../src/utils/Logger.dart';
 
 typedef WEGInlineHandler = void Function(WEGInlineViewController controller);
 
@@ -85,7 +86,7 @@ class WEGInlineViewController {
   }
 
   Future _platformCallHandler(MethodCall call) async {
-    print("_platformCallHandler ${wegInline.id}");
+    Logger.v("_platformCallHandler ${call.method}");
     DataRegistry().platformCallHandler(call, wegInline);
   }
 }

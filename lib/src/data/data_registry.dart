@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_personalization_sdk/src/callbacks/WECampaignCallback.dart';
-import 'package:flutter_personalization_sdk/src/model/WECampaignData.dart';
-import 'package:flutter_personalization_sdk/src/utils/Constants.dart';
+import '../../src/callbacks/WECampaignCallback.dart';
+import '../../src/model/WECampaignData.dart';
+import '../../src/utils/Constants.dart';
+import '../../src/utils/Logger.dart';
 
 import '../callbacks/WEPlaceholderCallback.dart';
 import '../flutter_personalization_sdk_platform_interface.dart';
@@ -20,9 +21,6 @@ class DataRegistry {
     _channel.setMethodCallHandler(_platformCallHandler);
   }
 
-  /**
-   *
-   */
   WECampaignCallback? weCampaignCallback;
   var mapOfRegistry = <int, WEGInline>{};
 
@@ -39,6 +37,7 @@ class DataRegistry {
         iosPropertyId: iosPropertyId);
     wegInline.wePlaceholderCallback = placeholderCallback;
     registerInlineWidget(wegInline);
+    Logger.v("registerWEPlaceholderCallback - ${wegInline.id} : $screenName : $androidPropertyId : $iosPropertyId");
     return wegInline.id;
   }
 
@@ -47,6 +46,7 @@ class DataRegistry {
   }
 
   void deRegisterWEPlaceholderCallbackByScreenName(String screenName) async {
+    Logger.v("deRegisterWEPlaceholderCallbackByScreenName - $screenName");
     mapOfRegistry.forEach((key, value) {
       if (value.screenName == screenName) {
         deregisterInlineWidget(value);
@@ -87,15 +87,16 @@ class DataRegistry {
   }
 
   Future _callHandler(MethodCall call, WEGInline? wegInline) async {
-    print("_callHandler ${call.method}");
+   
     final methodName = call.method;
     final data = call.arguments.cast<String, dynamic>();
     final payload = data[PAYLOAD];
 
     final id = payload[PAYLOAD_ID];
     var wEGInline = wegInline ?? mapOfRegistry[id];
-    print(
-        "_callHandler ${methodName} ${payload} ${wegInline?.id} ${mapOfRegistry.length}");
+
+    Logger.v("_callHandler $methodName : $id : ${wegInline?.id} : $data");
+    
     switch (methodName) {
       case METHOD_NAME_DATA_LISTENER:
         _passDataToWidget(id, payload);

@@ -5,7 +5,7 @@ class Utils{
                             campaignData:WEGCampaignData)->[String:Any]{
         var map = [String:Any]()
         map[Constants.PAYLOAD_ID] = weginline.id
-        map[Constants.PAYLOAD_DATA] = campaignData.toString()
+        map[Constants.PAYLOAD_DATA] = campaignData.toJSONString()
         return map
     }
     
@@ -27,13 +27,13 @@ class Utils{
         var map = [String:Any]()
         map[Constants.PAYLOAD_ACTION_ID] = actionId
         map[Constants.PAYLOAD_DEEPLINK] = deepLink
-        map[Constants.PAYLOAD_DATA] = data.toString()
+        map[Constants.PAYLOAD_DATA] = data.toJSONString()
         return map
     }
     
     static func generateMap(campaignData:WEGCampaignData)->[String:Any]{
         var map = [String:Any]()
-        map[Constants.PAYLOAD_DATA] = campaignData.toString()
+        map[Constants.PAYLOAD_DATA] = campaignData.toJSONString()
         return map
     }
     

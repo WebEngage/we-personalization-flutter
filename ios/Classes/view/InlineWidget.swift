@@ -5,22 +5,36 @@ import WebEngage
 import Flutter
 
 
-public class InlineViewWidget:UIView,ScreenNavigatorCallback{
+public class InlineViewWidget:UIView{
     var _inlineView:WEInlineView? = nil
     var map :Dictionary<String,Any?>? = nil
     var methodChannel:FlutterMethodChannel? = nil
     var campaignData:WEGCampaignData? = nil
     var wegInline:WEGHInline? = nil
+    var screenName = ""
 
 
     func setMap(map : Dictionary<String,Any?>) {
         self.map = map
-        CallbackHandler.instance.setScreenNavigatorCallback(screenName: map[Constants.PAYLOAD_SCREEN_NAME] as! String, screenNavigatedCallback: self)
+        screenName = map[Constants.PAYLOAD_SCREEN_NAME] as! String;
+        NotificationCenter.default.addObserver(self, selector: #selector(screenNavigate), name: Notification.Name(screenName), object: nil)
         setupView()
       }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
+    }
+    
+    @objc func screenNavigate() {
+        if(_inlineView != nil){
+            print("InlineWidget \(screenName)")
+            _inlineView?.load(tag: _inlineView!.tag, callbacks: self)
+        }
+    }
+    
+    deinit{
+        print("InlineWidget dinit \(screenName)")
+        NotificationCenter.default.removeObserver(self)
     }
     
     public init(frame: CGRect,methodChannel:FlutterMethodChannel) {
@@ -63,6 +77,13 @@ public class InlineViewWidget:UIView,ScreenNavigatorCallback{
         return wegInline!
     }
     
+    public override func willMove(toSuperview newSuperview: UIView?) {
+        if newSuperview == nil {
+            NotificationCenter.default.removeObserver(self)
+            print("InlineWidget removed \(screenName)")
+        }
+    }
+    
 }
 
 extension InlineViewWidget : WEPlaceholderCallback{
@@ -93,13 +114,6 @@ extension InlineViewWidget : WEPlaceholderCallback{
                                                                 campaignId: campaignId,
                                                                 targetViewId: targetViewId,
                                                                 error: exception))
-    }
-    
-    func screenNavigated(screenName: String) {
-        print("WEP H screenNavigated \(screenName)")
-        if(_inlineView != nil){
-            _inlineView?.load(tag: _inlineView!.tag, callbacks: self)
-        }
     }
             
     func getScrollview(view:UIView)->UIScrollView?{

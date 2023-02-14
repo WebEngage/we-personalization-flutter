@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/AppColor.dart';
+import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
 
 enum WidgetType { none, image, text, mixed }
 
@@ -34,7 +35,11 @@ class _SimpleWidgetState extends State<SimpleWidget>
   Widget build(BuildContext context) {
     switch (widget.widgetType) {
       case WidgetType.image:
-        return image();
+        return InkWell(
+            onTap: (){
+              ScreenNavigator.gotoDetailScreen(context);
+            },
+            child: image());
       case WidgetType.text:
         return text();
       default:

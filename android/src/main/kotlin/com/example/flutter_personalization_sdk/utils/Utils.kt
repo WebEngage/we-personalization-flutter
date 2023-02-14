@@ -1,10 +1,7 @@
 package com.example.flutter_personalization_sdk.utils
 
 import com.example.flutter_personalization_sdk.model.WEGInline
-import com.google.gson.Gson
-import com.webengage.personalization.data.WECampaignContent
 import com.webengage.personalization.data.WECampaignData
-import org.json.JSONObject
 
 class Utils {
 
@@ -65,9 +62,7 @@ class Utils {
 
 
         private fun _convertWECampaignDataToString(weCampaignData: WECampaignData): String {
-            val gson = Gson()
-            val data = gson.toJson(weCampaignData);
-            return data
+            return weCampaignData.toJSONString()
         }
 
     }

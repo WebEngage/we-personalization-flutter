@@ -1,8 +1,7 @@
-
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-
+import '../../src/utils/Logger.dart';
 import '../../src/callbacks/WEPlaceholderCallback.dart';
 import '../../src/utils/Utils.dart';
 import '../../src/widget/InlineWidget.dart';
@@ -32,19 +31,17 @@ class WEGInlineWidget extends StatefulWidget {
 
 class _WEGInlineWidgetState extends State<WEGInlineWidget>
     with AutomaticKeepAliveClientMixin, WEPlaceholderCallback {
-
   final GlobalKey _platformViewKey = GlobalKey();
   WEGInline? wegInline;
   var defaultViewHeight = 0.1;
   WEGInlineViewController? controller;
 
-
   @override
   void initState() {
     super.initState();
-    if(Platform.isIOS){
-      defaultViewHeight = widget.viewHeight;
-    }
+    // if (Platform.isIOS) {
+    //   defaultViewHeight = widget.viewHeight;
+    // }
     wegInline = WEGInline(
         screenName: widget.screenName,
         androidPropertyID: widget.androidPropertyId,
@@ -64,7 +61,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if(widget.viewWidth == 0){
+        if (widget.viewWidth == 0) {
           widget.viewWidth = constraints.maxWidth;
         }
         return Container(
@@ -83,11 +80,20 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 
   @override
   void onDataReceived(data) {
     super.onDataReceived(data);
+    if (Platform.isIOS) {
+      if (defaultViewHeight != widget.viewHeight) {
+        setState(() {
+          defaultViewHeight = widget.viewHeight;
+        });
+      }
+    }
+    Logger.v(
+        "onDataReceived ${wegInline?.id} ${wegInline?.screenName} ${wegInline?.androidPropertyID} ${wegInline?.iosPropertyId}");
     widget.placeholderCallback?.onDataReceived(data);
   }
 
@@ -95,19 +101,25 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
   void onPlaceholderException(
       String campaignId, String targetViewId, String error) {
     super.onPlaceholderException(campaignId, targetViewId, error);
+    Logger.v(
+        "onPlaceholderException ${wegInline?.id} ${wegInline?.screenName} ${wegInline?.androidPropertyID} ${wegInline?.iosPropertyId} ${error} ${campaignId}");
     widget.placeholderCallback
         ?.onPlaceholderException(campaignId, targetViewId, error);
   }
 
   @override
   void onRendered(data) {
-    if (defaultViewHeight != widget.viewHeight) {
-      setState(() {
-        defaultViewHeight = widget.viewHeight;
-      });
+    if (Platform.isAndroid) {
+      if (defaultViewHeight != widget.viewHeight) {
+        setState(() {
+          defaultViewHeight = widget.viewHeight;
+        });
+      }
     }
-
+    
     super.onRendered(data);
+    Logger.v(
+        "onRendered ${wegInline?.id} ${wegInline?.screenName} ${wegInline?.androidPropertyID} ${wegInline?.iosPropertyId}");
     widget.placeholderCallback?.onRendered(data);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_personalization_sdk/src/model/WEGInline.dart';
-import 'package:flutter_personalization_sdk/src/utils/Constants.dart';
+import '../../src/model/WEGInline.dart';
+import '../../src/utils/Constants.dart';
 
 class Utils {
   static final Utils _singleton = Utils._internal();
@@ -24,7 +24,6 @@ class Utils {
       PAYLOAD_VIEW_WIDTH: viewWidth,
       PAYLOAD_VIEW_HEIGHT: viewHeight,
     });
-    print("data $map");
     return map;
   }
 }

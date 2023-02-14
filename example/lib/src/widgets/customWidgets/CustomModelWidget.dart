@@ -56,7 +56,16 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                   }
                 },
               ),
-              ElevatedButton(onPressed: _addData, child: Text("Add data")),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [  ElevatedButton(onPressed: _addData, child: Text("Add data")),
+                ElevatedButton(
+                    onPressed: () {
+                      widget.save!(widget.customModel);
+                      //Utils.saveScreenData(widget.customModel!);
+                    },
+                    child: Text("Save")),],
+            ),
               widget.customModel == null
                   ? SizedBox()
                   : Expanded(
@@ -66,18 +75,7 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                             return draw(widget.customModel!.list[index]);
                           }),
                     ),
-              ElevatedButton(
-                  onPressed: () {
-                    widget.save!(widget.customModel);
-                    //Utils.saveScreenData(widget.customModel!);
-                  },
-                  child: Text("Save")),
-              // ElevatedButton(
-              //     onPressed: () {
-              //       ScreenNavigator.gotoCustomListScreen(
-              //           context, widget.customModel!);
-              //     },
-              //     child: Text("Test")),
+
             ],
           );
   }

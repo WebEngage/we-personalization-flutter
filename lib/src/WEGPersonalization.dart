@@ -1,6 +1,7 @@
-import 'package:flutter_personalization_sdk/src/callbacks/WECampaignCallback.dart';
-import 'package:flutter_personalization_sdk/src/data/data_registry.dart';
-import 'package:flutter_personalization_sdk/src/flutter_personalization_sdk_platform_interface.dart';
+import '../../src/callbacks/WECampaignCallback.dart';
+import '../../src/data/data_registry.dart';
+import '../../src/flutter_personalization_sdk_platform_interface.dart';
+import '../../src/utils/Logger.dart';
 
 import 'callbacks/WEPlaceholderCallback.dart';
 
@@ -35,6 +36,10 @@ class WEPersonalization {
 
   void autoHandleCampaignClick(bool auto){
     DataRegistry().autoHandleClick(auto);
+  }
+  
+  void enableLogs(){
+    Logger.enableLogs(true);
   }
 
 }

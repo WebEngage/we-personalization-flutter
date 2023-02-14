@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:webengage_flutter/webengage_flutter.dart';
 
 class MyRouteObserver extends RouteObserver<PageRoute<dynamic>> {
+  /**
+   * This method will get call screen push or pop
+   */
   void _sendScreenView(PageRoute<dynamic> route) {
     var screenName = route.settings.name;
     if (screenName != null) WebEngagePlugin.trackScreen(screenName);

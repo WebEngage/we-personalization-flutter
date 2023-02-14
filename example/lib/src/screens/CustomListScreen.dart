@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/main.dart';
@@ -47,19 +49,42 @@ class _CustomListScreenState extends State<CustomListScreen>
   }
 
   void _openDialog() {
-    showDialog(
+    print("_openDialog called");
+    showModalBottomSheet<void>(
+      // context and builder are
+      // required properties in this widget
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            scrollable: true,
-            title: Text('select next screen'),
-            content: Container(
-              width: MediaQuery.of(context).size.width-50,
-              height: MediaQuery.of(context).size.height-100,
-              child: CustomInlineScreen(isDialog: true,),
-            ),
-          );
+          // we set up a container inside which
+          // we create center column and display text
+
+          // Returning SizedBox instead of a Container
+          return CustomInlineScreen(isDialog: true,);
         });
+
+    // showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         scrollable: true,
+    //         title: Text('select next screen'),
+    //         content: Container(
+    //           width: getWidth(),
+    //           height: getHeight(),
+    //           child: CustomInlineScreen(isDialog: true,),
+    //         ),
+    //       );
+    //     });
+  }
+
+  double getWidth(){
+    var width =  MediaQuery.of(context).size.width-50;
+    return width < 0 ? 0 : width;
+  }
+
+  double getHeight(){
+    var height = MediaQuery.of(context).size.height-100;
+    return height < 0 ? 0 : height;
   }
 
   @override
@@ -73,7 +98,9 @@ class _CustomListScreenState extends State<CustomListScreen>
               Icons.settings,
               color: Colors.white,
             ),
-            onPressed: _openDialog,
+            onPressed: (){
+              _openDialog();
+            },
           )
         ],
       ),
@@ -109,7 +136,15 @@ class _CustomListScreenState extends State<CustomListScreen>
     super.onDataReceived(data);
   }
 
+  @override
+  void onPlaceholderException(String campaignId, String targetViewId, String error) {
+    super.onPlaceholderException(campaignId, targetViewId, error);
+  }
 
+  @override
+  void onRendered(data) {
+    super.onRendered(data);
+  }
 
   int checkIfContains(index) {
     var list = widget.customModel.list;
