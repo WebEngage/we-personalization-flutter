@@ -47,6 +47,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
         androidPropertyID: widget.androidPropertyId,
         iosPropertyId: widget.iosPropertyId,
         wePlaceholderCallback: this);
+    Logger.v("WEGINLINEVIEW ID ${wegInline?.id}");
   }
 
   @override
@@ -80,7 +81,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   @override
   void onDataReceived(data) {
@@ -109,12 +110,10 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
 
   @override
   void onRendered(data) {
-    if (Platform.isAndroid) {
       if (defaultViewHeight != widget.viewHeight) {
         setState(() {
           defaultViewHeight = widget.viewHeight;
         });
-      }
     }
     
     super.onRendered(data);

@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ), //SizedBox
                 Expanded(
                   child: Text(
-                    'Auto Handle push click',
+                    'Auto Handle Inline click',
                     style: TextStyle(fontSize: 17.0),
                   ),
                 ), //Text
@@ -52,12 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
 
-            sectionView("List Screen", () {
-              ScreenNavigator.gotoListScreen(context);
-            }),
-            sectionView("Detail Screen", () {
-              ScreenNavigator.gotoDetailScreen(context);
-            }),
+            // sectionView("List Screen", () {
+            //   ScreenNavigator.gotoListScreen(context);
+            // }),
+            // sectionView("Detail Screen", () {
+            //   ScreenNavigator.gotoDetailScreen(context);
+            // }),
             sectionView("Custom Screen", () {
               ScreenNavigator.gotoCustomScreen(context);
             }),

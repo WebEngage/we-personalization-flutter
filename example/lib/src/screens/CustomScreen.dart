@@ -9,8 +9,10 @@ import 'package:flutter_personalization_sdk_example/src/widgets/customWidgets/Cu
 
 class CustomInlineScreen extends StatefulWidget {
   bool isDialog = false;
+  String? hideScreen = null;
 
-  CustomInlineScreen({Key? key, this.isDialog = false}) : super(key: key);
+  CustomInlineScreen({Key? key, this.isDialog = false, this.hideScreen})
+      : super(key: key);
 
   @override
   State<CustomInlineScreen> createState() => _CustomInlineScreenState();
@@ -26,9 +28,7 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.isDialog
-        ? _body()
-        : BaseScreen(body: _body());
+    return widget.isDialog ? _body() : BaseScreen(body: _body());
   }
 
   Widget _body() {
@@ -40,19 +40,21 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
               ? SizedBox()
               : Container(
                   height: 50,
-                  color: Colors.orange,
+                  color: Colors.blueGrey,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      screenType == ScreenType.detail ? IconButton(
-                          onPressed: () {
-                            if (screenType == ScreenType.detail) {
-                              setState(() {
-                                screenType = ScreenType.list;
-                              });
-                            }
-                          },
-                          icon: Icon(Icons.arrow_back)) : SizedBox(),
+                      screenType == ScreenType.detail
+                          ? IconButton(
+                              onPressed: () {
+                                if (screenType == ScreenType.detail) {
+                                  setState(() {
+                                    screenType = ScreenType.list;
+                                  });
+                                }
+                              },
+                              icon: Icon(Icons.arrow_back))
+                          : SizedBox(),
                       screenType == ScreenType.list
                           ? ElevatedButton(
                               onPressed: () {
@@ -67,56 +69,65 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
                 ),
           Expanded(
             child: screenType == ScreenType.list
-                ? ListView.builder(
-                shrinkWrap: true,
-                    itemCount: list.length,
-                    itemBuilder: (context, i) {
-                      return InkWell(
-                        onTap: () {
-                          if (widget.isDialog) return;
-                          setState(() {
-                            selectedCustomModel = list[i];
-                            screenType = ScreenType.detail;
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  child:
-                                      Text("Screen Name : ${list[i].screenName}"),
-                                ),
+                ? Container(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: list.length,
+                      itemBuilder: (context, i) {
+                        if (list[i].screenName == widget.hideScreen) {
+                          return SizedBox();
+                        } else {
+                          return InkWell(
+                            onTap: () {
+                              if (widget.isDialog) return;
+                              setState(() {
+                                selectedCustomModel = list[i];
+                                screenType = ScreenType.detail;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(20),
+                                      child: Text(
+                                        "Screen Name : ${list[i].screenName}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        if (widget.isDialog) {
+                                          Navigator.of(context).pop();
+                                        }
+                                        ScreenNavigator.gotoCustomListScreen(
+                                            context, list[i]);
+                                      },
+                                      child: Text("OPEN"))
+                                ],
                               ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    if(widget.isDialog){
-                                      Navigator.of(context).pop();
-                                    }
-                                    ScreenNavigator.gotoCustomListScreen(
-                                        context, list[i]);
-                                  },
-                                  child: Text("OPEN"))
-                            ],
-                          ),
-                        ),
-                      );
-                    })
+                            ),
+                          );
+                        }
+                      }),
+                )
                 : Container(
-                  child: CustomModelWidget(
+                    child: CustomModelWidget(
                       save: _save,
                       customModel: selectedCustomModel,
                     ),
-                ),
+                  ),
           )
         ],
       ),

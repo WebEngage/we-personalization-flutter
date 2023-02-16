@@ -6,6 +6,7 @@ import 'package:flutter_personalization_sdk_example/src/screens/DetailScreen.dar
 import 'package:flutter_personalization_sdk_example/src/screens/HomeScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/ListScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/AppColor.dart';
+import 'package:flutter_personalization_sdk_example/src/utils/Logger.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/Utils.dart';
 import 'package:webengage_flutter/webengage_flutter.dart';
@@ -60,24 +61,25 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
   @override
   void onCampaignShown(data) {
     super.onCampaignShown(data);
-    print("onCampaignShown $data");
+    Logger.v("onCampaignShown ${data.toJson()}");
   }
 
   @override
   void onCampaignClicked(String actionId, String deepLink, data) {
     super.onCampaignClicked(actionId, deepLink, data);
-    print("onCampaignClicked $actionId $deepLink $data");
+    Logger.v("onCampaignClicked $actionId $deepLink ${data.toJson()}");
   }
 
   @override
   void onCampaignPrepared(data) {
     super.onCampaignPrepared(data);
+    Logger.v("onCampaignPrepared ${data.toJson()}");
   }
 
   @override
   void onCampaignException(String? campaignId, String targetViewId, String error) {
     super.onCampaignException(campaignId, targetViewId, error);
-    print("onCampaignException $campaignId $targetViewId $error");
+    Logger.v("onCampaignException $campaignId $targetViewId $error");
   }
 
 }

@@ -69,17 +69,21 @@ public class InlineViewWidget:UIView{
     }
     
     func generateInlineView()->WEGHInline{
-        if(wegInline == nil){
-            wegInline = WEGHInline(id: map![Constants.PAYLOAD_ID] as! Int,
+        return WEGHInline(id: map![Constants.PAYLOAD_ID] as! Int,
                                    screenName: map![Constants.PAYLOAD_SCREEN_NAME] as! String,
                                    propertyID: map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
-        }
-        return wegInline!
+        
     }
     
     public override func willMove(toSuperview newSuperview: UIView?) {
         if newSuperview == nil {
             NotificationCenter.default.removeObserver(self)
+            WEPersonalization.shared.unregisterWEPlaceholderCallback(map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
+            _inlineView = nil
+            map = nil
+            methodChannel = nil
+            campaignData = nil
+            wegInline = nil
             print("InlineWidget removed \(screenName)")
         }
     }

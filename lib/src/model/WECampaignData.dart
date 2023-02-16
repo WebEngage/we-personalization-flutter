@@ -16,6 +16,14 @@ class WECampaignData {
     }
   }
 
+  Map toJson() {
+    var map = {
+      "campaignId" : campaignId,
+      "targetViewId" : targetViewId,
+      "content" : weCampaignContent?.toJson()
+    };
+    return map;
+  }
 }
 
 class WECampaignContent {
@@ -39,5 +47,16 @@ class WECampaignContent {
         children!.add(WECampaignContent.fromJson(v));
       });
     }
+  }
+
+  Map toJson() {
+    var map = {
+      "layoutType": layoutType,
+      "subLayoutType": subLayoutType,
+      "properties": properties,
+      "customData": customData,
+      "children": children?.map((e) => e.toJson()).toList()
+    };
+    return map;
   }
 }

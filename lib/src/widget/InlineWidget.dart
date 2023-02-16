@@ -86,7 +86,7 @@ class WEGInlineViewController {
   }
 
   Future _platformCallHandler(MethodCall call) async {
-    Logger.v("_platformCallHandler ${call.method}");
+    Logger.v("_platformCallHandler ${call.method} ${wegInline.id}");
     DataRegistry().platformCallHandler(call, wegInline);
   }
 }

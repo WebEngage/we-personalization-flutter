@@ -29,6 +29,7 @@ class InlineViewWidget(
 
     private val wegInline: WEGInline;
     var weInlineView: WEInlineView? = null
+    var tag = ""
 
     init {
         wegInline = generateWEInline()
@@ -37,7 +38,7 @@ class InlineViewWidget(
 
     private fun initView(payload: HashMap<String, Any>?) {
         Logger.e("initView", "InitView called for $payload")
-        val tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
+         tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
         val viewWidth = payload[PAYLOAD_VIEW_WIDTH] as Double
         val viewHeight = payload[PAYLOAD_VIEW_HEIGHT] as Double
         CallbackHandler.instance.setScreenNavigatorCallback(
@@ -50,7 +51,7 @@ class InlineViewWidget(
         )
 
         weInlineView = view.findViewById(R.id.weinline_widget)
-        weInlineView!!.tag = tag
+       // weInlineView!!.tag = tag
 
         val param = weInlineView!!.layoutParams
 
@@ -85,7 +86,7 @@ class InlineViewWidget(
 
     private fun loadView(weInlineView: WEInlineView) {
         Logger.e("loadView", "${weInlineView.tag} ${wegInline.id} ${wegInline.screenName}")
-        weInlineView.load(weInlineView.tag as String, this)
+        weInlineView.load(tag, this)
     }
 
     override fun onDataReceived(data: WECampaignData) {

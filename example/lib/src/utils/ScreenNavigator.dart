@@ -4,10 +4,10 @@ import 'package:flutter_personalization_sdk_example/src/screens/CustomListScreen
 import 'package:flutter_personalization_sdk_example/src/screens/HomeScreen.dart';
 
 class ScreenNavigator {
-  static const SCREEN_HOME = "screen_home";
+  static const SCREEN_HOME = "screen_home_1";
   static const SCREEN_LIST = "screen_list";
-  static const SCREEN_DETAIL = "screen_detail";
-  static const SCREEN_CUSTOM = "screen_custom";
+  static const SCREEN_DETAIL = "screen_detail_123";
+  static const SCREEN_CUSTOM = "screen_custom_123";
 
   static void gotoListScreen(context) {
     _gotoScreen(context, SCREEN_LIST);
