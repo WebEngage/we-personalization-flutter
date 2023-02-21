@@ -10,7 +10,7 @@ class DataRegistry{
     
     
     public func registerData(map:[String:Any]){
-        var id = map[Constants.PAYLOAD_ID] as! Int
+        let id = map[Constants.PAYLOAD_ID] as! Int
         let weghinline = WEGHInline(id: id,
             screenName: map[Constants.PAYLOAD_SCREEN_NAME] as! String,
             propertyID: map[Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
@@ -20,7 +20,7 @@ class DataRegistry{
         
     }
     
-   public func removeData(map:[String:Any])->Bool{
+    public func removeData(map:[String:Any])->Bool{
         let id = map[Constants.PAYLOAD_ID] as! Int
         return removeData(id: id)
     }
@@ -35,7 +35,7 @@ class DataRegistry{
         
     }
     
-   private func getWEGHinline(targetViewTag:Int)->WEGHInline?{
+    private func getWEGHinline(targetViewTag:Int)->WEGHInline?{
         for(_,weginline) in registryMap{
             if(weginline.propertyID == targetViewTag){
                 return weginline
@@ -44,12 +44,13 @@ class DataRegistry{
         return nil
     }
     
+    //MARK: - Impression tracking helper
     internal func setImpressionTrackedDetails(forTag:Int,campaignId:String){
         let key = "\(forTag)_\(campaignId)"
         self.impressionTrackedForTargetviews.append(key)
     }
     
-    func isImpressionAlreadyTracked(forTag:Int,campaignId:String)->Bool{
+    internal func isImpressionAlreadyTracked(forTag:Int,campaignId:String)->Bool{
         var shouldReturn = false
 //        self.serialQueue.sync {
             let key = "\(forTag)_\(campaignId)"

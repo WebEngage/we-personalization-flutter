@@ -6,6 +6,7 @@ import Flutter
 
 
 public class InlineViewWidget:UIView{
+
     var _inlineView:WEInlineView? = nil
     var map :Dictionary<String,Any?>? = nil
     var methodChannel:FlutterMethodChannel? = nil
@@ -105,14 +106,13 @@ extension InlineViewWidget : WEPlaceholderCallback{
             }
         }
     }
-    
-    
-    
+
     public func onDataReceived(_ data: WEGCampaignData) {
         methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_DATA_RECEIVED,
                                      message: Utils.generateMap(weginline: generateInlineView(),
                                                                 campaignData: data))
     }
+
     public func onPlaceholderException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
         methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
                                      message: Utils.generateMap(weginline: generateInlineView(),
