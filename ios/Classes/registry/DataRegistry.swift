@@ -27,6 +27,9 @@ class DataRegistry{
     
     private func removeData(id:Int)->Bool{
         let contains = registryMap[id] != nil
+        if(contains){
+            WEPersonalization.shared.unregisterWEPlaceholderCallback(registryMap[id]!.propertyID)
+        }
         registryMap.removeValue(forKey: id)
         return contains
         
@@ -63,23 +66,49 @@ class DataRegistry{
         return shouldReturn
     }
     
+    func screenNavigated(screenName:String){
+        for(_,weginline) in registryMap{
+            if(weginline.screenName == screenName){
+                WEPersonalization.shared.registerWEPlaceholderCallback(weginline.propertyID, self)
+            }
+        }
+    }
+    
+    public func trackImpression(id:Int, attributes: [String : Any]?){
+        if(registryMap[id] != nil){
+            var data = registryMap[id]!;
+            data.campaignData?.trackImpression(attributes: attributes)
+        }
+    }
+
+    public func trackClick(id:Int, attributes: [String : Any]?){
+        if(registryMap[id] != nil){
+            var data = registryMap[id]!;
+            data.campaignData?.trackClick(actionDetails: (nil,nil), attributes: attributes)
+        }
+    }
+    
     
 }
 
 extension DataRegistry : WEPlaceholderCallback{
     internal func onDataReceived(_ data: WEGCampaignData) {
-        let wegInline = getWEGHinline(targetViewTag: data.targetViewTag)
+        var wegInline = getWEGHinline(targetViewTag: data.targetViewTag)
+        wegInline?.campaignData = data
+        print("_platformCallHandler onDataReceived iOS \(wegInline != nil) \(FlutterPersonalizationSdkPlugin.methodChannel != nil)")
         if(wegInline != nil){
-            FlutterPersonalizationSdkPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_RENDERED,
+            FlutterPersonalizationSdkPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_DATA_RECEIVED,
                                          message: Utils.generateMap(weginline: wegInline!,
                                                                     campaignData: data))
         }
     }
     
    internal func onRendered(data: WEGCampaignData) {
-        let wegInline = getWEGHinline(targetViewTag: data.targetViewTag)
+       print("_platformCallHandler onRendered iOS \(data.targetViewTag)")
+        var wegInline = getWEGHinline(targetViewTag: data.targetViewTag)
+        wegInline?.campaignData = data
         if(wegInline != nil){
-            FlutterPersonalizationSdkPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_DATA_RECEIVED,
+            FlutterPersonalizationSdkPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_RENDERED,
                                          message: Utils.generateMap(weginline: wegInline!,
                                                                     campaignData: data))
         }

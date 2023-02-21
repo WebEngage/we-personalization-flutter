@@ -27,7 +27,7 @@ class InlineViewWidget(
 
 ) : FrameLayout(context), WEPlaceholderCallback, ScreenNavigatorCallback {
 
-    private val wegInline: WEGInline;
+    private val wegInline: WEGInline
     var weInlineView: WEInlineView? = null
     var tag = ""
 
@@ -36,9 +36,14 @@ class InlineViewWidget(
         initView(payload)
     }
 
+    fun getWEGInlineView(): WEGInline {
+        return wegInline
+    }
+
+
     private fun initView(payload: HashMap<String, Any>?) {
         Logger.e("initView", "InitView called for $payload")
-         tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
+        tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
         val viewWidth = payload[PAYLOAD_VIEW_WIDTH] as Double
         val viewHeight = payload[PAYLOAD_VIEW_HEIGHT] as Double
         CallbackHandler.instance.setScreenNavigatorCallback(
@@ -51,7 +56,7 @@ class InlineViewWidget(
         )
 
         weInlineView = view.findViewById(R.id.weinline_widget)
-       // weInlineView!!.tag = tag
+        // weInlineView!!.tag = tag
 
         val param = weInlineView!!.layoutParams
 
@@ -91,6 +96,7 @@ class InlineViewWidget(
 
     override fun onDataReceived(data: WECampaignData) {
         Logger.e("onDataReceived", "${data.targetViewId}")
+        wegInline.weCampaignData = data
         parentWidget.sendCallback(METHOD_NAME_ON_DATA_RECEIVED, Utils.generateMap(wegInline, data))
     }
 
@@ -108,6 +114,7 @@ class InlineViewWidget(
 
     override fun onRendered(data: WECampaignData) {
         Logger.e("onRendered", data.targetViewId)
+        wegInline.weCampaignData = data
         if (!DataRegistry.instance.isImpressionAlreadyTracked(data.targetViewId, data.campaignId)) {
             sendImpression(data)
         } else {
@@ -131,7 +138,10 @@ class InlineViewWidget(
                     if (v.isVisible()) {
                         Logger.e("sendImpression", "${data.targetViewId}")
                         data.trackImpression()
-                        DataRegistry.instance.setImpressionTrackedDetails(data.targetViewId, data.campaignId)
+                        DataRegistry.instance.setImpressionTrackedDetails(
+                            data.targetViewId,
+                            data.campaignId
+                        )
                         v.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
                 }

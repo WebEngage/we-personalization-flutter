@@ -35,10 +35,16 @@ internal class DataRegistry {
             propertyID = map[PAYLOAD_ANDROID_PROPERTY_ID] as String
         )
         registryMap[id] = wegInline
+        load(wegInline)
+        return true
+    }
+
+    private fun load(wegInline: WEGInline) {
         WEPersonalization.get()
             .registerWEPlaceholderCallback(wegInline.propertyID, object : WEPlaceholderCallback {
                 override fun onDataReceived(data: WECampaignData) {
                     onDataReceived(data, wegInline)
+
                 }
 
                 override fun onPlaceholderException(
@@ -53,8 +59,7 @@ internal class DataRegistry {
                     onRendered(data, wegInline)
                 }
 
-            });
-        return true
+            })
     }
 
     fun removeData(map: HashMap<String, Any>): Boolean {
@@ -62,9 +67,33 @@ internal class DataRegistry {
         return removeData(id)
     }
 
+    fun trackClick(id: Int, data: HashMap<String, Any>) {
+        if (registryMap.containsKey(id)) {
+            var inline = registryMap[id];
+            inline?.weCampaignData?.trackClick(data)
+        }
+    }
+
+    fun trackImpression(id: Int, data: HashMap<String, Any>) {
+        if (registryMap.containsKey(id)) {
+            var inline = registryMap[id];
+            inline?.weCampaignData?.trackImpression(data)
+        }
+    }
+
     private fun removeData(id: Int): Boolean {
+        com.example.flutter_personalization_sdk.utils.Logger.d("load123", "remove data $id");
         val contains = registryMap.containsKey(id)
+        if (contains) {
+            val data = registryMap[id]
+            com.example.flutter_personalization_sdk.utils.Logger.d(
+                "load123",
+                "remove data ${data?.propertyID}"
+            );
+            WEPersonalization.get().unregisterWEPlaceholderCallback(data!!.propertyID)
+        }
         registryMap.remove(id)
+
         return contains
     }
 
@@ -107,4 +136,14 @@ internal class DataRegistry {
     fun clearCacheData() {
         impressionTrackedForTargetViews.clear()
     }
+
+    fun onScreenNavigated(screenName: String) {
+        for ((key, value) in registryMap) {
+            if (value.screenName.isNotEmpty() && screenName == value.screenName) {
+                value.weCampaignData = null
+                load(value)
+            }
+        }
+    }
+
 }

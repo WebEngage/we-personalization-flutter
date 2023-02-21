@@ -41,6 +41,7 @@ class CustomWidgetData {
   String screenName = "";
   double viewHeight = -1;
   double viewWidth = -1;
+  bool isCustomView = false;
 
   factory CustomWidgetData.fromJson(Map<String, dynamic> parsedJson) {
     var customData = CustomWidgetData();
@@ -50,6 +51,7 @@ class CustomWidgetData {
     customData.screenName = parsedJson["screenName"];
     customData.viewHeight = parsedJson["viewHeight"];
     customData.viewWidth = parsedJson["viewWidth"];
+    customData.isCustomView = parsedJson["isCustomView"] ?? false;
     return customData;
   }
 
@@ -60,7 +62,8 @@ class CustomWidgetData {
       "iosPropertyID": iosPropertyID,
       "screenName": screenName,
       "viewHeight": viewHeight,
-      "viewWidth":viewWidth
+      "viewWidth":viewWidth,
+      "isCustomView":isCustomView
     };
   }
 

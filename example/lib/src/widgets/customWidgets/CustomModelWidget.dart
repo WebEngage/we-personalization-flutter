@@ -5,7 +5,7 @@ import 'package:flutter_personalization_sdk_example/src/utils/Utils.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/customWidgets/Edittext.dart';
 
 class CustomModelWidget extends StatefulWidget {
-  CustomModel? customModel = Utils.getScreenData();
+  CustomModel? customModel;
 
   CustomModelWidget({Key? key, this.customModel, this.save}) : super(key: key);
   Function? save;
@@ -27,8 +27,8 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
             child: Text("NULL"),
           )
         : Container(
-      margin: EdgeInsets.all(5),
-          child: Column(
+            margin: EdgeInsets.all(5),
+            child: Column(
               children: [
                 Edittext(
                   title: "Enter the List Size",
@@ -59,9 +59,10 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                   },
                 ),
                 Row(
-                  children: [SizedBox(
-                    width: 10,
-                  ), //SizedBox
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ), //SizedBox
                     Expanded(
                       child: Text(
                         'Recycled View',
@@ -73,9 +74,7 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                       value: widget.customModel!.isRecycledView,
                       onChanged: (value) {
                         widget.customModel?.isRecycledView = value as bool;
-                        setState(() {
-
-                        });
+                        setState(() {});
                       },
                     ),
                   ],
@@ -83,9 +82,15 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ElevatedButton(onPressed: _addData, child: Text("Add data")),
+                    ElevatedButton(
+                        onPressed: _addData, child: Text("Add data")),
                     ElevatedButton(
                         onPressed: () {
+                          if (widget.customModel != null)
+                            for (var data in widget.customModel!.list) {
+                              data.screenName = widget.customModel?.screenName ?? "";
+                            }
+
                           widget.save!(widget.customModel);
                           //Utils.saveScreenData(widget.customModel!);
                         },
@@ -103,16 +108,14 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                       ),
               ],
             ),
-        );
+          );
   }
 
   Widget draw(CustomWidgetData customWidgetData) {
     return Container(
       padding: const EdgeInsets.all(10),
       margin: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent)
-      ),
+      decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
       child: Row(
         children: [
           Expanded(
@@ -121,11 +124,15 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("position     ->     ${customWidgetData.position}"),
+                Text("is Custom View      -> ${customWidgetData.isCustomView}"),
                 Text(
-                    "Android property id  ->   ${customWidgetData.androidPropertyId}",
-                style: TextStyle(fontWeight: FontWeight.bold),),
-                Text("iOS property id    ->   ${customWidgetData.iosPropertyID}",
-                  style: TextStyle(fontWeight: FontWeight.bold),),
+                  "Android property id  ->   ${customWidgetData.androidPropertyId}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "iOS property id    ->   ${customWidgetData.iosPropertyID}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Text("View Height     ->   ${customWidgetData.viewHeight}"),
                 Text("View Width     ->   ${customWidgetData.viewWidth}")
               ],
@@ -159,10 +166,11 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                   onPressed: () {
                     if (widget.customModel!.list.contains(_customWidgetData)) {
                       setState(() {});
-                    } else
+                    } else {
                       setState(() {
                         widget.customModel?.list.add(_customWidgetData);
                       });
+                    }
                     FocusManager.instance.primaryFocus?.unfocus();
                     Navigator.pop(context);
                   },
@@ -212,8 +220,30 @@ class _DataEntryState extends State<DataEntry> {
                 }
               },
             ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                ), //SizedBox
+                Expanded(
+                  child: Text(
+                    'Is Custom View',
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                ), //Text
+                SizedBox(width: 10),
+                Checkbox(
+                  value: widget.customWidgetData!.isCustomView,
+                  onChanged: (value) {
+                    widget.customWidgetData!.isCustomView = value as bool;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
             Edittext(
-              defaultValue: getValue(widget.customWidgetData?.viewHeight.toInt()),
+              defaultValue:
+                  getValue(widget.customWidgetData?.viewHeight.toInt()),
               title: "View Height",
               textInputType: TextInputType.number,
               onChange: (text) {
@@ -223,7 +253,8 @@ class _DataEntryState extends State<DataEntry> {
               },
             ),
             Edittext(
-              defaultValue: getValue(widget.customWidgetData?.viewWidth.toInt()),
+              defaultValue:
+                  getValue(widget.customWidgetData?.viewWidth.toInt()),
               title: "View Width",
               textInputType: TextInputType.number,
               onChange: (text) {
@@ -233,7 +264,8 @@ class _DataEntryState extends State<DataEntry> {
               },
             ),
             Edittext(
-              defaultValue: getValue(widget.customWidgetData?.androidPropertyId),
+              defaultValue:
+                  getValue(widget.customWidgetData?.androidPropertyId),
               title: "Android Property Id",
               onChange: (text) {
                 widget.customWidgetData?.androidPropertyId = text;
@@ -260,8 +292,9 @@ String getValue(dynamic data) {
   if (data is int) {
     if (data == -1) {
       return "";
-    } else
+    } else {
       return "$data";
+    }
   } else if (data is String) {
     return data;
   }

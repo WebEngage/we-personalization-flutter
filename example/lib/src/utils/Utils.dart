@@ -10,28 +10,34 @@ class Utils {
     _prefs ??= await SharedPreferences.getInstance();
   }
 
-  static Future<void> saveScreenData(CustomModel customModel) async {
-    Map<String, dynamic> decode_options = customModel.toJson();
-    String screenData = jsonEncode(CustomModel.fromJson(decode_options));
-    _prefs?.setString('screenData', screenData);
-  }
+  static var SCREEN_DATA_LIST = "screenDataList";
+  static var IS_LOGIN = "isLogin";
 
   static Future<void> saveScreenDataList(
       List<CustomModel> customModelList) async {
     String screenData = jsonEncode(customModelList
         .map<Map<String, dynamic>>((data) => data.toJson())
         .toList());
-    _prefs?.setString('screenDataList', screenData);
+    _prefs?.setString(SCREEN_DATA_LIST, screenData);
   }
 
   static List<CustomModel> getScreenDataList() {
-    var data = _prefs?.getString("screenDataList");
+    var data = _prefs?.getString(SCREEN_DATA_LIST);
     if (data != null) {
       return (json.decode(data) as List<dynamic>)
           .map<CustomModel>((item) => CustomModel.fromJson(item))
           .toList();
     }
     return [_defaultCustomModel()];
+  }
+
+  static Future<bool> isLogin() async {
+    await initSharedPref();
+    return _prefs!.getBool(IS_LOGIN) ?? false;
+  }
+
+  static void setIsLogin(bool isLogin){
+    _prefs?.setBool(IS_LOGIN, isLogin);
   }
 
   static CustomModel _defaultCustomModel() {
@@ -51,12 +57,4 @@ class Utils {
     return model;
   }
 
-  static CustomModel getScreenData() {
-    var data = _prefs?.getString("screenData");
-    if (data != null) {
-      Map<String, dynamic> _map = jsonDecode(data);
-      return CustomModel.fromJson(_map);
-    }
-    return CustomModel();
-  }
 }

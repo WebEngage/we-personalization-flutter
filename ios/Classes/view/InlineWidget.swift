@@ -16,6 +16,7 @@ public class InlineViewWidget:UIView{
 
     func setMap(map : Dictionary<String,Any?>) {
         self.map = map
+        wegInline = generateInlineView()
         screenName = map[Constants.PAYLOAD_SCREEN_NAME] as! String;
         NotificationCenter.default.addObserver(self, selector: #selector(screenNavigate), name: Notification.Name(screenName), object: nil)
         setupView()

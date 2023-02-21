@@ -7,6 +7,7 @@ import 'package:flutter_personalization_sdk_example/src/models/customScreen/Cust
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/CustomScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/Logger.dart';
+import 'package:flutter_personalization_sdk_example/src/widgets/CustomViewWidget.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/SimpleWidget.dart';
 import 'package:webengage_flutter/webengage_flutter.dart';
 
@@ -39,6 +40,7 @@ class _CustomListScreenState extends State<CustomListScreen>
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    WEPersonalization().deregisterWEPlaceholderCallback(widget.customModel.screenName);
     super.dispose();
   }
 
@@ -106,14 +108,18 @@ class _CustomListScreenState extends State<CustomListScreen>
                     int pos = checkIfContains(i);
                     if (pos != -1) {
                       var data = widget.customModel.list[pos];
-                      return WEGInlineWidget(
-                        screenName: widget.customModel.screenName,
-                        androidPropertyId: data.androidPropertyId,
-                        iosPropertyId: data.iosPropertyID,
-                        viewWidth: data.viewWidth,
-                        viewHeight: data.viewHeight,
-                        placeholderCallback: this,
-                      );
+                      if (data.isCustomView) {
+                        return CustomViewWidget(customWidgetData: data);
+                      } else {
+                        return WEGInlineWidget(
+                          screenName: widget.customModel.screenName,
+                          androidPropertyId: data.androidPropertyId,
+                          iosPropertyId: data.iosPropertyID,
+                          viewWidth: data.viewWidth,
+                          viewHeight: data.viewHeight,
+                          placeholderCallback: this,
+                        );
+                      }
                     } else {
                       return SimpleWidget(
                         index: i,
@@ -144,14 +150,18 @@ class _CustomListScreenState extends State<CustomListScreen>
       int pos = checkIfContains(i);
       if (pos != -1) {
         var data = widget.customModel.list[pos];
-        list.add(WEGInlineWidget(
-          screenName: widget.customModel.screenName,
-          androidPropertyId: data.androidPropertyId,
-          iosPropertyId: data.iosPropertyID,
-          viewWidth: data.viewWidth,
-          viewHeight: data.viewHeight,
-          placeholderCallback: this,
-        ));
+        if (data.isCustomView) {
+          list.add(CustomViewWidget(customWidgetData: data));
+        } else {
+          list.add(WEGInlineWidget(
+            screenName: widget.customModel.screenName,
+            androidPropertyId: data.androidPropertyId,
+            iosPropertyId: data.iosPropertyID,
+            viewWidth: data.viewWidth,
+            viewHeight: data.viewHeight,
+            placeholderCallback: this,
+          ));
+        }
       } else {
         list.add(SimpleWidget(
           index: i,

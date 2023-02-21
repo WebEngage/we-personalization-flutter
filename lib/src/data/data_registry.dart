@@ -37,12 +37,15 @@ class DataRegistry {
         iosPropertyId: iosPropertyId);
     wegInline.wePlaceholderCallback = placeholderCallback;
     registerInlineWidget(wegInline);
-    Logger.v("registerWEPlaceholderCallback - ${wegInline.id} : $screenName : $androidPropertyId : $iosPropertyId");
+    Logger.v(
+        "registerWEPlaceholderCallback - ${wegInline.id} : $screenName : $androidPropertyId : $iosPropertyId");
     return wegInline.id;
   }
 
   void deRegisterWEPlaceholderCallback(int id) async {
-    mapOfRegistry.remove(id);
+    if (mapOfRegistry.containsKey(id)) {
+      deregisterInlineWidget(mapOfRegistry[id]!);
+    }
   }
 
   void deRegisterWEPlaceholderCallbackByScreenName(String screenName) async {
@@ -53,8 +56,6 @@ class DataRegistry {
       }
     });
   }
-
-
 
   Future<void> registerInlineWidget(WEGInline wegInline) async {
     var success = await FlutterPersonalizationSdkPlatform.instance
@@ -83,11 +84,11 @@ class DataRegistry {
   }
 
   Future _platformCallHandler(MethodCall call) async {
+    Logger.v("_platformCallHandler ${call.method}");
     _callHandler(call, null);
   }
 
   Future _callHandler(MethodCall call, WEGInline? wegInline) async {
-   
     final methodName = call.method;
     final data = call.arguments.cast<String, dynamic>();
     final payload = data[PAYLOAD];
@@ -95,15 +96,15 @@ class DataRegistry {
     final id = payload[PAYLOAD_ID];
     var wEGInline = wegInline ?? mapOfRegistry[id];
 
-    Logger.v("_callHandler $methodName : $id : ${wegInline?.id} : $data");
-    
+    Logger.v("_callHandler $methodName : $id : ${wEGInline?.id} : $data");
+
     switch (methodName) {
       case METHOD_NAME_DATA_LISTENER:
         _passDataToWidget(id, payload);
         break;
       case METHOD_NAME_ON_DATA_RECEIVED:
         wEGInline?.wePlaceholderCallback
-            ?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+            ?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA],wegInline: wEGInline));
         break;
       case METHOOD_NAME_ON_PLACEHOLDER_CALLBACK:
         wEGInline?.wePlaceholderCallback?.onPlaceholderException(
@@ -113,7 +114,7 @@ class DataRegistry {
         break;
       case METHOD_NAME_ON_RENDERED:
         wEGInline?.wePlaceholderCallback
-            ?.onRendered(WECampaignData.fromJson(payload[PAYLOAD_DATA]));
+            ?.onRendered(WECampaignData.fromJson(payload[PAYLOAD_DATA],wegInline: wEGInline));
         break;
       case METHOD_NAME_ON_CAMPAIGN_PREPARED:
         weCampaignCallback?.onCampaignPrepared(
@@ -139,8 +140,7 @@ class DataRegistry {
     }
   }
 
-  void autoHandleClick(bool auto){
+  void autoHandleClick(bool auto) {
     FlutterPersonalizationSdkPlatform.instance.autoHandleClick(auto);
   }
-
 }

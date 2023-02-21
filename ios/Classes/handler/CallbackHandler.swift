@@ -47,6 +47,7 @@ extension CallbackHandler:PropertyRegistryCallback{
         
         DataRegistry.instance.impressionTrackedForTargetviews.removeAll()
         if let screenName = screenDetails["screen_name"] as? String{
+            DataRegistry.instance.screenNavigated(screenName: screenName)
             NotificationCenter.default.post(name: Notification.Name(screenName), object: nil)
         }
     }

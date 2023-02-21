@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/AppColor.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
+import 'package:flutter_personalization_sdk_example/src/widgets/LoginWidget.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/SimpleWidget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-
+            LoginWidget(),
             Row(
               children: [SizedBox(
                 width: 10,

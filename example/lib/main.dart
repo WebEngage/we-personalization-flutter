@@ -13,7 +13,7 @@ import 'package:webengage_flutter/webengage_flutter.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-void main() {
+Future<void> main() async {
   runApp(const MyApp());
 }
 
@@ -40,8 +40,8 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
     initSharedPref();
   }
 
-  void initSharedPref(){
-    Utils.initSharedPref();
+  void initSharedPref() {
+     Utils.initSharedPref();
   }
 
   @override

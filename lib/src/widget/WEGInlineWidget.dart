@@ -30,7 +30,7 @@ class WEGInlineWidget extends StatefulWidget {
 }
 
 class _WEGInlineWidgetState extends State<WEGInlineWidget>
-    with AutomaticKeepAliveClientMixin, WEPlaceholderCallback {
+    with AutomaticKeepAliveClientMixin, WEPlaceholderCallback,EventsSender {
   final GlobalKey _platformViewKey = GlobalKey();
   WEGInline? wegInline;
   var defaultViewHeight = 0.1;
@@ -47,6 +47,7 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
         androidPropertyID: widget.androidPropertyId,
         iosPropertyId: widget.iosPropertyId,
         wePlaceholderCallback: this);
+    wegInline?.eventsSender = this;
     Logger.v("WEGINLINEVIEW ID ${wegInline?.id}");
   }
 
@@ -78,6 +79,18 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
             ));
       },
     );
+  }
+
+  @override
+  void trackClick(Map<String, dynamic> map) {
+    super.trackClick(map);
+    controller?.trackClick(map);
+  }
+
+  @override
+  void trackImpression(Map<String, dynamic> map) {
+    super.trackImpression(map);
+    controller?.trackImpression(map);
   }
 
   @override

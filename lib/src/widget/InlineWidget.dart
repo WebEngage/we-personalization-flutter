@@ -77,8 +77,12 @@ class WEGInlineViewController {
 
   final MethodChannel _channel;
 
-  void impression() {
-    _channel.invokeMethod(METHOD_NAME_SEND_IMPRESSION);
+  void trackImpression(Map<String,dynamic> map) {
+    _channel.invokeMethod(METHOD_NAME_SEND_IMPRESSION,map);
+  }
+
+  void trackClick(Map<String,dynamic> map) {
+    _channel.invokeMethod(METHOD_NAME_SEND_CLICK,map);
   }
 
   void setListener() {

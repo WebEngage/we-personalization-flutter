@@ -28,3 +28,5 @@ const val METHOD_NAME_ON_CAMPAIGN_EXCEPTION = "onCampaignException"
 const val METHOD_NAME_ON_CAMPAIGN_PREPARED = "onCampaignPrepared"
 const val METHOD_NAME_ON_CAMPAIGN_SHOWN = "onCampaignShown"
 const val METHOD_NAME_AUTO_HANDLE_CLICK = "autoHandleClick";
+const val METHOD_NAME_SEND_CLICK = "sendClick"
+const val METHOD_NAME_SEND_IMPRESSION = "sendImpression"

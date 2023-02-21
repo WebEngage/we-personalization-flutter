@@ -1,19 +1,33 @@
 import 'dart:convert';
 
+import 'package:flutter_personalization_sdk/src/model/WEGInline.dart';
+
 class WECampaignData {
   String? campaignId;
   String? targetViewId;
   WECampaignContent? weCampaignContent;
+  WEGInline? _wegInline;
 
   WECampaignData();
 
-  WECampaignData.fromJson(dynamic data) {
+  WECampaignData.fromJson(dynamic data,{WEGInline? wegInline}) {
     if (data != null) {
       var parsedJson = jsonDecode(data);
       campaignId = parsedJson["campaignId"];
       targetViewId = parsedJson["targetViewId"];
       weCampaignContent = WECampaignContent.fromJson(parsedJson["content"]);
+      _wegInline = wegInline;
     }
+  }
+
+
+  void trackImpression(Map<String,dynamic> map){
+    print("tracked object ${_wegInline != null}");
+    _wegInline?.trackImpression(map);
+  }
+
+  void trackClick(Map<String,dynamic> map){
+    _wegInline?.trackClick(map);
   }
 
   Map toJson() {

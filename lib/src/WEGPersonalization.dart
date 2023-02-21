@@ -18,10 +18,10 @@ class WEPersonalization {
     FlutterPersonalizationSdkPlatform.instance.initPersonalization();
   }
 
-  void registerWEPlaceholderCallback(
+  int registerWEPlaceholderCallback(
       String? androidPropertyId, int iosPropertyId, String screenName,
-      {WEPlaceholderCallback? placeholderCallback}) async {
-    DataRegistry().registerWEPlaceholderCallback(
+      {WEPlaceholderCallback? placeholderCallback}) {
+   return DataRegistry().registerWEPlaceholderCallback(
         screenName, androidPropertyId!, iosPropertyId,
         placeholderCallback: placeholderCallback);
   }
@@ -32,6 +32,10 @@ class WEPersonalization {
 
   void deregisterWEPlaceholderCallback(String screenName) {
     DataRegistry().deRegisterWEPlaceholderCallbackByScreenName(screenName);
+  }
+
+  void deregisterWEPlaceholderCallbackById(int ID) {
+    DataRegistry().deRegisterWEPlaceholderCallback(ID);
   }
 
   void autoHandleCampaignClick(bool auto){

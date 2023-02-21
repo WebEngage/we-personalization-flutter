@@ -135,6 +135,7 @@ class _CustomInlineScreenState extends State<CustomInlineScreen> {
   }
 
   void _save(CustomModel customModel) {
+
     if (!list.contains(customModel)) {
       list.add(customModel);
     }

@@ -32,6 +32,18 @@ public class FlutterPersonalizationSdkPlugin: NSObject, FlutterPlugin {
     case Constants.METHOD_NAME_AUTO_HANDLE_CLICK:
         CallbackHandler.instance.autoHandleClick = call.arguments as! Bool
         result(true)
+    case Constants.METHOD_NAME_SEND_CLICK:
+        let map = call.arguments as! [String:Any]
+        let id = map[Constants.PAYLOAD_ID] as! Int
+        let data = map[Constants.PAYLOAD_DATA] as? [String:Any]
+        DataRegistry.instance.trackClick(id: id, attributes: data)
+        result(true)
+    case Constants.METHOD_NAME_SEND_IMPRESSION:
+        let map = call.arguments as! [String:Any]
+        let id = map[Constants.PAYLOAD_ID] as! Int
+        let data = map[Constants.PAYLOAD_DATA] as? [String:Any]
+        DataRegistry.instance.trackImpression(id: id, attributes: data)
+        result(true)
     default:
       result(FlutterMethodNotImplemented)
     }

@@ -8,6 +8,7 @@ const METHOD_NAME_ON_DATA_RECEIVED = "onDataReceived";
 const METHOOD_NAME_ON_PLACEHOLDER_CALLBACK = "onPlaceholderException";
 const METHOD_NAME_ON_RENDERED = "onRendered";
 const METHOD_NAME_SEND_IMPRESSION = "sendImpression";
+const METHOD_NAME_SEND_CLICK = "sendClick";
 const METHOD_NAME_ON_CAMPAIGN_CLICKED = "onCampaignClicked";
 const METHOD_NAME_ON_CAMPAIGN_EXCEPTION = "onCampaignException";
 const METHOD_NAME_ON_CAMPAIGN_PREPARED = "onCampaignPrepared";

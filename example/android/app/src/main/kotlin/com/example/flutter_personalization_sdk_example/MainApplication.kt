@@ -12,7 +12,7 @@ class MainApplication : FlutterApplication() {
     override fun onCreate() {
         super.onCreate()
         val webEngageConfig = WebEngageConfig.Builder()
-            .setWebEngageKey("~2024b69b")
+            .setWebEngageKey("311c5274")
             .setAutoGCMRegistrationFlag(false)
             .setLocationTrackingStrategy(LocationTrackingStrategy.ACCURACY_BEST)
             .setDebugMode(true) // only in development mode

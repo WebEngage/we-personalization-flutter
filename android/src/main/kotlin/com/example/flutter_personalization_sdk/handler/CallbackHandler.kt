@@ -18,10 +18,10 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     private var mapOfScreenNavigatedCallbacks: HashMap<String, ArrayList<ScreenNavigatorCallback>>? =
         null
     var autoHandleClick = true
+
     companion object {
         val instance: CallbackHandler by lazy { CallbackHandler() }
     }
-
 
 
     init {
@@ -29,7 +29,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
             mapOfScreenNavigatedCallbacks = hashMapOf()
     }
 
-    public fun setFlutterPersonalizationSdkPlugin(flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin?){
+    public fun setFlutterPersonalizationSdkPlugin(flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin?) {
         this.flutterPersonalizationSdkPlugin = flutterPersonalizationSdkPlugin
     }
 
@@ -55,8 +55,9 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     }
 
     override fun onPropertyCacheCleared(screenName: String) {
-        Logger.e("onPropertyCacheCleared",screenName)
+        Logger.e("onPropertyCacheCleared", screenName)
         DataRegistry.instance.clearCacheData()
+        DataRegistry.instance.onScreenNavigated(screenName)
         screenName.let {
             val list = mapOfScreenNavigatedCallbacks!![it]
             list?.let {
@@ -72,7 +73,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
         deepLink: String,
         data: WECampaignData
     ): Boolean {
-        Logger.e("onCampaignClicked","${data.targetViewId}")
+        Logger.e("onCampaignClicked", "${data.targetViewId}")
         flutterPersonalizationSdkPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_CLICKED,
             Utils.generateMap(actionId, deepLink, data)
@@ -85,7 +86,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
         targetViewId: String,
         error: Exception
     ) {
-        Logger.e("onCampaignException","${targetViewId}")
+        Logger.e("onCampaignException", "${targetViewId}")
         flutterPersonalizationSdkPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_EXCEPTION,
             Utils.generateMap(campaignId, targetViewId, error)
@@ -93,7 +94,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     }
 
     override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
-        Logger.e("onCampaignPrepared","${data.targetViewId}")
+        Logger.e("onCampaignPrepared", "${data.targetViewId}")
         flutterPersonalizationSdkPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_PREPARED,
             Utils.generateMap(data)
@@ -102,7 +103,7 @@ class CallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     }
 
     override fun onCampaignShown(data: WECampaignData) {
-        Logger.e("onCampaignShown","${data.targetViewId}")
+        Logger.e("onCampaignShown", "${data.targetViewId}")
         flutterPersonalizationSdkPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_SHOWN,
             Utils.generateMap(data)

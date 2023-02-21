@@ -1,5 +1,5 @@
 import WEPersonalization
-struct WEGHInline{
+class WEGHInline{
     var id:Int
     var screenName:String
     var propertyID:Int
@@ -10,6 +10,7 @@ struct WEGHInline{
         self.screenName = screenName
         self.propertyID = propertyID
     }
+    
     
     
     
