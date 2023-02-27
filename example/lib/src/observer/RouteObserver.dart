@@ -7,7 +7,10 @@ class MyRouteObserver extends RouteObserver<PageRoute<dynamic>> {
    */
   void _sendScreenView(PageRoute<dynamic> route) {
     var screenName = route.settings.name;
-    if (screenName != null) WebEngagePlugin.trackScreen(screenName);
+    if (screenName != null) {
+      print("Tracking screen ${screenName}");
+      WebEngagePlugin.trackScreen(screenName);
+    }
   }
 
   // @override

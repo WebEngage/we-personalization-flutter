@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
@@ -46,6 +48,19 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                   onChange: (text) {
                     if (text.toString().isNotEmpty) {
                       widget.customModel?.screenName = text;
+                    }
+                  },
+                ),
+                Edittext(
+                  title: "Enter Screen attribute",
+                  defaultValue: "${getValue(widget.customModel!.screenAttribute)}",
+                  onChange: (text) {
+                    if (text.toString().isNotEmpty) {
+                      try {
+                        widget.customModel?.screenAttribute = text;
+                      }catch(e){
+                        print("ERROR : $e");
+                      }
                     }
                   },
                 ),

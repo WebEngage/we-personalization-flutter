@@ -22,12 +22,36 @@ class CustomListScreen extends StatefulWidget {
 
 class _CustomListScreenState extends State<CustomListScreen>
     with WEPlaceholderCallback, RouteAware {
+  RegExp _numeric = RegExp(r'^-?[0-9]+$');
+
+  /// check if the string contains only numbers
+  bool isNumeric(String str) {
+    return _numeric.hasMatch(str);
+  }
+
   @override
   void initState() {
-    WebEngagePlugin.trackScreen(widget.customModel.screenName);
+    _trackScreen();
     super.initState();
     if (widget.customModel.event.isNotEmpty) {
       WebEngagePlugin.trackEvent(widget.customModel.event);
+    }
+  }
+
+  void _trackScreen(){
+    if ("${widget.customModel.screenAttribute}".isEmpty) {
+      WebEngagePlugin.trackScreen(widget.customModel.screenName);
+    } else {
+      try {
+        dynamic value = isNumeric(widget.customModel.screenAttribute) ? int.parse(widget.customModel.screenAttribute)
+            : widget.customModel.screenAttribute;
+
+        WebEngagePlugin.trackScreen(widget.customModel.screenName, {
+          'Id': value
+        });
+      }catch(e){
+        WebEngagePlugin.trackScreen(widget.customModel.screenName);
+      }
     }
   }
 
@@ -40,14 +64,15 @@ class _CustomListScreenState extends State<CustomListScreen>
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
-    WEPersonalization().deregisterWEPlaceholderCallback(widget.customModel.screenName);
+    WEPersonalization()
+        .deregisterWEPlaceholderCallback(widget.customModel.screenName);
     super.dispose();
   }
 
   @override
   void didPopNext() {
     super.didPopNext();
-    WebEngagePlugin.trackScreen(widget.customModel.screenName);
+    _trackScreen();
   }
 
   void _openDialog() {

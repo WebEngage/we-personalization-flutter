@@ -24,11 +24,11 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 //Route Observer
 //https://stackoverflow.com/questions/71279847/flutter-exac-lifecycle-equivalents-to-onresume-onpause-on-android-and-viewwil
 class _MyAppState extends State<MyApp> with WECampaignCallback {
-
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
   }
 
   void initSharedPref() {
-     Utils.initSharedPref();
+    Utils.initSharedPref();
   }
 
   @override
@@ -52,9 +52,12 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
         ScreenNavigator.SCREEN_HOME: (context) => const HomeScreen(),
         ScreenNavigator.SCREEN_LIST: (context) => const ListScreen(),
         ScreenNavigator.SCREEN_DETAIL: (context) => const DetailScreen(),
-        ScreenNavigator.SCREEN_CUSTOM:(context) =>  CustomInlineScreen(isDialog: false,)
+        ScreenNavigator.SCREEN_CUSTOM: (context) => CustomInlineScreen(
+              isDialog: false,
+            )
       },
-      navigatorObservers: [MyRouteObserver(),routeObserver],
+      navigatorKey: navigatorKey,
+      navigatorObservers: [MyRouteObserver(), routeObserver],
     );
   }
 
@@ -64,9 +67,18 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
     Logger.v("onCampaignShown ${data.toJson()}");
   }
 
+  bool isValidUrl(String url) {
+    Uri uri = Uri.parse(url);
+    return uri.hasScheme;
+  }
+
   @override
   void onCampaignClicked(String actionId, String deepLink, data) {
     super.onCampaignClicked(actionId, deepLink, data);
+    if (deepLink.trim().isNotEmpty && isValidUrl(deepLink)) {
+      ScreenNavigator.gotoDeepLinkScreen(navigatorKey.currentContext, "$deepLink");
+    }
+    Logger.v("onCampaignClicked $deepLink ${deepLink.length}");
     Logger.v("onCampaignClicked $actionId $deepLink ${data.toJson()}");
   }
 
@@ -77,9 +89,9 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
   }
 
   @override
-  void onCampaignException(String? campaignId, String targetViewId, String error) {
+  void onCampaignException(
+      String? campaignId, String targetViewId, String error) {
     super.onCampaignException(campaignId, targetViewId, error);
     Logger.v("onCampaignException $campaignId $targetViewId $error");
   }
-
 }

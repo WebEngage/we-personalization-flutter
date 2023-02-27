@@ -2,6 +2,7 @@ class CustomModel {
   int listSize = 20;
   List<CustomWidgetData> list = [];
   String screenName = "";
+  dynamic screenAttribute = {};
   String event = "";
   bool isRecycledView = false;
   CustomModel();
@@ -12,6 +13,7 @@ class CustomModel {
     customModel.screenName = parsedJson["screenName"] ?? "";
     customModel.event = parsedJson["event"] ?? "";
     customModel.isRecycledView = parsedJson["isRecycledView"] ?? false;
+    customModel.screenAttribute = parsedJson["screenAttribute"];
     if (parsedJson["list"] != null) {
       parsedJson["list"].forEach((v) {
         customModel.list.add(CustomWidgetData.fromJson(v));
@@ -29,6 +31,7 @@ class CustomModel {
       "event":event,
       "screenName": screenName,
       "isRecycledView":isRecycledView,
+      "screenAttribute":screenAttribute,
       "list": list.map<Map<String, dynamic>>((data) => data.toJson()).toList(),
     };
   }
