@@ -24,6 +24,8 @@ class _CustomListScreenState extends State<CustomListScreen>
     with WEPlaceholderCallback, RouteAware {
   RegExp _numeric = RegExp(r'^-?[0-9]+$');
 
+  var exceptionText = "";
+
   /// check if the string contains only numbers
   bool isNumeric(String str) {
     return _numeric.hasMatch(str);
@@ -38,18 +40,19 @@ class _CustomListScreenState extends State<CustomListScreen>
     }
   }
 
-  void _trackScreen(){
+  void _trackScreen() {
+    exceptionText = "";
     if ("${widget.customModel.screenAttribute}".isEmpty) {
       WebEngagePlugin.trackScreen(widget.customModel.screenName);
     } else {
       try {
-        dynamic value = isNumeric(widget.customModel.screenAttribute) ? int.parse(widget.customModel.screenAttribute)
+        dynamic value = isNumeric(widget.customModel.screenAttribute)
+            ? int.parse(widget.customModel.screenAttribute)
             : widget.customModel.screenAttribute;
 
-        WebEngagePlugin.trackScreen(widget.customModel.screenName, {
-          'Id': value
-        });
-      }catch(e){
+        WebEngagePlugin.trackScreen(
+            widget.customModel.screenName, {'Id': value});
+      } catch (e) {
         WebEngagePlugin.trackScreen(widget.customModel.screenName);
       }
     }
@@ -78,21 +81,13 @@ class _CustomListScreenState extends State<CustomListScreen>
   void _openDialog() {
     print("_openDialog called");
     showModalBottomSheet<void>(
-        // context and builder are
-        // required properties in this widget
         context: context,
         builder: (BuildContext context) {
-          // we set up a container inside which
-          // we create center column and display text
-
-          // Returning SizedBox instead of a Container
           return CustomInlineScreen(
             isDialog: true,
             hideScreen: widget.customModel.screenName,
           );
         });
-
-    //     });
   }
 
   double getWidth() {
@@ -108,52 +103,65 @@ class _CustomListScreenState extends State<CustomListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.customModel.screenName),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _openDialog();
-            },
-          )
-        ],
-      ),
-      body: !widget.customModel.isRecycledView
-          ? notRecycledView()
-          : Container(
-              padding: const EdgeInsets.all(10),
-              child: ListView.builder(
-                  itemCount: widget.customModel.listSize +
-                      widget.customModel.list.length,
-                  itemBuilder: (c, i) {
-                    int pos = checkIfContains(i);
-                    if (pos != -1) {
-                      var data = widget.customModel.list[pos];
-                      if (data.isCustomView) {
-                        return CustomViewWidget(customWidgetData: data);
-                      } else {
-                        return WEGInlineWidget(
-                          screenName: widget.customModel.screenName,
-                          androidPropertyId: data.androidPropertyId,
-                          iosPropertyId: data.iosPropertyID,
-                          viewWidth: data.viewWidth,
-                          viewHeight: data.viewHeight,
-                          placeholderCallback: this,
-                        );
-                      }
-                    } else {
-                      return SimpleWidget(
-                        index: i,
-                        widgetType:
-                            i % 2 == 0 ? WidgetType.image : WidgetType.text,
-                      );
-                    }
-                  })),
-    );
+        appBar: AppBar(
+          title: Text(widget.customModel.screenName),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _openDialog();
+              },
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            Container(
+              color: Colors.grey,
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(10),
+                child: Text("Exception : \n $exceptionText")),
+            Expanded(
+              child: Container(
+                child: !widget.customModel.isRecycledView
+                    ? notRecycledView()
+                    : Container(
+                        padding: const EdgeInsets.all(10),
+                        child: ListView.builder(
+                            itemCount: widget.customModel.listSize +
+                                widget.customModel.list.length,
+                            itemBuilder: (c, i) {
+                              int pos = checkIfContains(i);
+                              if (pos != -1) {
+                                var data = widget.customModel.list[pos];
+                                if (data.isCustomView) {
+                                  return CustomViewWidget(customWidgetData: data);
+                                } else {
+                                  return WEGInlineWidget(
+                                    screenName: widget.customModel.screenName,
+                                    androidPropertyId: data.androidPropertyId,
+                                    iosPropertyId: data.iosPropertyID,
+                                    viewWidth: data.viewWidth,
+                                    viewHeight: data.viewHeight,
+                                    placeholderCallback: this,
+                                  );
+                                }
+                              } else {
+                                return SimpleWidget(
+                                  index: i,
+                                  widgetType: i % 2 == 0
+                                      ? WidgetType.image
+                                      : WidgetType.text,
+                                );
+                              }
+                            })),
+              ),
+            )
+          ],
+        ));
   }
 
   Widget notRecycledView() {
@@ -207,6 +215,11 @@ class _CustomListScreenState extends State<CustomListScreen>
   void onPlaceholderException(
       String campaignId, String targetViewId, String error) {
     super.onPlaceholderException(campaignId, targetViewId, error);
+
+    exceptionText = "$exceptionText Target Id : $targetViewId -> $error \n";
+    setState(() {
+
+    });
     Logger.v("onPlaceholderException : $campaignId $targetViewId $error");
   }
 

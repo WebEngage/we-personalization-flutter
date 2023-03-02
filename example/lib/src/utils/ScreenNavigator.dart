@@ -36,8 +36,7 @@ class ScreenNavigator {
   static void gotoDeepLinkScreen(context, String deeplink) {
     context = _context;
     if(deeplink.contains("https://www.webengage.com/")){
-      String url = "https://www.webengage.com/screen1";
-      Uri uri = Uri.parse(url);
+      Uri uri = Uri.parse(deeplink);
       String lastPathSegment = uri.pathSegments.last;
 
       var list = Utils.getScreenDataList();
@@ -47,7 +46,6 @@ class ScreenNavigator {
           return;
         }
       }
-
 
     }
 

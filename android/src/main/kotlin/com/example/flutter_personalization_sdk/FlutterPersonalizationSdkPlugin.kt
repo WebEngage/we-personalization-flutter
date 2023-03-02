@@ -11,6 +11,7 @@ import com.example.flutter_personalization_sdk.registry.DataRegistry
 import com.example.flutter_personalization_sdk.utils.*
 import com.example.flutter_personalization_sdk.view.InlineWidgetFactory
 import com.webengage.personalization.WEPersonalization
+import com.webengage.sdk.android.Logger
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall

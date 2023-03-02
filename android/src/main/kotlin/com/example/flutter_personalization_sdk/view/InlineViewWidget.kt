@@ -1,7 +1,7 @@
 package com.example.flutter_personalization_sdk.view
 
 import android.content.Context
-import android.util.Log
+import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +18,7 @@ import com.webengage.personalization.WEInlineView
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
 import com.webengage.personalization.data.WECampaignData
 import com.webengage.personalization.utils.TAG
-import java.lang.Exception
+import com.webengage.sdk.android.Logger
 
 class InlineViewWidget(
     context: Context,
@@ -32,8 +32,10 @@ class InlineViewWidget(
     var tag = ""
 
     init {
+        setLayerType(LAYER_TYPE_NONE, null);
         wegInline = generateWEInline()
         initView(payload)
+
     }
 
     fun getWEGInlineView(): WEGInline {
@@ -42,6 +44,7 @@ class InlineViewWidget(
 
 
     private fun initView(payload: HashMap<String, Any>?) {
+       // setLayerType(LAYER_TYPE_SOFTWARE, null);
         Logger.e("initView", "InitView called for $payload")
         tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
         val viewWidth = payload[PAYLOAD_VIEW_WIDTH] as Double
@@ -124,19 +127,19 @@ class InlineViewWidget(
     }
 
     private fun sendImpression(data: WECampaignData) {
-        Logger.d("sendImpression", "called")
+        Logger.d("sendImpression", "called exception123 ${wegInline.id}")
         if (isVisible()) {
             data.trackImpression()
             DataRegistry.instance.setImpressionTrackedDetails(data.targetViewId, data.campaignId)
-            Logger.e("sendImpression direct", data.targetViewId)
+            Logger.e("sendImpression isVisible", data.targetViewId)
         } else {
             val v = findViewWithTag<View>("INLINE_PERSONALIZATION_TAG")
-            Logger.d("sendImpression", "inside viewTreeObserver")
-            v.viewTreeObserver.addOnGlobalLayoutListener(object :
+            Logger.d("sendImpression", "inside viewTreeObserver ")
+            v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     if (v.isVisible()) {
-                        Logger.e("sendImpression", "${data.targetViewId}")
+                        Logger.e("sendImpression onGlobalLayout", "${data.targetViewId}")
                         data.trackImpression()
                         DataRegistry.instance.setImpressionTrackedDetails(
                             data.targetViewId,
