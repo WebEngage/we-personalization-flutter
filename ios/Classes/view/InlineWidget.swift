@@ -19,7 +19,8 @@ public class InlineViewWidget:UIView{
         self.map = map
         wegInline = generateInlineView()
         screenName = map[Constants.PAYLOAD_SCREEN_NAME] as! String;
-        NotificationCenter.default.addObserver(self, selector: #selector(screenNavigate), name: Notification.Name(screenName), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.screenNavigate(notification:)), name: Notification.Name(screenName), object: nil)
+        print("InlineWidget added observer \(screenName)")
         setupView()
       }
     
@@ -27,9 +28,9 @@ public class InlineViewWidget:UIView{
         super.init(frame: frame)
     }
     
-    @objc func screenNavigate() {
+    @objc func screenNavigate(notification: Notification) {
         if(_inlineView != nil){
-            print("InlineWidget \(screenName)")
+            print("InlineWidget: \(screenName)")
             _inlineView?.load(tag: _inlineView!.tag, callbacks: self)
         }
     }
@@ -56,6 +57,7 @@ public class InlineViewWidget:UIView{
         _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         _inlineView!.tag = propertyId
         _inlineView?.load(tag: propertyId, callbacks: self)
+        print("InlineWidget: Load view called")
         addSubview(_inlineView!)
     }
     
@@ -79,6 +81,7 @@ public class InlineViewWidget:UIView{
     
     public override func willMove(toSuperview newSuperview: UIView?) {
         if newSuperview == nil {
+            print("InlineWidget removed \(screenName) | \(wegInline?.id)")
             NotificationCenter.default.removeObserver(self)
             WEPersonalization.shared.unregisterWEPlaceholderCallback(map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
             _inlineView = nil
@@ -86,7 +89,6 @@ public class InlineViewWidget:UIView{
             methodChannel = nil
             campaignData = nil
             wegInline = nil
-            print("InlineWidget removed \(screenName)")
         }
     }
     
@@ -94,6 +96,7 @@ public class InlineViewWidget:UIView{
 
 extension InlineViewWidget : WEPlaceholderCallback{
     public func onRendered(data: WEGCampaignData) {
+        print("OnRender : \(data.targetViewTag) || \(self.screenName) || \(String(describing: wegInline?.id))")
     //    FlutterView
         self.campaignData = data
         methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_RENDERED,

@@ -25,7 +25,7 @@ class CallbackHandler : WECampaignCallback{
     func onCampaignException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
         FlutterPersonalizationSdkPlugin.methodChannel?.sendCallbacks(
             methodName: Constants.METHOD_NAME_ON_CAMPAIGN_EXCEPTION,
-            message: Utils.generateMap(campaignId: campaignId, targetViewId: targetViewId, error: exception.localizedDescription as! Error)
+            message: Utils.generateMap(campaignId: campaignId, targetViewId: targetViewId, error: exception)
         )
     }
     
@@ -43,7 +43,7 @@ class CallbackHandler : WECampaignCallback{
 
 extension CallbackHandler:PropertyRegistryCallback{
     func onPropertyCacheCleared(for screenDetails: [AnyHashable : Any]) {
-        print("WEP H \(screenDetails["screen_name"]!)")
+        print("WEP InlineWidget \(screenDetails["screen_name"]!)")
         
         DataRegistry.instance.impressionTrackedForTargetviews.removeAll()
         if let screenName = screenDetails["screen_name"] as? String{

@@ -15,7 +15,6 @@ A new Flutter project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'WebEngage'
   s.dependency 'WEPersonalization'
   
   # Flutter.framework does not contain a i386 slice.
