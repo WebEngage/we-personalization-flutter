@@ -35,9 +35,7 @@ class _CustomListScreenState extends State<CustomListScreen>
   void initState() {
     _trackScreen();
     super.initState();
-    if (widget.customModel.event.isNotEmpty) {
-      WebEngagePlugin.trackEvent(widget.customModel.event);
-    }
+
   }
 
   void _trackScreen() {
@@ -56,6 +54,12 @@ class _CustomListScreenState extends State<CustomListScreen>
         WebEngagePlugin.trackScreen(widget.customModel.screenName);
       }
     }
+    Future.delayed(Duration(milliseconds: 50), () {
+      if (widget.customModel.event.isNotEmpty) {
+        WebEngagePlugin.trackEvent(widget.customModel.event);
+      }
+    });
+
   }
 
   @override
@@ -124,6 +128,11 @@ class _CustomListScreenState extends State<CustomListScreen>
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(10),
                 child: Text("Exception : \n $exceptionText")),
+            ElevatedButton(onPressed: (){
+              if (widget.customModel.event.isNotEmpty) {
+                WebEngagePlugin.trackEvent(widget.customModel.event);
+              }
+            }, child: Text("EVENT")),
             Expanded(
               child: Container(
                 child: !widget.customModel.isRecycledView
