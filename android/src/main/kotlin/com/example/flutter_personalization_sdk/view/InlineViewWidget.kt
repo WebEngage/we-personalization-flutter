@@ -1,7 +1,7 @@
 package com.example.flutter_personalization_sdk.view
 
 import android.content.Context
-import android.graphics.Color
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +44,7 @@ class InlineViewWidget(
 
 
     private fun initView(payload: HashMap<String, Any>?) {
-       // setLayerType(LAYER_TYPE_SOFTWARE, null);
+        // setLayerType(LAYER_TYPE_SOFTWARE, null);
         Logger.e("initView", "InitView called for $payload")
         tag = payload?.get(PAYLOAD_ANDROID_PROPERTY_ID) as String
         val viewWidth = payload[PAYLOAD_VIEW_WIDTH] as Double
@@ -93,7 +93,6 @@ class InlineViewWidget(
     }
 
     private fun loadView(weInlineView: WEInlineView) {
-        Logger.e("loadView", "${weInlineView.tag} ${wegInline.id} ${wegInline.screenName}")
         weInlineView.load(tag, this)
     }
 
@@ -123,11 +122,81 @@ class InlineViewWidget(
         } else {
             Logger.d(TAG, "Impression for ${data.targetViewId} has already tracked")
         }
+        sendShadowToHybrid(data)
+
         parentWidget.sendCallback(METHOD_NAME_ON_RENDERED, Utils.generateMap(wegInline, data))
     }
 
+    private fun sendShadowToHybrid(data: WECampaignData) {
+        try {
+            val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
+
+            val observer: ViewTreeObserver? = view?.viewTreeObserver
+            observer?.let {
+                val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        var width = pxToDp(weInlineView!!.context, view.width)
+                        var height = pxToDp(weInlineView!!.context, view.height)
+                        if (width > 0 && height > 0) {
+                            var childern = data.content?.children
+                            if (childern != null && childern!!.size > 0) {
+                                for (data in childern!!) {
+                                    if (data.layoutType == "View") {
+
+                                        val shadow = data.properties?.get("shdw")
+                                        shadow?.let { it ->
+                                            if (it.toString().isNotEmpty()) {
+                                                var _shadow =
+                                                    it.toString().replace("dp", "").toInt()
+                                                val roundedCorner = data?.properties?.get("cr")
+                                                var _roundedCorners = 0
+                                                roundedCorner?.let { it ->
+                                                    if (it.toString().isNotEmpty()) {
+                                                        _roundedCorners =
+                                                            it.toString().replace("dp", "").toInt()
+                                                    }
+                                                }
+                                                if (_shadow > 0) {
+                                                    val map = hashMapOf<String, Any>()
+                                                    map["width"] = width
+                                                    map["height"] = height
+                                                    map["elevation"] = _shadow
+                                                    map["corners"] = _roundedCorners
+                                                    parentWidget.sendCallback(
+                                                        METHOD_NAME_SEND_SHADOW_DETAILS,
+                                                        map
+                                                    )
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        observer.removeOnGlobalLayoutListener(this)
+                    }
+                }
+                it.addOnGlobalLayoutListener(listener)
+            }
+        } catch (e: java.lang.Exception) {
+            Logger.e("sendShadowToHybrid", "Exception : ${e.message}")
+        }
+
+    }
+
+    fun dpToPx(context: Context, dp: Float): Int {
+        val density = context.resources.displayMetrics.density
+        return Math.round(dp * density)
+    }
+
+    fun pxToDp(context: Context, px: Int): Int {
+        val displayMetrics: DisplayMetrics = context.resources.displayMetrics
+        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+    }
+
+
     private fun sendImpression(data: WECampaignData) {
-        Logger.d("sendImpression", "called exception123 ${wegInline.id}")
         if (isVisible()) {
             data.trackImpression()
             DataRegistry.instance.setImpressionTrackedDetails(data.targetViewId, data.campaignId)
@@ -153,6 +222,7 @@ class InlineViewWidget(
     }
 
     override fun screenNavigated(screenName: String) {
+        parentWidget.sendCallback(METHOD_NAME_RESET_SHADOW_DETAILS, null)
         loadView(weInlineView!!)
     }
 

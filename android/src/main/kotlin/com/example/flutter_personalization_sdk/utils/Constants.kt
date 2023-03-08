@@ -30,3 +30,5 @@ const val METHOD_NAME_ON_CAMPAIGN_SHOWN = "onCampaignShown"
 const val METHOD_NAME_AUTO_HANDLE_CLICK = "autoHandleClick";
 const val METHOD_NAME_SEND_CLICK = "sendClick"
 const val METHOD_NAME_SEND_IMPRESSION = "sendImpression"
+const val METHOD_NAME_SEND_SHADOW_DETAILS = "sendShadowDetails"
+const val METHOD_NAME_RESET_SHADOW_DETAILS = "resetShadowDetails"
