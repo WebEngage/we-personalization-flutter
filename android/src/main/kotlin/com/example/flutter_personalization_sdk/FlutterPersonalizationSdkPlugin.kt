@@ -11,7 +11,6 @@ import com.example.flutter_personalization_sdk.registry.DataRegistry
 import com.example.flutter_personalization_sdk.utils.*
 import com.example.flutter_personalization_sdk.view.InlineWidgetFactory
 import com.webengage.personalization.WEPersonalization
-import com.webengage.sdk.android.Logger
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -24,7 +23,6 @@ class FlutterPersonalizationSdkPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context;
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        Logger.setLogLevel(Logger.DEBUG)
         context = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, PERSONALIZATION_SDK)
         flutterPluginBinding.platformViewRegistry.registerViewFactory(

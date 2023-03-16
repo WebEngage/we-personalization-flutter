@@ -49,12 +49,12 @@ class _CustomListScreenState extends State<CustomListScreen>
             : widget.customModel.screenAttribute;
 
         WebEngagePlugin.trackScreen(
-            widget.customModel.screenName, {'Id': value});
+            widget.customModel.screenName, {'id': value});
       } catch (e) {
         WebEngagePlugin.trackScreen(widget.customModel.screenName);
       }
     }
-    Future.delayed(Duration(milliseconds: 50), () {
+    Future.delayed(Duration(milliseconds: 1000), () {
       if (widget.customModel.event.isNotEmpty) {
         WebEngagePlugin.trackEvent(widget.customModel.event);
       }

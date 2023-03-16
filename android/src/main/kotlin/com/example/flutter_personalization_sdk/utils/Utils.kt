@@ -18,6 +18,18 @@ class Utils {
 
         fun generateMap(
             wegInline: WEGInline,
+            campaignData: WECampaignData,
+            shadowData : HashMap<String,Any>
+        ): HashMap<String, Any> {
+            val map: HashMap<String, Any> = hashMapOf()
+            map[PAYLOAD_ID] = wegInline.id
+            map[PAYLOAD_DATA] = _convertWECampaignDataToString(campaignData)
+            map[PAYLOAD_SHADOW_DATA] = shadowData
+            return map
+        }
+
+        fun generateMap(
+            wegInline: WEGInline,
             campaignId: String?,
             targetViewId: String,
             error: java.lang.Exception

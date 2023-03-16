@@ -18,6 +18,9 @@ class WEPersonalization {
     FlutterPersonalizationSdkPlatform.instance.initPersonalization();
   }
 
+  /// use this method to register if you only wanted to get the data and not
+  /// the ui rendering part
+  /// example : Custom view
   int registerWEPlaceholderCallback(
       String? androidPropertyId, int iosPropertyId, String screenName,
       {WEPlaceholderCallback? placeholderCallback}) {
@@ -26,6 +29,7 @@ class WEPersonalization {
         placeholderCallback: placeholderCallback);
   }
 
+  /// use this method to get the callback for any action perform on campaign
   void registerWECampaignCallback(WECampaignCallback weCampaignCallback) {
     DataRegistry().registerWECampaignCallback(weCampaignCallback);
   }

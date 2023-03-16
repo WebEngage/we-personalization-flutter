@@ -29,6 +29,7 @@ const PAYLOAD_ACTION_ID = "actionId";
 const PAYLOAD_DEEPLINK = "deeplink";
 const PAYLOAD_ERROR = "error";
 const PAYLOAD_DATA = "data";
+const PAYLOAD_SHADOW_DATA = "shadow_data";
 const PAYLOAD = "payload";
 
 const CHANNEL_INLINE_VIEW = "channel_inline_view";

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:webengage_flutter/webengage_flutter.dart';
 import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
-import 'package:webengage_flutter/webengage_flutter.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({Key? key}) : super(key: key);

@@ -21,12 +21,12 @@ class WECampaignData {
   }
 
 
-  void trackImpression(Map<String,dynamic> map){
+  void trackImpression({Map<String, dynamic> map = const {}}){
     print("tracked object ${_wegInline != null}");
     _wegInline?.trackImpression(map);
   }
 
-  void trackClick(Map<String,dynamic> map){
+  void trackClick({Map<String, dynamic> map = const {}}){
     _wegInline?.trackClick(map);
   }
 

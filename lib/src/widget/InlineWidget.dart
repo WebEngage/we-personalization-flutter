@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,7 @@ class _InlineWidgetState extends State<InlineWidget> {
   var width = 0.0;
   var elevation = 0.0;
   var roundedCorners = 0.0;
+  var margin = {"ml": 0.0, "mr": 0.0, "mt": 0.0, "mb": 0.0};
 
   @override
   void initState() {
@@ -43,54 +46,71 @@ class _InlineWidgetState extends State<InlineWidget> {
 
   int count = 0;
 
+  double getMargin(margin, minus) {
+    var value = margin - minus;
+    print("_platformCallHandler margin $margin $minus $value");
+    if (value < 0) return margin;
+    return margin;
+  }
+
   @override
   Widget build(BuildContext context) {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return Stack(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 5),
-              width: width < 0 ? 0 : width,
-              height: height,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(roundedCorners),
-                boxShadow: [
-                  BoxShadow(
-                    color: elevation == 0 ?  Colors.transparent : Colors.grey.withOpacity(0.9),
-                    blurRadius: elevation,
-                    offset: const Offset(0.0, 3.5),
+        return Center(
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  margin: EdgeInsets.only(
+                    top: margin["mt"]!.toDouble(),
+                    bottom: margin["mb"]!.toDouble(),
                   ),
-                ],
+                  width: width,
+                  height: height,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(roundedCorners),
+                    boxShadow: [
+                      BoxShadow(
+                        color: elevation == 0
+                            ? Colors.transparent
+                            : Colors.black.withOpacity(0.2),
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                        offset: const Offset(1.0, 2.0),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            PlatformViewLink(
-                viewType: CHANNEL_INLINE_VIEW,
-                surfaceFactory: (context, controller) {
-                  return AndroidViewSurface(
-                    controller: controller as AndroidViewController,
-                    gestureRecognizers: const <
-                        Factory<OneSequenceGestureRecognizer>>{},
-                    hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-                  );
-                },
-                onCreatePlatformView: (params) {
-                  _onPlatformViewCreated(params.id);
-                  return PlatformViewsService.initSurfaceAndroidView(
-                    id: params.id,
-                    viewType: CHANNEL_INLINE_VIEW,
-                    layoutDirection: TextDirection.ltr,
-                    creationParams: widget.payload,
-                    creationParamsCodec: const StandardMessageCodec(),
-                    onFocus: () {
-                      params.onFocusChanged(true);
-                    },
-                  )
-                    ..addOnPlatformViewCreatedListener(
-                        params.onPlatformViewCreated)
-                    ..create();
-                }),
-          ],
+              PlatformViewLink(
+                  viewType: CHANNEL_INLINE_VIEW,
+                  surfaceFactory: (context, controller) {
+                    return AndroidViewSurface(
+                      controller: controller as AndroidViewController,
+                      gestureRecognizers: const <
+                          Factory<OneSequenceGestureRecognizer>>{},
+                      hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+                    );
+                  },
+                  onCreatePlatformView: (params) {
+                    _onPlatformViewCreated(params.id);
+                    return PlatformViewsService.initSurfaceAndroidView(
+                      id: params.id,
+                      viewType: CHANNEL_INLINE_VIEW,
+                      layoutDirection: TextDirection.ltr,
+                      creationParams: widget.payload,
+                      creationParamsCodec: const StandardMessageCodec(),
+                      onFocus: () {
+                        params.onFocusChanged(true);
+                      },
+                    )
+                      ..addOnPlatformViewCreatedListener(
+                          params.onPlatformViewCreated)
+                      ..create();
+                  }),
+            ],
+          ),
         );
       case TargetPlatform.iOS:
         return UiKitView(
@@ -110,7 +130,8 @@ class _InlineWidgetState extends State<InlineWidget> {
     controller.setListener();
   }
 
-  void update(int w, int h, int e, int rc,bool reset) {
+  void update(int e, int rc, bool reset, _margin,other) {
+    print("_platformCallHandler 456 $_margin $reset");
     try {
       if (reset) {
         setState(() {
@@ -119,15 +140,17 @@ class _InlineWidgetState extends State<InlineWidget> {
         });
         return;
       } else {
-        width = w.toDouble();
-        height = h.toDouble() + 5;
+        margin = _margin;
+        width = other["w"].toDouble();
+        height = other["h"].toDouble();
+        print("_platformCallHandler 789 $margin");
         setState(() {
           elevation = e.toDouble();
           roundedCorners = rc.toDouble();
         });
       }
-    }catch(e){
-      print("Exception update ${e.toString()}");
+    } catch (e) {
+      print("Exception update _platformCallHandler ${e.toString()}");
     }
   }
 }
@@ -153,24 +176,37 @@ class WEGInlineViewController {
   }
 
   Future _platformCallHandler(MethodCall call) async {
-    Logger.v("_platformCallHandler ${call.method} ${wegInline.id}");
-    if (call.method == METHOD_NAME_SEND_SHADOW_DETAILS) {
-      try {
-        var argument = call.arguments.cast<String, dynamic>()[PAYLOAD];
-        var w = argument["width"];
-        var h = argument["height"];
-        var e = argument["elevation"];
-        var rc = argument["corners"];
-        if (w != 0 && h != 0) {
-          update(w, h, e, rc, false);
-        }
-      }catch(e){
-        print("Exception Hybrid _platformCallHandler ${e.toString()}");
+    Logger.v("_platformCallHandler ${call.method} ${call.arguments}");
+    if (Platform.isAndroid) {
+      if (call.method == METHOD_NAME_RESET_SHADOW_DETAILS) {
+        update(0, 0, true, 0,{});
+        return;
       }
-    }if(call.method == METHOD_NAME_RESET_SHADOW_DETAILS){
-      update(0,0,0,0,true);
-    } else {
-      DataRegistry().platformCallHandler(call, wegInline);
+      if (call.method == METHOD_NAME_ON_RENDERED) {
+        try {
+          var argument = call.arguments.cast<String, dynamic>()[PAYLOAD]
+              [PAYLOAD_SHADOW_DATA];
+          print("_platformCallHandler 123 $argument");
+          if ((argument as Map).isNotEmpty) {
+            var e = argument["elevation"];
+            var rc = argument["corners"];
+            var other = {"w": argument["w"], "h": argument["h"]};
+            var margin = <String, double>{};
+            margin = {
+              "ml": argument["ml"].toDouble(),
+              "mr": argument["mr"].toDouble(),
+              "mt": argument["mt"].toDouble(),
+              "mb": argument["mb"].toDouble()
+            };
+            Future.delayed(const Duration(milliseconds: 250), () {
+              update(e, rc, false, margin, other);
+            });
+          }
+        } catch (e) {
+          print("Exception Hybrid _platformCallHandler ${e.toString()}");
+        }
+      }
     }
+    DataRegistry().platformCallHandler(call, wegInline);
   }
 }

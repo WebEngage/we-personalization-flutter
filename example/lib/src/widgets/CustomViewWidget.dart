@@ -1,6 +1,5 @@
 import 'dart:ffi';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
 import 'package:flutter_personalization_sdk/src/model/WECampaignData.dart';
@@ -56,10 +55,10 @@ class _CustomViewWidgetState extends State<CustomViewWidget>
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomWidgets.button2("Impression", () {
-                      weCampaignData?.trackImpression({"1":1});
+                      weCampaignData?.trackImpression(map: {"1":1});
                     }),
                     CustomWidgets.button2("click", () {
-                      weCampaignData?.trackClick({"2":2});
+                      weCampaignData?.trackClick(map : {"2":2});
                     })
                   ],
                 )
