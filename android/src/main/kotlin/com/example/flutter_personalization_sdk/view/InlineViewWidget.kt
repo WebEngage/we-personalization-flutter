@@ -127,11 +127,23 @@ class InlineViewWidget(
         }
 
         val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
-        val map = getShadowDetails(data)
+
         val observer: ViewTreeObserver? = view?.viewTreeObserver
         observer?.let {
             val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    val map = getShadowDetails(data)
+                    val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
+                    view?.let{
+                        val layoutParams: ViewGroup.MarginLayoutParams =
+                            view.layoutParams as ViewGroup.MarginLayoutParams
+                        layoutParams.setMargins(
+                            layoutParams.marginStart,
+                            layoutParams.topMargin,
+                            layoutParams.marginEnd,
+                            layoutParams.bottomMargin
+                        )
+                    }
                     Log.e(TAG, "onGlobalLayout: _platformCallHandler $map")
                     val width = pxToDp(weInlineView!!.context, view.width)
                     val height = pxToDp(weInlineView!!.context, view.height)
@@ -184,15 +196,7 @@ class InlineViewWidget(
                 }
             }
         }
-        val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
-        val layoutParams: ViewGroup.MarginLayoutParams =
-            view.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.setMargins(
-            layoutParams.marginStart,
-            layoutParams.topMargin,
-            layoutParams.marginEnd,
-            layoutParams.bottomMargin
-        )
+
         return map
     }
 
