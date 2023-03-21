@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
+import 'package:flutter_personalization_sdk/WEPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/observer/RouteObserver.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/CustomScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/DetailScreen.dart';
@@ -36,7 +36,6 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
     WEPersonalization().init();
     WEPersonalization().enableLogs();
     WEPersonalization().registerWECampaignCallback(this);
-    WEPersonalization().autoHandleCampaignClick(true);
     initSharedPref();
   }
 

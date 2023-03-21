@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.NonNull
-import com.example.flutter_personalization_sdk.handler.CallbackHandler
-import com.example.flutter_personalization_sdk.registry.DataRegistry
+import com.example.flutter_personalization_sdk.handler.WEPluginCallbackHandler
+import com.example.flutter_personalization_sdk.registry.WEPropertyRegistry
 import com.example.flutter_personalization_sdk.utils.*
-import com.example.flutter_personalization_sdk.view.InlineWidgetFactory
+import com.example.flutter_personalization_sdk.view.WEInlineWidgetFactory
 import com.webengage.personalization.WEPersonalization
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -18,67 +17,69 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
-class FlutterPersonalizationSdkPlugin : FlutterPlugin, MethodCallHandler {
+class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
 
-    private lateinit var channel: MethodChannel
+    private var channel: MethodChannel? = null
     private lateinit var context: Context;
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         context = flutterPluginBinding.applicationContext
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, PERSONALIZATION_SDK)
-        flutterPluginBinding.platformViewRegistry.registerViewFactory(
-            CHANNEL_INLINE_VIEW,
-            InlineWidgetFactory(flutterPluginBinding.binaryMessenger)
-        )
-        CallbackHandler.instance.setFlutterPersonalizationSdkPlugin(this)
-        DataRegistry.instance.initFlutterPlugin(this)
-        channel.setMethodCallHandler(this)
+        if (channel == null) {
+            channel = MethodChannel(flutterPluginBinding.binaryMessenger, PERSONALIZATION_SDK)
+            flutterPluginBinding.platformViewRegistry.registerViewFactory(
+                CHANNEL_INLINE_VIEW,
+                WEInlineWidgetFactory(flutterPluginBinding.binaryMessenger)
+            )
+            WEPluginCallbackHandler.instance.setFlutterPersonalizationSdkPlugin(this)
+            WEPropertyRegistry.instance.initFlutterPlugin(this)
+            channel?.setMethodCallHandler(this)
+        }
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             METHOD_NAME_REGISTER -> {
                 val registered =
-                    DataRegistry.instance.registerData(call.arguments as HashMap<String, Any>)
+                    WEPropertyRegistry.instance.registerProperty(call.arguments as HashMap<String, Any>)
                 return result.success(registered)
             }
             METHOD_NAME_DEREGISTER -> {
                 val remove =
-                    DataRegistry.instance.removeData(call.arguments as HashMap<String, Any>)
+                    WEPropertyRegistry.instance.deregisterProperty(call.arguments as HashMap<String, Any>)
                 return result.success(remove)
             }
-            METHOD_NAME_AUTO_HANDLE_CLICK -> {
-                var autoHandleClick = call.arguments as Boolean
-                CallbackHandler.instance.autoHandleClick = autoHandleClick
-            }
             METHOD_NAME_INIT -> {
-                val sharedPrefsManager: SharedPreferences =
-                    context.getSharedPreferences("we_shared_storage", Context.MODE_PRIVATE)
-                sharedPrefsManager.edit()
-                    .putBoolean("com.webengage.personalization.auto_track_impression", false)
-                    .apply()
+                disableAutoTracking()
                 WEPersonalization.get().init()
                 WEPersonalization.get()
-                    .registerPropertyRegistryCallback(listener = CallbackHandler.instance)
+                    .registerPropertyRegistryCallback(listener = WEPluginCallbackHandler.instance)
                 WEPersonalization.get()
-                    .registerWECampaignCallback(callback = CallbackHandler.instance)
+                    .registerWECampaignCallback(callback = WEPluginCallbackHandler.instance)
                 return result.success(true)
             }
             METHOD_NAME_SEND_CLICK -> {
-                var map = call.arguments as HashMap<String, Any>
+                val map = call.arguments as HashMap<String, Any>
                 val id = map[PAYLOAD_ID] as Int
                 val data = map[PAYLOAD_DATA] as HashMap<String, Any>
-                DataRegistry.instance.trackClick(id, data)
+                WEPropertyRegistry.instance.trackClick(id, data)
                 return result.success(true)
             }
             METHOD_NAME_SEND_IMPRESSION -> {
-                var map = call.arguments as HashMap<String, Any>
+                val map = call.arguments as HashMap<String, Any>
                 val id = map[PAYLOAD_ID] as Int
                 val data = map[PAYLOAD_DATA] as HashMap<String, Any>
-                DataRegistry.instance.trackImpression(id, data)
+                WEPropertyRegistry.instance.trackImpression(id, data)
                 return result.success(true)
             }
             else -> result.notImplemented()
         }
+    }
+
+    private fun disableAutoTracking() {
+        val sharedPrefsManager: SharedPreferences =
+            context.getSharedPreferences("we_shared_storage", Context.MODE_PRIVATE)
+        sharedPrefsManager.edit()
+            .putBoolean("com.webengage.personalization.auto_track_impression", false)
+            .apply()
     }
 
     fun sendCallback(methodName: String, message: Map<String, *>?) {
@@ -87,7 +88,7 @@ class FlutterPersonalizationSdkPlugin : FlutterPlugin, MethodCallHandler {
             messagePayload.put(PAYLOAD, it)
         }
         Handler(Looper.getMainLooper()).post {
-            channel.invokeMethod(
+            channel?.invokeMethod(
                 methodName,
                 messagePayload
             )
@@ -95,8 +96,9 @@ class FlutterPersonalizationSdkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        DataRegistry.instance.initFlutterPlugin(null)
-        CallbackHandler.instance.setFlutterPersonalizationSdkPlugin(null)
-        channel.setMethodCallHandler(null)
+        WEPropertyRegistry.instance.initFlutterPlugin(null)
+        WEPluginCallbackHandler.instance.setFlutterPersonalizationSdkPlugin(null)
+        channel?.setMethodCallHandler(null)
+        channel = null
     }
 }

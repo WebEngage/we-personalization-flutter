@@ -8,21 +8,21 @@ import '../callbacks/WEPlaceholderCallback.dart';
 import '../flutter_personalization_sdk_platform_interface.dart';
 import '../model/WEGInline.dart';
 
-class DataRegistry {
-  static final DataRegistry _singleton = DataRegistry._internal();
+class WEPropertyRegistry {
+  static final WEPropertyRegistry _singleton = WEPropertyRegistry._internal();
 
-  factory DataRegistry() {
+  factory WEPropertyRegistry() {
     return _singleton;
   }
 
   static const MethodChannel _channel = MethodChannel(INLINE_SDK_CHANNEL_NAME);
 
-  DataRegistry._internal() {
+  WEPropertyRegistry._internal() {
     _channel.setMethodCallHandler(_platformCallHandler);
   }
 
   WECampaignCallback? weCampaignCallback;
-  var mapOfRegistry = <int, WEGInline>{};
+  var mapOfRegistry = <int, WEProperty>{};
 
   void registerWECampaignCallback(WECampaignCallback weCampaignCallback) {
     this.weCampaignCallback = weCampaignCallback;
@@ -31,45 +31,45 @@ class DataRegistry {
   int registerWEPlaceholderCallback(
       String screenName, String androidPropertyId, int iosPropertyId,
       {WEPlaceholderCallback? placeholderCallback}) {
-    WEGInline wegInline = WEGInline(
+    WEProperty weProperty = WEProperty(
         screenName: screenName,
         androidPropertyID: androidPropertyId,
         iosPropertyId: iosPropertyId);
-    wegInline.wePlaceholderCallback = placeholderCallback;
-    registerInlineWidget(wegInline);
-    Logger.v(
-        "registerWEPlaceholderCallback - ${wegInline.id} : $screenName : $androidPropertyId : $iosPropertyId");
-    return wegInline.id;
+    weProperty.wePlaceholderCallback = placeholderCallback;
+    registerPlaceholder(weProperty);
+    WELogger.v(
+        "registerWEPlaceholderCallback - ${weProperty.id} : $screenName : $androidPropertyId : $iosPropertyId");
+    return weProperty.id;
   }
 
   void deRegisterWEPlaceholderCallback(int id) async {
     if (mapOfRegistry.containsKey(id)) {
-      deregisterInlineWidget(mapOfRegistry[id]!);
+      deregisterPlaceholder(mapOfRegistry[id]!);
     }
   }
 
   void deRegisterWEPlaceholderCallbackByScreenName(String screenName) async {
-    Logger.v("deRegisterWEPlaceholderCallbackByScreenName - $screenName");
+    WELogger.v("deRegisterWEPlaceholderCallbackByScreenName - $screenName");
     mapOfRegistry.forEach((key, value) {
       if (value.screenName == screenName) {
-        deregisterInlineWidget(value);
+        deregisterPlaceholder(value);
       }
     });
   }
 
-  Future<void> registerInlineWidget(WEGInline wegInline) async {
-    var success = await FlutterPersonalizationSdkPlatform.instance
-        .registerInline(wegInline);
+  Future<void> registerPlaceholder(WEProperty weProperty) async {
+    var success = await WEPSdkPlatform.instance
+        .registerInline(weProperty);
     if (success) {
-      mapOfRegistry[wegInline.id] = wegInline;
+      mapOfRegistry[weProperty.id] = weProperty;
     }
   }
 
-  Future<void> deregisterInlineWidget(WEGInline wegInline) async {
-    var success = await FlutterPersonalizationSdkPlatform.instance
-        .deregisterInline(wegInline);
+  Future<void> deregisterPlaceholder(WEProperty weProperty) async {
+    var success = await WEPSdkPlatform.instance
+        .deregisterInline(weProperty);
     if (success) {
-      mapOfRegistry.remove(wegInline.id);
+      mapOfRegistry.remove(weProperty.id);
     }
   }
 
@@ -79,24 +79,27 @@ class DataRegistry {
     }
   }
 
-  void platformCallHandler(MethodCall call, WEGInline wegInline) {
-    _callHandler(call, wegInline);
+  // this is for WEInline Widget
+  void platformCallHandler(MethodCall call, WEProperty weProperty) {
+    _callHandler(call, weProperty);
   }
 
+  // this is for custom view
   Future _platformCallHandler(MethodCall call) async {
-    Logger.v("_platformCallHandler ${call.method}");
+    WELogger.v("_platformCallHandler ${call.method}");
     _callHandler(call, null);
   }
 
-  Future _callHandler(MethodCall call, WEGInline? wegInline) async {
+  // This method is to handle callback
+  Future _callHandler(MethodCall call, WEProperty? weProperty) async {
     final methodName = call.method;
     final data = call.arguments.cast<String, dynamic>();
     final payload = data[PAYLOAD];
 
     final id = payload[PAYLOAD_ID];
-    var wEGInline = wegInline ?? mapOfRegistry[id];
+    var wEGInline = weProperty ?? mapOfRegistry[id];
 
-    Logger.v("_callHandler $methodName : $id : ${wEGInline?.id} : $data");
+    WELogger.v("_callHandler $methodName : $id : ${wEGInline?.id} : $data");
 
     switch (methodName) {
       case METHOD_NAME_DATA_LISTENER:
@@ -104,7 +107,7 @@ class DataRegistry {
         break;
       case METHOD_NAME_ON_DATA_RECEIVED:
         wEGInline?.wePlaceholderCallback
-            ?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA],wegInline: wEGInline));
+            ?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA],weProperty: wEGInline));
         break;
       case METHOOD_NAME_ON_PLACEHOLDER_CALLBACK:
         wEGInline?.wePlaceholderCallback?.onPlaceholderException(
@@ -114,7 +117,7 @@ class DataRegistry {
         break;
       case METHOD_NAME_ON_RENDERED:
         wEGInline?.wePlaceholderCallback
-            ?.onRendered(WECampaignData.fromJson(payload[PAYLOAD_DATA],wegInline: wEGInline));
+            ?.onRendered(WECampaignData.fromJson(payload[PAYLOAD_DATA],weProperty: wEGInline));
         break;
       case METHOD_NAME_ON_CAMPAIGN_PREPARED:
         weCampaignCallback?.onCampaignPrepared(
@@ -138,9 +141,5 @@ class DataRegistry {
             actionId, deepLink, WECampaignData.fromJson(payload[PAYLOAD_DATA]));
         break;
     }
-  }
-
-  void autoHandleClick(bool auto) {
-    FlutterPersonalizationSdkPlatform.instance.autoHandleClick(auto);
   }
 }

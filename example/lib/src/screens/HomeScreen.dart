@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
+import 'package:flutter_personalization_sdk/WEPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/AppColor.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/LoginWidget.dart';
@@ -44,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 Checkbox(
                   value: this.autoHandleClick,
                   onChanged: (value) {
-                    WEPersonalization().autoHandleCampaignClick(value as bool);
                     setState(() {
                       autoHandleClick = value as bool;
                     });

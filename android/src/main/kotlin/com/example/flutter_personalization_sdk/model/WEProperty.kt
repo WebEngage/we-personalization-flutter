@@ -2,7 +2,7 @@ package com.example.flutter_personalization_sdk.model
 
 import com.webengage.personalization.data.WECampaignData
 
-data class WEGInline(
+data class WEProperty(
     val id: Int,
     val screenName: String,
     val propertyID: String

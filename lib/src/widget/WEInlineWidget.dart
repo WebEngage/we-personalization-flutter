@@ -7,7 +7,7 @@ import '../../src/utils/Utils.dart';
 import '../../src/widget/InlineWidget.dart';
 import '../model/WEGInline.dart';
 
-class WEGInlineWidget extends StatefulWidget {
+class WEInlineWidget extends StatefulWidget {
   String screenName;
   String androidPropertyId;
   int iosPropertyId;
@@ -15,7 +15,7 @@ class WEGInlineWidget extends StatefulWidget {
   double viewHeight;
   WEPlaceholderCallback? placeholderCallback;
 
-  WEGInlineWidget(
+  WEInlineWidget(
       {Key? key,
       required this.screenName,
       required this.androidPropertyId,
@@ -26,34 +26,31 @@ class WEGInlineWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<WEGInlineWidget> createState() => _WEGInlineWidgetState();
+  State<WEInlineWidget> createState() => _WEInlineWidgetState();
 }
 
-class _WEGInlineWidgetState extends State<WEGInlineWidget>
+class _WEInlineWidgetState extends State<WEInlineWidget>
     with AutomaticKeepAliveClientMixin, WEPlaceholderCallback,EventsSender {
   final GlobalKey _platformViewKey = GlobalKey();
-  WEGInline? wegInline;
+  WEProperty? weProperty;
   var defaultViewHeight = 0.1;
   WEGInlineViewController? controller;
 
   @override
   void initState() {
     super.initState();
-    // if (Platform.isIOS) {
-    //   defaultViewHeight = widget.viewHeight;
-    // }
-    wegInline = WEGInline(
+    weProperty = WEProperty(
         screenName: widget.screenName,
         androidPropertyID: widget.androidPropertyId,
         iosPropertyId: widget.iosPropertyId,
         wePlaceholderCallback: this);
-    wegInline?.eventsSender = this;
-    Logger.v("WEGINLINEVIEW ID ${wegInline?.id}");
+    weProperty?.eventsSender = this;
+    WELogger.v("WEGINLINE VIEW ID ${weProperty?.id}");
   }
 
   @override
   void dispose() {
-    wegInline = null;
+    weProperty = null;
     widget.placeholderCallback = null;
     controller = null;
     super.dispose();
@@ -61,18 +58,19 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         if (widget.viewWidth == 0) {
           widget.viewWidth = constraints.maxWidth;
         }
-        return Container(
+        return SizedBox(
             height: defaultViewHeight,
             child: InlineWidget(
-              wegInline: wegInline!,
+              weProperty: weProperty!,
               key: _platformViewKey,
               payload: Utils().generateWidgetPayload(
-                  wegInline!, widget.viewWidth, widget.viewHeight),
+                  weProperty!, widget.viewWidth, widget.viewHeight),
               wegInlineHandler: (controller) async {
                 this.controller = controller;
               },
@@ -106,8 +104,8 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
         });
       }
     }
-    Logger.v(
-        "onDataReceived ${wegInline?.id} ${wegInline?.screenName} ${wegInline?.androidPropertyID} ${wegInline?.iosPropertyId}");
+    WELogger.v(
+        "onDataReceived ${weProperty?.id} ${weProperty?.screenName} ${weProperty?.androidPropertyID} ${weProperty?.iosPropertyId}");
     widget.placeholderCallback?.onDataReceived(data);
   }
 
@@ -115,8 +113,8 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
   void onPlaceholderException(
       String campaignId, String targetViewId, String error) {
     super.onPlaceholderException(campaignId, targetViewId, error);
-    Logger.v(
-        "onPlaceholderException ${wegInline?.id} ${wegInline?.screenName} ${wegInline?.androidPropertyID} ${wegInline?.iosPropertyId} ${error} ${campaignId}");
+    WELogger.v(
+        "onPlaceholderException ${weProperty?.id} ${weProperty?.screenName} ${weProperty?.androidPropertyID} ${weProperty?.iosPropertyId} ${error} ${campaignId}");
     widget.placeholderCallback
         ?.onPlaceholderException(campaignId, targetViewId, error);
   }
@@ -128,10 +126,9 @@ class _WEGInlineWidgetState extends State<WEGInlineWidget>
           defaultViewHeight = widget.viewHeight;
         });
     }
-    
     super.onRendered(data);
-    Logger.v(
-        "onRendered ${wegInline?.id} ${wegInline?.screenName} ${wegInline?.androidPropertyID} ${wegInline?.iosPropertyId}");
+    WELogger.v(
+        "onRendered ${weProperty?.id} ${weProperty?.screenName} ${weProperty?.androidPropertyID} ${weProperty?.iosPropertyId}");
     widget.placeholderCallback?.onRendered(data);
   }
 }

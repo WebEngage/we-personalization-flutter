@@ -15,7 +15,7 @@ class WEPersonalization {
   WEPersonalization._internal();
 
   void init() {
-    FlutterPersonalizationSdkPlatform.instance.initPersonalization();
+    WEPSdkPlatform.instance.initPersonalization();
   }
 
   /// use this method to register if you only wanted to get the data and not
@@ -24,30 +24,26 @@ class WEPersonalization {
   int registerWEPlaceholderCallback(
       String? androidPropertyId, int iosPropertyId, String screenName,
       {WEPlaceholderCallback? placeholderCallback}) {
-   return DataRegistry().registerWEPlaceholderCallback(
+   return WEPropertyRegistry().registerWEPlaceholderCallback(
         screenName, androidPropertyId!, iosPropertyId,
         placeholderCallback: placeholderCallback);
   }
 
   /// use this method to get the callback for any action perform on campaign
   void registerWECampaignCallback(WECampaignCallback weCampaignCallback) {
-    DataRegistry().registerWECampaignCallback(weCampaignCallback);
+    WEPropertyRegistry().registerWECampaignCallback(weCampaignCallback);
   }
 
   void deregisterWEPlaceholderCallback(String screenName) {
-    DataRegistry().deRegisterWEPlaceholderCallbackByScreenName(screenName);
+    WEPropertyRegistry().deRegisterWEPlaceholderCallbackByScreenName(screenName);
   }
 
   void deregisterWEPlaceholderCallbackById(int ID) {
-    DataRegistry().deRegisterWEPlaceholderCallback(ID);
-  }
-
-  void autoHandleCampaignClick(bool auto){
-    DataRegistry().autoHandleClick(auto);
+    WEPropertyRegistry().deRegisterWEPlaceholderCallback(ID);
   }
   
   void enableLogs(){
-    Logger.enableLogs(true);
+    WELogger.enableLogs(true);
   }
 
 }

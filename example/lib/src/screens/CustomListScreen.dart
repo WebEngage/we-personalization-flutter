@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
+import 'package:flutter_personalization_sdk/WEPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/main.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
@@ -149,7 +149,7 @@ class _CustomListScreenState extends State<CustomListScreen>
                                 if (data.isCustomView) {
                                   return CustomViewWidget(customWidgetData: data);
                                 } else {
-                                  return WEGInlineWidget(
+                                  return WEInlineWidget(
                                     screenName: widget.customModel.screenName,
                                     androidPropertyId: data.androidPropertyId,
                                     iosPropertyId: data.iosPropertyID,
@@ -195,7 +195,7 @@ class _CustomListScreenState extends State<CustomListScreen>
         if (data.isCustomView) {
           list.add(CustomViewWidget(customWidgetData: data));
         } else {
-          list.add(WEGInlineWidget(
+          list.add(WEInlineWidget(
             screenName: widget.customModel.screenName,
             androidPropertyId: data.androidPropertyId,
             iosPropertyId: data.iosPropertyID,

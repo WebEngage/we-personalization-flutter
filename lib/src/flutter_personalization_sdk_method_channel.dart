@@ -4,8 +4,8 @@ import '../src/utils/Constants.dart';
 import '../src/flutter_personalization_sdk_platform_interface.dart';
 import 'model/WEGInline.dart';
 
-class MethodChannelFlutterPersonalizationSdk
-    extends FlutterPersonalizationSdkPlatform {
+class WEPMethodChannel
+    extends WEPSdkPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel(INLINE_SDK_CHANNEL_NAME);
 
@@ -17,42 +17,43 @@ class MethodChannelFlutterPersonalizationSdk
   }
 
   @override
-  Future<bool> registerInline(WEGInline wegInline) async {
+  Future<bool> registerInline(WEProperty weProperty) async {
     final registered = await methodChannel.invokeMethod<dynamic>(
-        METHOD_NAME_REGISTER_INLINE, wegInline.toJSON());
+        METHOD_NAME_REGISTER_INLINE, weProperty.toJSON());
     return registered as bool;
   }
 
   @override
-  Future<bool> deregisterInline(WEGInline wegInline) async {
-    final deregistered = await methodChannel.invokeMethod<dynamic>(
-        METHOD_NAME_DEREGISTER_INLINE, wegInline.toJSON());
-    return deregistered as bool;
+  Future<bool> deregisterInline(WEProperty weProperty) async {
+    final deRegistered = await methodChannel.invokeMethod<dynamic>(
+        METHOD_NAME_DEREGISTER_INLINE, weProperty.toJSON());
+    return deRegistered as bool;
   }
 
+  @override
   Future<bool> autoHandleClick(bool autoHandleClick) async {
     final result = await methodChannel.invokeMethod<dynamic>(
         METHOD_NAME_AUTO_HANDLE_CLICK, autoHandleClick);
     return result as bool;
   }
 
+  @override
   Future<bool> trackClick(
-      WEGInline wegInline, Map<String, dynamic> data) async {
-    var map = wegInline.toJSON();
+      WEProperty weProperty, Map<String, dynamic> data) async {
+    var map = weProperty.toJSON();
     map["data"] = data;
     final tracked =
         await methodChannel.invokeMethod<dynamic>(METHOD_NAME_SEND_CLICK, map);
-    print("tracked $tracked");
     return tracked;
   }
 
+  @override
   Future<bool> trackImpression(
-      WEGInline wegInline, Map<String, dynamic> data) async {
-    var map = wegInline.toJSON();
+      WEProperty weProperty, Map<String, dynamic> data) async {
+    var map = weProperty.toJSON();
     map["data"] = data;
     final tracked = await methodChannel.invokeMethod<dynamic>(
         METHOD_NAME_SEND_IMPRESSION, map);
-    print("tracked $tracked");
     return tracked;
   }
 }

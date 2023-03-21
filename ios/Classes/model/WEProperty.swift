@@ -1,5 +1,5 @@
 import WEPersonalization
-class WEGHInline{
+class WEProperty{
     var id:Int
     var screenName:String
     var propertyID:Int

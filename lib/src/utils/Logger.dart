@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Logger {
+class WELogger {
   static bool _enableLogs = false;
 
   static void enableLogs(bool enable){

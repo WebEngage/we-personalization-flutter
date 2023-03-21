@@ -11,13 +11,13 @@ public class InlineViewWidget:UIView{
     var map :Dictionary<String,Any?>? = nil
     var methodChannel:FlutterMethodChannel? = nil
     var campaignData:WEGCampaignData? = nil
-    var wegInline:WEGHInline? = nil
+    var weProperty:WEProperty? = nil
     var screenName = ""
 
 
     func setMap(map : Dictionary<String,Any?>) {
         self.map = map
-        wegInline = generateInlineView()
+        weProperty = generateInlineView()
         screenName = map[Constants.PAYLOAD_SCREEN_NAME] as! String;
         NotificationCenter.default.addObserver(self, selector: #selector(self.screenNavigate(notification:)), name: Notification.Name(screenName), object: nil)
         print("InlineWidget added observer \(screenName)")
@@ -64,16 +64,16 @@ public class InlineViewWidget:UIView{
     public override func didMoveToWindow() {
         if let data = self.campaignData{
             if self.isVisibleToUser{
-                if DataRegistry.instance.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
+                if WEPropertyRegistry.shared.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
                     self.campaignData?.trackImpression(attributes: nil)
-                    DataRegistry.instance.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
+                    WEPropertyRegistry.shared.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
                 }
             }
         }
     }
     
-    func generateInlineView()->WEGHInline{
-        return WEGHInline(id: map![Constants.PAYLOAD_ID] as! Int,
+    func generateInlineView()->WEProperty{
+        return WEProperty(id: map![Constants.PAYLOAD_ID] as! Int,
                                    screenName: map![Constants.PAYLOAD_SCREEN_NAME] as! String,
                                    propertyID: map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
         
@@ -81,14 +81,14 @@ public class InlineViewWidget:UIView{
     
     public override func willMove(toSuperview newSuperview: UIView?) {
         if newSuperview == nil {
-            print("InlineWidget removed \(screenName) | \(wegInline?.id)")
+            print("InlineWidget removed \(screenName) | \(weProperty?.id)")
             NotificationCenter.default.removeObserver(self)
             WEPersonalization.shared.unregisterWEPlaceholderCallback(map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
             _inlineView = nil
             map = nil
             methodChannel = nil
             campaignData = nil
-            wegInline = nil
+            weProperty = nil
         }
     }
     
@@ -96,16 +96,16 @@ public class InlineViewWidget:UIView{
 
 extension InlineViewWidget : WEPlaceholderCallback{
     public func onRendered(data: WEGCampaignData) {
-        print("OnRender : \(data.targetViewTag) || \(self.screenName) || \(String(describing: wegInline?.id))")
+        print("OnRender : \(data.targetViewTag) || \(self.screenName) || \(String(describing: weProperty?.id))")
     //    FlutterView
         self.campaignData = data
         methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_RENDERED,
                                      message: Utils.generateMap(weginline: generateInlineView(),
                                                                 campaignData: data))
         if self.isVisibleToUser{
-            if DataRegistry.instance.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
+            if WEPropertyRegistry.shared.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
                 self.campaignData?.trackImpression(attributes: nil)
-                DataRegistry.instance.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
+                WEPropertyRegistry.shared.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
             }
         }
     }

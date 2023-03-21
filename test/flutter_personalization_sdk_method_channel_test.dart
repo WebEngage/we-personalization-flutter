@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_personalization_sdk/src/flutter_personalization_sdk_method_channel.dart';
 
 void main() {
-  MethodChannelFlutterPersonalizationSdk platform = MethodChannelFlutterPersonalizationSdk();
+  WEPMethodChannel platform = WEPMethodChannel();
   const MethodChannel channel = MethodChannel('flutter_personalization_sdk');
 
   TestWidgetsFlutterBinding.ensureInitialized();

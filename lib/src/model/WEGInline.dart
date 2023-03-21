@@ -1,11 +1,12 @@
 import 'package:flutter_personalization_sdk/src/flutter_personalization_sdk_platform_interface.dart';
+import 'package:flutter_personalization_sdk/src/utils/Logger.dart';
 
 import '../../src/utils/Constants.dart';
 
 import '../callbacks/WEPlaceholderCallback.dart';
 import '../utils/Utils.dart';
 
-class WEGInline {
+class WEProperty {
   int id = -1;
   String screenName;
   String androidPropertyID;
@@ -15,20 +16,22 @@ class WEGInline {
   EventsSender? eventsSender;
 
   void trackImpression(Map<String, dynamic> map) {
+    WELogger.v("track impression called = ${eventsSender != null} with data $map");
     if (eventsSender == null) {
-      FlutterPersonalizationSdkPlatform.instance.trackImpression(this, map);
+      WEPSdkPlatform.instance.trackImpression(this, map);
     }
     eventsSender?.trackImpression(map);
   }
 
   void trackClick(Map<String, dynamic> map) {
+    WELogger.v("track click called = ${eventsSender != null} with data $map");
     if (eventsSender == null) {
-      FlutterPersonalizationSdkPlatform.instance.trackClick(this, map);
+      WEPSdkPlatform.instance.trackClick(this, map);
     }
     eventsSender?.trackClick(map);
   }
 
-  WEGInline(
+  WEProperty(
       {required this.screenName,
       required this.iosPropertyId,
       required this.androidPropertyID,

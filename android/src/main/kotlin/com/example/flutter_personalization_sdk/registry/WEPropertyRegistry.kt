@@ -1,8 +1,7 @@
 package com.example.flutter_personalization_sdk.registry
 
-import android.util.Log
-import com.example.flutter_personalization_sdk.FlutterPersonalizationSdkPlugin
-import com.example.flutter_personalization_sdk.model.WEGInline
+import com.example.flutter_personalization_sdk.WEPersonalizationPlugin
+import com.example.flutter_personalization_sdk.model.WEProperty
 import com.example.flutter_personalization_sdk.utils.*
 import com.webengage.personalization.WEPersonalization
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
@@ -10,40 +9,37 @@ import com.webengage.personalization.data.WECampaignData
 import java.lang.Exception
 import java.util.logging.Logger
 
-internal class DataRegistry {
+internal class WEPropertyRegistry {
 
     companion object {
-        val instance = DataRegistry()
+        val instance = WEPropertyRegistry()
     }
 
-    private var registryMap: HashMap<Int, WEGInline> = hashMapOf()
-    private var flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin? = null
+    private var registryMap: HashMap<Int, WEProperty> = hashMapOf()
+    private var WEPersonalizationPlugin: WEPersonalizationPlugin? = null
     private val impressionTrackedForTargetViews: MutableList<String> = mutableListOf()
 
-    fun initFlutterPlugin(flutterPersonalizationSdkPlugin: FlutterPersonalizationSdkPlugin?) {
-        this.flutterPersonalizationSdkPlugin = flutterPersonalizationSdkPlugin
+    fun initFlutterPlugin(WEPersonalizationPlugin: WEPersonalizationPlugin?) {
+        this.WEPersonalizationPlugin = WEPersonalizationPlugin
     }
 
-    fun registerData(map: HashMap<String, Any>): Boolean {
-        val id = map[PAYLOAD_ID] as Int
-        if (registryMap.containsKey(id)) {
-
-        }
-        val wegInline = WEGInline(
+    fun registerProperty(details: HashMap<String, Any>): Boolean {
+        val id = details[PAYLOAD_ID] as Int
+        val weProperty = WEProperty(
             id = id,
-            screenName = map[PAYLOAD_SCREEN_NAME] as String,
-            propertyID = map[PAYLOAD_ANDROID_PROPERTY_ID] as String
+            screenName = details[PAYLOAD_SCREEN_NAME] as String,
+            propertyID = details[PAYLOAD_ANDROID_PROPERTY_ID] as String
         )
-        registryMap[id] = wegInline
-        load(wegInline)
+        registryMap[id] = weProperty
+        load(weProperty)
         return true
     }
 
-    private fun load(wegInline: WEGInline) {
+    private fun load(weProperty: WEProperty) {
         WEPersonalization.get()
-            .registerWEPlaceholderCallback(wegInline.propertyID, object : WEPlaceholderCallback {
+            .registerWEPlaceholderCallback(weProperty.propertyID, object : WEPlaceholderCallback {
                 override fun onDataReceived(data: WECampaignData) {
-                    onDataReceived(data, wegInline)
+                    onDataReceived(data, weProperty)
 
                 }
 
@@ -52,44 +48,39 @@ internal class DataRegistry {
                     targetViewId: String,
                     error: Exception
                 ) {
-                    onPlaceholderException(campaignId, targetViewId, error, wegInline)
+                    onPlaceholderException(campaignId, targetViewId, error, weProperty)
                 }
 
                 override fun onRendered(data: WECampaignData) {
-                    onRendered(data, wegInline)
+                    onRendered(data, weProperty)
                 }
 
             })
     }
 
-    fun removeData(map: HashMap<String, Any>): Boolean {
-        val id = map[PAYLOAD_ID] as Int
-        return removeData(id)
+    fun deregisterProperty(details: HashMap<String, Any>): Boolean {
+        val id = details[PAYLOAD_ID] as Int
+        return deregisterProperty(id)
     }
 
     fun trackClick(id: Int, data: HashMap<String, Any>) {
         if (registryMap.containsKey(id)) {
-            var inline = registryMap[id];
+            val inline = registryMap[id];
             inline?.weCampaignData?.trackClick(data)
         }
     }
 
     fun trackImpression(id: Int, data: HashMap<String, Any>) {
         if (registryMap.containsKey(id)) {
-            var inline = registryMap[id];
+            val inline = registryMap[id];
             inline?.weCampaignData?.trackImpression(data)
         }
     }
 
-    private fun removeData(id: Int): Boolean {
-        com.example.flutter_personalization_sdk.utils.Logger.d("load123", "remove data $id");
+    private fun deregisterProperty(id: Int): Boolean {
         val contains = registryMap.containsKey(id)
         if (contains) {
             val data = registryMap[id]
-            com.example.flutter_personalization_sdk.utils.Logger.d(
-                "load123",
-                "remove data ${data?.propertyID}"
-            );
             WEPersonalization.get().unregisterWEPlaceholderCallback(data!!.propertyID)
         }
         registryMap.remove(id)
@@ -97,11 +88,11 @@ internal class DataRegistry {
         return contains
     }
 
-    private fun onDataReceived(data: WECampaignData, wegInline: WEGInline) {
-        wegInline.weCampaignData = data
-        flutterPersonalizationSdkPlugin?.sendCallback(
+    private fun onDataReceived(data: WECampaignData, weProperty: WEProperty) {
+        weProperty.weCampaignData = data
+        WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_DATA_RECEIVED,
-            Utils.generateMap(wegInline, data)
+            WEUtils.generateMap(weProperty, data)
         )
     }
 
@@ -109,19 +100,19 @@ internal class DataRegistry {
         campaignId: String?,
         targetViewId: String,
         error: Exception,
-        wegInline: WEGInline
+        weProperty: WEProperty
     ) {
-        flutterPersonalizationSdkPlugin?.sendCallback(
+        WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
-            Utils.generateMap(wegInline, campaignId, targetViewId, error)
+            WEUtils.generateMap(weProperty, campaignId, targetViewId, error)
         )
     }
 
-    private fun onRendered(data: WECampaignData, wegInline: WEGInline) {
-        wegInline.weCampaignData = data
-        flutterPersonalizationSdkPlugin?.sendCallback(
+    private fun onRendered(data: WECampaignData, weProperty: WEProperty) {
+        weProperty.weCampaignData = data
+        WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_RENDERED,
-            Utils.generateMap(wegInline, data)
+            WEUtils.generateMap(weProperty, data)
         )
     }
 

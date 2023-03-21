@@ -18,8 +18,8 @@ class Utils {
   }
 
   Map<String, dynamic> generateWidgetPayload(
-      WEGInline wegInline, double viewWidth, double viewHeight) {
-    var map = wegInline.toJSON();
+      WEProperty weProperty, double viewWidth, double viewHeight) {
+    var map = weProperty.toJSON();
     map.addAll({
       PAYLOAD_VIEW_WIDTH: viewWidth,
       PAYLOAD_VIEW_HEIGHT: viewHeight,

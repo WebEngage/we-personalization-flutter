@@ -1,7 +1,7 @@
 import WEPersonalization
 class Utils{
     
-    static func generateMap(weginline:WEGHInline,
+    static func generateMap(weginline:WEProperty,
                             campaignData:WEGCampaignData)->[String:Any]{
         var map = [String:Any]()
         map[Constants.PAYLOAD_ID] = weginline.id
@@ -9,7 +9,7 @@ class Utils{
         return map
     }
     
-    static func generateMap(weginline:WEGHInline,
+    static func generateMap(weginline:WEProperty,
                             campaignId: String?,
                             targetViewId: String,
                             error: Error)->[String:Any]{

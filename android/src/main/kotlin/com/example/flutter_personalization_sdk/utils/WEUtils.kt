@@ -1,61 +1,64 @@
 package com.example.flutter_personalization_sdk.utils
 
-import com.example.flutter_personalization_sdk.model.WEGInline
+import com.example.flutter_personalization_sdk.model.WEProperty
 import com.webengage.personalization.data.WECampaignData
 
-class Utils {
+class WEUtils {
 
     companion object {
         fun generateMap(
-            wegInline: WEGInline,
+            weProperty: WEProperty,
             campaignData: WECampaignData
         ): HashMap<String, Any> {
             val map: HashMap<String, Any> = hashMapOf()
-            map[PAYLOAD_ID] = wegInline.id
-            map[PAYLOAD_DATA] = _convertWECampaignDataToString(campaignData)
+            map[PAYLOAD_ID] = weProperty.id
+            map[PAYLOAD_DATA] = convertWECampaignDataToString(campaignData)
             return map
         }
 
         fun generateMap(
-            wegInline: WEGInline,
+            weProperty: WEProperty,
             campaignData: WECampaignData,
-            shadowData : HashMap<String,Any>
+            shadowData: HashMap<String, Any>
         ): HashMap<String, Any> {
             val map: HashMap<String, Any> = hashMapOf()
-            map[PAYLOAD_ID] = wegInline.id
-            map[PAYLOAD_DATA] = _convertWECampaignDataToString(campaignData)
+            map[PAYLOAD_ID] = weProperty.id
+            map[PAYLOAD_DATA] = convertWECampaignDataToString(campaignData)
             map[PAYLOAD_SHADOW_DATA] = shadowData
             return map
         }
 
         fun generateMap(
-            wegInline: WEGInline,
+            weProperty: WEProperty,
             campaignId: String?,
             targetViewId: String,
             error: java.lang.Exception
         ): HashMap<String, Any> {
             val map: HashMap<String, Any> = hashMapOf()
-            map[PAYLOAD_ID] = wegInline.id
+            map[PAYLOAD_ID] = weProperty.id
             map[PAYLOAD_CAMPAIGN_ID] = "$campaignId"
             map[PAYLOAD_TARGET_VIEW_ID] = targetViewId
             map[PAYLOAD_ERROR] = "${error.message}"
             return map
         }
 
-        fun generateMap( actionId: String,
-                         deepLink: String,
-                         data: WECampaignData):HashMap<String, Any> {
+        fun generateMap(
+            actionId: String,
+            deepLink: String,
+            data: WECampaignData
+        ): HashMap<String, Any> {
             val map: HashMap<String, Any> = hashMapOf()
             map[PAYLOAD_ACTION_ID] = actionId
             map[PAYLOAD_DEEPLINK] = deepLink
-            map[PAYLOAD_DATA] = _convertWECampaignDataToString(data)
+            map[PAYLOAD_DATA] = convertWECampaignDataToString(data)
             return map
         }
 
         fun generateMap(
-            data: WECampaignData):HashMap<String, Any> {
+            data: WECampaignData
+        ): HashMap<String, Any> {
             val map: HashMap<String, Any> = hashMapOf()
-            map[PAYLOAD_DATA] = _convertWECampaignDataToString(data)
+            map[PAYLOAD_DATA] = convertWECampaignDataToString(data)
             return map
         }
 
@@ -71,9 +74,7 @@ class Utils {
             return map
         }
 
-
-
-        private fun _convertWECampaignDataToString(weCampaignData: WECampaignData): String {
+        private fun convertWECampaignDataToString(weCampaignData: WECampaignData): String {
             return weCampaignData.toJSONString()
         }
 

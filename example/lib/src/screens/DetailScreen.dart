@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webengage_flutter/webengage_flutter.dart';
-import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
+import 'package:flutter_personalization_sdk/WEPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> with WEPlaceholderCallback {
   Widget contWE() {
-    return WEGInlineWidget(
+    return WEInlineWidget(
       screenName: "ET_home",
       androidPropertyId: "flutter_text",
       iosPropertyId: 123,

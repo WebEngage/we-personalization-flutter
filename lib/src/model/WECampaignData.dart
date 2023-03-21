@@ -1,28 +1,29 @@
 import 'dart:convert';
 
 import 'package:flutter_personalization_sdk/src/model/WEGInline.dart';
+import 'package:flutter_personalization_sdk/src/utils/Logger.dart';
 
 class WECampaignData {
   String? campaignId;
   String? targetViewId;
   WECampaignContent? weCampaignContent;
-  WEGInline? _wegInline;
+  WEProperty? _wegInline;
 
   WECampaignData();
 
-  WECampaignData.fromJson(dynamic data,{WEGInline? wegInline}) {
+  WECampaignData.fromJson(dynamic data,{WEProperty? weProperty}) {
+    WELogger.v("WECampaignData.fromJson $data");
     if (data != null) {
       var parsedJson = jsonDecode(data);
       campaignId = parsedJson["campaignId"];
       targetViewId = parsedJson["targetViewId"];
       weCampaignContent = WECampaignContent.fromJson(parsedJson["content"]);
-      _wegInline = wegInline;
+      _wegInline = weProperty;
     }
   }
 
 
   void trackImpression({Map<String, dynamic> map = const {}}){
-    print("tracked object ${_wegInline != null}");
     _wegInline?.trackImpression(map);
   }
 

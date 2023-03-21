@@ -2,7 +2,7 @@ package com.example.flutter_personalization_sdk_example
 
 
 import io.flutter.app.FlutterApplication;
-import com.webengage.webengage_plugin.WebengageInitializer;
+import com.webengage.webengage_plugin.WebengageInitializer
 import com.webengage.sdk.android.WebEngageConfig;
 import com.webengage.sdk.android.WebEngage;
 import com.webengage.sdk.android.LocationTrackingStrategy;

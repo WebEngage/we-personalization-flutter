@@ -15,13 +15,12 @@ typedef WEGInlineHandler = void Function(WEGInlineViewController controller);
 class InlineWidget extends StatefulWidget {
   Map<String, dynamic> payload;
   final WEGInlineHandler wegInlineHandler;
-  WEGInline wegInline;
+  WEProperty weProperty;
 
-//6dp shadow 50dp corner
   InlineWidget(
       {Key? key,
       required this.wegInlineHandler,
-      required this.wegInline,
+      required this.weProperty,
       required this.payload})
       : super(key: key);
 
@@ -38,7 +37,6 @@ class _InlineWidgetState extends State<InlineWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     height = widget.payload[PAYLOAD_VIEW_HEIGHT];
     width = widget.payload[PAYLOAD_VIEW_WIDTH];
@@ -48,7 +46,6 @@ class _InlineWidgetState extends State<InlineWidget> {
 
   double getMargin(margin, minus) {
     var value = margin - minus;
-    print("_platformCallHandler margin $margin $minus $value");
     if (value < 0) return margin;
     return margin;
   }
@@ -57,81 +54,84 @@ class _InlineWidgetState extends State<InlineWidget> {
   Widget build(BuildContext context) {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return Center(
-          child: Stack(
-            children: [
-              Center(
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: margin["mt"]!.toDouble(),
-                    bottom: margin["mb"]!.toDouble(),
-                  ),
-                  width: width,
-                  height: height,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(roundedCorners),
-                    boxShadow: [
-                      BoxShadow(
-                        color: elevation == 0
-                            ? Colors.transparent
-                            : Colors.black.withOpacity(0.2),
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                        offset: const Offset(1.0, 2.0),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              PlatformViewLink(
-                  viewType: CHANNEL_INLINE_VIEW,
-                  surfaceFactory: (context, controller) {
-                    return AndroidViewSurface(
-                      controller: controller as AndroidViewController,
-                      gestureRecognizers: const <
-                          Factory<OneSequenceGestureRecognizer>>{},
-                      hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-                    );
-                  },
-                  onCreatePlatformView: (params) {
-                    _onPlatformViewCreated(params.id);
-                    return PlatformViewsService.initSurfaceAndroidView(
-                      id: params.id,
-                      viewType: CHANNEL_INLINE_VIEW,
-                      layoutDirection: TextDirection.ltr,
-                      creationParams: widget.payload,
-                      creationParamsCodec: const StandardMessageCodec(),
-                      onFocus: () {
-                        params.onFocusChanged(true);
-                      },
-                    )
-                      ..addOnPlatformViewCreatedListener(
-                          params.onPlatformViewCreated)
-                      ..create();
-                  }),
-            ],
-          ),
-        );
+        return buildAndroidView();
       case TargetPlatform.iOS:
-        return UiKitView(
-          viewType: CHANNEL_INLINE_VIEW,
-          creationParams: widget.payload,
-          creationParamsCodec: const StandardMessageCodec(),
-          onPlatformViewCreated: _onPlatformViewCreated,
-        );
+        return buildIOSView();
+      default:
+        return const Placeholder();
     }
-
-    return const Placeholder();
   }
 
+  Widget buildAndroidView() => Center(
+    child: Stack(
+      children: [
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(
+              top: margin["mt"]!.toDouble(),
+              bottom: margin["mb"]!.toDouble(),
+            ),
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(roundedCorners),
+              boxShadow: [
+                BoxShadow(
+                  color: elevation == 0
+                      ? Colors.transparent
+                      : Colors.black.withOpacity(0.2),
+                  blurRadius: 5,
+                  spreadRadius: 2,
+                  offset: const Offset(1.0, 2.0),
+                ),
+              ],
+            ),
+          ),
+        ),
+        PlatformViewLink(
+            viewType: CHANNEL_INLINE_VIEW,
+            surfaceFactory: (context, controller) {
+              return AndroidViewSurface(
+                controller: controller as AndroidViewController,
+                gestureRecognizers: const <
+                    Factory<OneSequenceGestureRecognizer>>{},
+                hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+              );
+            },
+            onCreatePlatformView: (params) {
+              _onPlatformViewCreated(params.id);
+              return PlatformViewsService.initSurfaceAndroidView(
+                id: params.id,
+                viewType: CHANNEL_INLINE_VIEW,
+                layoutDirection: TextDirection.ltr,
+                creationParams: widget.payload,
+                creationParamsCodec: const StandardMessageCodec(),
+                onFocus: () {
+                  params.onFocusChanged(true);
+                },
+              )
+                ..addOnPlatformViewCreatedListener(
+                    params.onPlatformViewCreated)
+                ..create();
+            }),
+      ],
+    ),
+  );
+
+  Widget buildIOSView() => UiKitView(
+    viewType: CHANNEL_INLINE_VIEW,
+    creationParams: widget.payload,
+    creationParamsCodec: const StandardMessageCodec(),
+    onPlatformViewCreated: _onPlatformViewCreated,
+  );
+
   void _onPlatformViewCreated(int id) {
-    var controller = WEGInlineViewController._(id, widget.wegInline, update);
+    var controller = WEGInlineViewController._(id, widget.weProperty, update);
     widget.wegInlineHandler(controller);
     controller.setListener();
   }
 
-  void update(int e, int rc, bool reset, _margin,other) {
-    print("_platformCallHandler 456 $_margin $reset");
+  void update(int e, int rc, bool reset, margin_,other) {
     try {
       if (reset) {
         setState(() {
@@ -140,25 +140,24 @@ class _InlineWidgetState extends State<InlineWidget> {
         });
         return;
       } else {
-        margin = _margin;
+        margin = margin_;
         width = other["w"].toDouble();
         height = other["h"].toDouble();
-        print("_platformCallHandler 789 $margin");
         setState(() {
           elevation = e.toDouble();
           roundedCorners = rc.toDouble();
         });
       }
     } catch (e) {
-      print("Exception update _platformCallHandler ${e.toString()}");
+      WELogger.e("Exception update _platformCallHandler ${e.toString()}");
     }
   }
 }
 
 class WEGInlineViewController {
-  WEGInlineViewController._(int id, this.wegInline, this.update)
+  WEGInlineViewController._(int id, this.weProperty, this.update)
       : _channel = MethodChannel('${CHANNEL_INLINE_VIEW}_$id');
-  WEGInline wegInline;
+  WEProperty weProperty;
 
   final MethodChannel _channel;
   Function update;
@@ -176,7 +175,7 @@ class WEGInlineViewController {
   }
 
   Future _platformCallHandler(MethodCall call) async {
-    Logger.v("_platformCallHandler ${call.method} ${call.arguments}");
+    WELogger.v("InlineWidget _platformCallHandler ${call.method} ${call.arguments}");
     if (Platform.isAndroid) {
       if (call.method == METHOD_NAME_RESET_SHADOW_DETAILS) {
         update(0, 0, true, 0,{});
@@ -186,7 +185,6 @@ class WEGInlineViewController {
         try {
           var argument = call.arguments.cast<String, dynamic>()[PAYLOAD]
               [PAYLOAD_SHADOW_DATA];
-          print("_platformCallHandler 123 $argument");
           if ((argument as Map).isNotEmpty) {
             var e = argument["elevation"];
             var rc = argument["corners"];
@@ -203,10 +201,10 @@ class WEGInlineViewController {
             });
           }
         } catch (e) {
-          print("Exception Hybrid _platformCallHandler ${e.toString()}");
+          WELogger.e("Exception Hybrid _platformCallHandler ${e.toString()}");
         }
       }
     }
-    DataRegistry().platformCallHandler(call, wegInline);
+    WEPropertyRegistry().platformCallHandler(call, weProperty);
   }
 }

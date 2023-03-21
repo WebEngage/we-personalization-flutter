@@ -15,7 +15,7 @@ add depencency in pubspec.yaml
 In **main.dart** file after initializing WebEngage plugin , Initialize personalization plugin
 
 ```dart
-import 'package:flutter_personalization_sdk/WEGPersonalization.dart';
+import 'package:flutter_personalization_sdk/WEPersonalization.dart';
 
 WEPersonalization().init();
 
@@ -23,10 +23,10 @@ WEPersonalization().init();
 
 Before adding WEPersonalization widget into screens, please follow the screen tracking documentation.
 
-Add ***WEGInlineWidget*** widget in your widget like below
+Add ***WEInlineWidget*** widget in your widget like below
 
 ```dart
-WEGInlineWidget(
+WEInlineWidget(
         screenName: ,//the name you pass during the trackScreen
         androidPropertyId: ,//Android Property ID
         iosPropertyId: ,//IOS Property ID
@@ -38,7 +38,7 @@ WEGInlineWidget(
 
 implement ***placeholderCallback***
 
-In your class where you have added WEGPersonalization implement it with ***WEPlaceholderCallback*** and override the methods
+In your class where you have added WEPersonalization implement it with ***WEPlaceholderCallback*** and override the methods
 
 
 ```dart
@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen>
     }
 ```
 
-To implement ***WEGInlineWidget*** without view
+To implement ***WEInlineWidget*** without view
 
 add below code after ***initState*** methods
 

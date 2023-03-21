@@ -27,12 +27,12 @@ public class InlineWidget:NSObject, FlutterPlatformView {
         case Constants.METHOD_NAME_SEND_CLICK:
             let map = call.arguments as! [String:Any]
             let data = map[Constants.PAYLOAD_DATA] as? [String:Any]
-            _inlineView.wegInline?.campaignData?.trackClick(attributes: data)
+            _inlineView.weProperty?.campaignData?.trackClick(attributes: data)
             result(true)
         case Constants.METHOD_NAME_SEND_IMPRESSION:
             let map = call.arguments as! [String:Any]
             let data = map[Constants.PAYLOAD_DATA] as? [String:Any]
-            _inlineView.wegInline?.campaignData?.trackImpression(attributes: data)
+            _inlineView.weProperty?.campaignData?.trackImpression(attributes: data)
             result(true)
         default:
             result(FlutterMethodNotImplemented)

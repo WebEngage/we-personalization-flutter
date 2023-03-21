@@ -36,9 +36,9 @@ flutter:
     platforms:
       android:
         package: com.example.flutter_personalization_sdk
-        pluginClass: FlutterPersonalizationSdkPlugin
+        pluginClass: WEPersonalizationPlugin
       ios:
-        pluginClass: FlutterPersonalizationSdkPlugin
+        pluginClass: WEPersonalizationPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
