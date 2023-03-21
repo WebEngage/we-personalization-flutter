@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 
-public class InlineWidgetFactory:NSObject, FlutterPlatformViewFactory {
+public class WEInlineWidgetFactory:NSObject, FlutterPlatformViewFactory {
     private var messenger: FlutterBinaryMessenger
 
     init(messenger: FlutterBinaryMessenger) {
@@ -18,7 +18,7 @@ public class InlineWidgetFactory:NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
-        return InlineWidget(
+        return WEInlineWidget(
             frame: frame,
             viewIdentifier: viewId,
             arguments: args,

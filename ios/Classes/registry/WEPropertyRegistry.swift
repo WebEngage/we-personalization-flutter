@@ -10,10 +10,10 @@ class WEPropertyRegistry{
     
     
     public func registerProperty(details:[String:Any]){
-        let id = details[Constants.PAYLOAD_ID] as! Int
+        let id = details[WEConstants.PAYLOAD_ID] as! Int
         let weghinline = WEProperty(id: id,
-                                    screenName: details[Constants.PAYLOAD_SCREEN_NAME] as! String,
-                                    propertyID: details[Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
+                                    screenName: details[WEConstants.PAYLOAD_SCREEN_NAME] as! String,
+                                    propertyID: details[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
         
         registryMap[id] = weghinline
         WEPersonalization.shared.registerWEPlaceholderCallback(weghinline.propertyID, self)
@@ -21,7 +21,7 @@ class WEPropertyRegistry{
     }
     
     public func deRegisterProperty(details:[String:Any])->Bool{
-        let id = details[Constants.PAYLOAD_ID] as! Int
+        let id = details[WEConstants.PAYLOAD_ID] as! Int
         return deRegisterProperty(forId: id)
     }
     
@@ -83,7 +83,7 @@ class WEPropertyRegistry{
         }
     }
     
-    //MARK: - Impression click helper
+    //MARK: - Impression tracking helper
     func trackClick(id:Int, attributes: [String : Any]?){
         if(registryMap[id] != nil){
             var data = registryMap[id]!;
@@ -95,24 +95,24 @@ class WEPropertyRegistry{
 }
 
 extension WEPropertyRegistry : WEPlaceholderCallback{
-    internal func onDataReceived(_ data: WEGCampaignData) {
+    internal func onDataReceived(_ data: WECampaignData) {
         var weProperty = getProperty(targetViewTag: data.targetViewTag)
         weProperty?.campaignData = data
         print("_platformCallHandler onDataReceived iOS \(weProperty != nil) \(WEPersonalizationPlugin.methodChannel != nil)")
         if(weProperty != nil){
-            WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_DATA_RECEIVED,
-                                                                 message: Utils.generateMap(weginline: weProperty!,
+            WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_DATA_RECEIVED,
+                                                                 message: WEUtils.generateMap(weginline: weProperty!,
                                                                                             campaignData: data))
         }
     }
     
-    internal func onRendered(data: WEGCampaignData) {
+    internal func onRendered(data: WECampaignData) {
         print("_platformCallHandler onRendered iOS \(data.targetViewTag)")
         var weProperty = getProperty(targetViewTag: data.targetViewTag)
         weProperty?.campaignData = data
         if(weProperty != nil){
-            WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_RENDERED,
-                                                                 message: Utils.generateMap(weginline: weProperty!,
+            WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_RENDERED,
+                                                                 message: WEUtils.generateMap(weginline: weProperty!,
                                                                                             campaignData: data))
         }
     }
@@ -121,8 +121,8 @@ extension WEPropertyRegistry : WEPlaceholderCallback{
         //TODO: change targetviewid to INT
         let weProperty = getProperty(targetViewTag: Int(targetViewId) ?? -1)
         if(weProperty != nil){
-            WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
-                                                                 message: Utils.generateMap(weginline: weProperty!,
+            WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
+                                                                 message: WEUtils.generateMap(weginline: weProperty!,
                                                                                             campaignId: campaignId,
                                                                                             targetViewId: targetViewId,
                                                                                             error: exception))

@@ -1,11 +1,11 @@
 import WEPersonalization
-class Utils{
+class WEUtils{
     
     static func generateMap(weginline:WEProperty,
-                            campaignData:WEGCampaignData)->[String:Any]{
+                            campaignData:WECampaignData)->[String:Any]{
         var map = [String:Any]()
-        map[Constants.PAYLOAD_ID] = weginline.id
-        map[Constants.PAYLOAD_DATA] = campaignData.toJSONString()
+        map[WEConstants.PAYLOAD_ID] = weginline.id
+        map[WEConstants.PAYLOAD_DATA] = campaignData.toJSONString()
         return map
     }
     
@@ -14,26 +14,26 @@ class Utils{
                             targetViewId: String,
                             error: Error)->[String:Any]{
         var map = [String:Any]()
-        map[Constants.PAYLOAD_ID] = weginline.id
-        map[Constants.PAYLOAD_CAMPAIGN_ID] = campaignId
-        map[Constants.PAYLOAD_TARGET_VIEW_ID] = targetViewId
-        map[Constants.PAYLOAD_ERROR] = error.localizedDescription
+        map[WEConstants.PAYLOAD_ID] = weginline.id
+        map[WEConstants.PAYLOAD_CAMPAIGN_ID] = campaignId
+        map[WEConstants.PAYLOAD_TARGET_VIEW_ID] = targetViewId
+        map[WEConstants.PAYLOAD_ERROR] = error.localizedDescription
         return map
     }
     
     static func generateMap(actionId: String,
                             deepLink: String,
-                            data: WEGCampaignData)->[String:Any]{
+                            data: WECampaignData)->[String:Any]{
         var map = [String:Any]()
-        map[Constants.PAYLOAD_ACTION_ID] = actionId
-        map[Constants.PAYLOAD_DEEPLINK] = deepLink
-        map[Constants.PAYLOAD_DATA] = data.toJSONString()
+        map[WEConstants.PAYLOAD_ACTION_ID] = actionId
+        map[WEConstants.PAYLOAD_DEEPLINK] = deepLink
+        map[WEConstants.PAYLOAD_DATA] = data.toJSONString()
         return map
     }
     
-    static func generateMap(campaignData:WEGCampaignData)->[String:Any]{
+    static func generateMap(campaignData:WECampaignData)->[String:Any]{
         var map = [String:Any]()
-        map[Constants.PAYLOAD_DATA] = campaignData.toJSONString()
+        map[WEConstants.PAYLOAD_DATA] = campaignData.toJSONString()
         return map
     }
     
@@ -42,15 +42,15 @@ class Utils{
                             targetViewId: String,
                             error: Error)->[String:Any]{
         var map = [String:Any]()
-        map[Constants.PAYLOAD_CAMPAIGN_ID] = campaignId
-        map[Constants.PAYLOAD_TARGET_VIEW_ID] = targetViewId
-        map[Constants.PAYLOAD_ERROR] = error.localizedDescription
+        map[WEConstants.PAYLOAD_CAMPAIGN_ID] = campaignId
+        map[WEConstants.PAYLOAD_TARGET_VIEW_ID] = targetViewId
+        map[WEConstants.PAYLOAD_ERROR] = error.localizedDescription
         return map
     }
     
 }
 
-extension WEGCampaignData {
+extension WECampaignData {
 
     func toMap()->[String:Any]{
         var map = [String:Any]()

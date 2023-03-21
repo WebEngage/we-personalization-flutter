@@ -1,4 +1,4 @@
-struct Constants{
+struct WEConstants{
     static let PERSONALIZATION_SDK = "flutter_personalization_sdk";
     static let CHANNEL_INLINE_VIEW = "channel_inline_view"
     static let PAYLOAD_IOS_PROPERTY_ID = "iosPropertyId"

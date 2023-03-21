@@ -6,32 +6,32 @@ class WEPluginCallbackHandler : WECampaignCallback{
     
     static let shared = WEPluginCallbackHandler()
     
-    func onCampaignPrepared(_ data: WEGCampaignData) -> WEGCampaignData {
+    func onCampaignPrepared(_ data: WECampaignData) -> WECampaignData {
         WEPersonalizationPlugin.methodChannel?.sendCallbacks(
-            methodName: Constants.METHOD_NAME_ON_CAMPAIGN_PREPARED,
-            message: Utils.generateMap(campaignData: data)
+            methodName: WEConstants.METHOD_NAME_ON_CAMPAIGN_PREPARED,
+            message: WEUtils.generateMap(campaignData: data)
         )
         return data
     }
     
-    func onCampaignShown(data: WEGCampaignData) {
+    func onCampaignShown(data: WECampaignData) {
         WEPersonalizationPlugin.methodChannel?.sendCallbacks(
-            methodName: Constants.METHOD_NAME_ON_CAMPAIGN_SHOWN,
-            message: Utils.generateMap(campaignData: data)
+            methodName: WEConstants.METHOD_NAME_ON_CAMPAIGN_SHOWN,
+            message: WEUtils.generateMap(campaignData: data)
         )
     }
     
     func onCampaignException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
         WEPersonalizationPlugin.methodChannel?.sendCallbacks(
-            methodName: Constants.METHOD_NAME_ON_CAMPAIGN_EXCEPTION,
-            message: Utils.generateMap(campaignId: campaignId, targetViewId: targetViewId, error: exception)
+            methodName: WEConstants.METHOD_NAME_ON_CAMPAIGN_EXCEPTION,
+            message: WEUtils.generateMap(campaignId: campaignId, targetViewId: targetViewId, error: exception)
         )
     }
     
-    func onCampaignClicked(actionId: String, deepLink: String, data: WEGCampaignData) -> Bool {
+    func onCampaignClicked(actionId: String, deepLink: String, data: WECampaignData) -> Bool {
         WEPersonalizationPlugin.methodChannel?.sendCallbacks(
-            methodName: Constants.METHOD_NAME_ON_CAMPAIGN_CLICKED,
-            message: Utils.generateMap(actionId: actionId, deepLink: deepLink, data: data)
+            methodName: WEConstants.METHOD_NAME_ON_CAMPAIGN_CLICKED,
+            message: WEUtils.generateMap(actionId: actionId, deepLink: deepLink, data: data)
         )
         return true
     }

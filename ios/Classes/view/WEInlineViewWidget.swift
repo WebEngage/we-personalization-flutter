@@ -5,12 +5,12 @@ import WebEngage
 import Flutter
 
 
-public class InlineViewWidget:UIView{
+public class WEInlineViewWidget:UIView{
 
     var _inlineView:WEInlineView? = nil
     var map :Dictionary<String,Any?>? = nil
     var methodChannel:FlutterMethodChannel? = nil
-    var campaignData:WEGCampaignData? = nil
+    var campaignData:WECampaignData? = nil
     var weProperty:WEProperty? = nil
     var screenName = ""
 
@@ -18,7 +18,7 @@ public class InlineViewWidget:UIView{
     func setMap(map : Dictionary<String,Any?>) {
         self.map = map
         weProperty = generateInlineView()
-        screenName = map[Constants.PAYLOAD_SCREEN_NAME] as! String;
+        screenName = map[WEConstants.PAYLOAD_SCREEN_NAME] as! String;
         NotificationCenter.default.addObserver(self, selector: #selector(self.screenNavigate(notification:)), name: Notification.Name(screenName), object: nil)
         print("InlineWidget added observer \(screenName)")
         setupView()
@@ -50,9 +50,9 @@ public class InlineViewWidget:UIView{
       }
     
     private func setupView(){
-        let width = map![Constants.PAYLOAD_VIEW_WIDTH] as! Int
-        let height = map![Constants.PAYLOAD_VIEW_HEIGHT] as! Int
-        let propertyId = map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int
+        let width = map![WEConstants.PAYLOAD_VIEW_WIDTH] as! Int
+        let height = map![WEConstants.PAYLOAD_VIEW_HEIGHT] as! Int
+        let propertyId = map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int
        
         _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         _inlineView!.tag = propertyId
@@ -73,9 +73,9 @@ public class InlineViewWidget:UIView{
     }
     
     func generateInlineView()->WEProperty{
-        return WEProperty(id: map![Constants.PAYLOAD_ID] as! Int,
-                                   screenName: map![Constants.PAYLOAD_SCREEN_NAME] as! String,
-                                   propertyID: map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
+        return WEProperty(id: map![WEConstants.PAYLOAD_ID] as! Int,
+                                   screenName: map![WEConstants.PAYLOAD_SCREEN_NAME] as! String,
+                                   propertyID: map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
         
     }
     
@@ -83,7 +83,7 @@ public class InlineViewWidget:UIView{
         if newSuperview == nil {
             print("InlineWidget removed \(screenName) | \(weProperty?.id)")
             NotificationCenter.default.removeObserver(self)
-            WEPersonalization.shared.unregisterWEPlaceholderCallback(map![Constants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
+            WEPersonalization.shared.unregisterWEPlaceholderCallback(map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
             _inlineView = nil
             map = nil
             methodChannel = nil
@@ -94,13 +94,13 @@ public class InlineViewWidget:UIView{
     
 }
 
-extension InlineViewWidget : WEPlaceholderCallback{
-    public func onRendered(data: WEGCampaignData) {
+extension WEInlineViewWidget : WEPlaceholderCallback{
+    public func onRendered(data: WECampaignData) {
         print("OnRender : \(data.targetViewTag) || \(self.screenName) || \(String(describing: weProperty?.id))")
     //    FlutterView
         self.campaignData = data
-        methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_RENDERED,
-                                     message: Utils.generateMap(weginline: generateInlineView(),
+        methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_RENDERED,
+                                     message: WEUtils.generateMap(weginline: generateInlineView(),
                                                                 campaignData: data))
         if self.isVisibleToUser{
             if WEPropertyRegistry.shared.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
@@ -110,15 +110,15 @@ extension InlineViewWidget : WEPlaceholderCallback{
         }
     }
 
-    public func onDataReceived(_ data: WEGCampaignData) {
-        methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_DATA_RECEIVED,
-                                     message: Utils.generateMap(weginline: generateInlineView(),
+    public func onDataReceived(_ data: WECampaignData) {
+        methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_DATA_RECEIVED,
+                                     message: WEUtils.generateMap(weginline: generateInlineView(),
                                                                 campaignData: data))
     }
 
     public func onPlaceholderException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
-        methodChannel?.sendCallbacks(methodName: Constants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
-                                     message: Utils.generateMap(weginline: generateInlineView(),
+        methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
+                                     message: WEUtils.generateMap(weginline: generateInlineView(),
                                                                 campaignId: campaignId,
                                                                 targetViewId: targetViewId,
                                                                 error: exception))
