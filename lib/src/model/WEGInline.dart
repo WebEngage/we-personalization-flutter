@@ -1,5 +1,5 @@
-import 'package:flutter_personalization_sdk/src/flutter_personalization_sdk_platform_interface.dart';
-import 'package:flutter_personalization_sdk/src/utils/Logger.dart';
+import 'package:we_personalization_flutter/src/flutter_personalization_sdk_platform_interface.dart';
+import 'package:we_personalization_flutter/src/utils/Logger.dart';
 
 import '../../src/utils/Constants.dart';
 

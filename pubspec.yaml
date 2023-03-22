@@ -36,7 +36,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.flutter_personalization_sdk
+        package: com.webengage.we_personalization_flutter
         pluginClass: WEPersonalizationPlugin
       ios:
         pluginClass: WEPersonalizationPlugin

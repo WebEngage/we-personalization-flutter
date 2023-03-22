@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webengage_flutter/webengage_flutter.dart';
-import 'package:flutter_personalization_sdk/WEPersonalization.dart';
+import 'package:we_personalization_flutter/WEPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
 
 class DetailScreen extends StatefulWidget {

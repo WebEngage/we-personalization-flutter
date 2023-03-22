@@ -1,14 +1,14 @@
-package com.example.flutter_personalization_sdk
+package com.webengage.we_personalization_flutter
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.NonNull
-import com.example.flutter_personalization_sdk.handler.WEPluginCallbackHandler
-import com.example.flutter_personalization_sdk.registry.WEPropertyRegistry
-import com.example.flutter_personalization_sdk.utils.*
-import com.example.flutter_personalization_sdk.view.WEInlineWidgetFactory
+import com.webengage.we_personalization_flutter.handler.WEPluginCallbackHandler
+import com.webengage.we_personalization_flutter.registry.WEPropertyRegistry
+import com.webengage.we_personalization_flutter.utils.*
+import com.webengage.we_personalization_flutter.view.WEInlineWidgetFactory
 import com.webengage.personalization.WEPersonalization
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin

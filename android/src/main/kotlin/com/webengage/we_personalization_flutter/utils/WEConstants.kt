@@ -1,4 +1,4 @@
-package com.example.flutter_personalization_sdk.utils
+package com.webengage.we_personalization_flutter.utils
 
 const val PERSONALIZATION_SDK = "flutter_personalization_sdk";
 const val CHANNEL_INLINE_VIEW = "channel_inline_view"

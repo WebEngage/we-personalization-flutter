@@ -1,5 +1,5 @@
-export 'package:flutter_personalization_sdk/src/WEPersonalization.dart';
-export 'package:flutter_personalization_sdk/src/widget/WEInlineWidget.dart';
-export 'package:flutter_personalization_sdk/src/model/WECampaignData.dart';
-export 'package:flutter_personalization_sdk/src/callbacks/WECampaignCallback.dart';
-export 'package:flutter_personalization_sdk/src/callbacks/WEPlaceholderCallback.dart';
+export 'package:we_personalization_flutter/src/WEPersonalization.dart';
+export 'package:we_personalization_flutter/src/widget/WEInlineWidget.dart';
+export 'package:we_personalization_flutter/src/model/WECampaignData.dart';
+export 'package:we_personalization_flutter/src/callbacks/WECampaignCallback.dart';
+export 'package:we_personalization_flutter/src/callbacks/WEPlaceholderCallback.dart';

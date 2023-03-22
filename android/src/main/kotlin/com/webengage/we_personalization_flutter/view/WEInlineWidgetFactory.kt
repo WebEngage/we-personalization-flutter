@@ -1,4 +1,4 @@
-package com.example.flutter_personalization_sdk.view
+package com.webengage.we_personalization_flutter.view
 
 import android.content.Context
 import io.flutter.plugin.common.BinaryMessenger

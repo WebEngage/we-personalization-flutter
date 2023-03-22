@@ -1,8 +1,8 @@
-package com.example.flutter_personalization_sdk.handler
+package com.webengage.we_personalization_flutter.handler
 
-import com.example.flutter_personalization_sdk.WEPersonalizationPlugin
-import com.example.flutter_personalization_sdk.registry.WEPropertyRegistry
-import com.example.flutter_personalization_sdk.utils.*
+import com.webengage.we_personalization_flutter.WEPersonalizationPlugin
+import com.webengage.we_personalization_flutter.registry.WEPropertyRegistry
+import com.webengage.we_personalization_flutter.utils.*
 import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.callbacks.WEPropertyRegistryCallback
 import com.webengage.personalization.data.WECampaignData

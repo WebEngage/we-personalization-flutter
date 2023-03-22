@@ -1,4 +1,4 @@
-import 'package:flutter_personalization_sdk/src/model/WECampaignData.dart';
+import 'package:we_personalization_flutter/src/model/WECampaignData.dart';
 
 class WECampaignCallback {
 

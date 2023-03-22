@@ -1,10 +1,10 @@
-package com.example.flutter_personalization_sdk.view
+package com.webengage.we_personalization_flutter.view
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import com.example.flutter_personalization_sdk.utils.*
+import com.webengage.we_personalization_flutter.utils.*
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

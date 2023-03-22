@@ -1,4 +1,4 @@
-package com.example.flutter_personalization_sdk.extension
+package com.webengage.we_personalization_flutter.extension
 
 import android.graphics.Rect
 import android.view.View

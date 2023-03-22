@@ -1,4 +1,4 @@
-package com.example.flutter_personalization_sdk.model
+package com.webengage.we_personalization_flutter.model
 
 import com.webengage.personalization.data.WECampaignData
 

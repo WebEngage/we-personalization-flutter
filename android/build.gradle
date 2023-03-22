@@ -1,4 +1,4 @@
-group 'com.example.flutter_personalization_sdk'
+group 'com.webengage.we_personalization_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {

@@ -1,6 +1,6 @@
-package com.example.flutter_personalization_sdk.utils
+package com.webengage.we_personalization_flutter.utils
 
-import com.example.flutter_personalization_sdk.model.WEProperty
+import com.webengage.we_personalization_flutter.model.WEProperty
 import com.webengage.personalization.data.WECampaignData
 
 class WEUtils {

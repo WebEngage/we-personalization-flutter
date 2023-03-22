@@ -15,7 +15,7 @@ add depencency in pubspec.yaml
 In **main.dart** file after initializing WebEngage plugin , Initialize personalization plugin
 
 ```dart
-import 'package:flutter_personalization_sdk/WEPersonalization.dart';
+import 'package:we_personalization_flutter/WEPersonalization.dart';
 
 WEPersonalization().init();
 

@@ -17,7 +17,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_personalization_sdk:
+  we_personalization_flutter:
     # When depending on this package from a real application you should use:
     #   flutter_personalization_sdk: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints

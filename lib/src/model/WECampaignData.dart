@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_personalization_sdk/src/model/WEGInline.dart';
-import 'package:flutter_personalization_sdk/src/utils/Logger.dart';
+import 'package:we_personalization_flutter/src/model/WEGInline.dart';
+import 'package:we_personalization_flutter/src/utils/Logger.dart';
 
 class WECampaignData {
   String? campaignId;

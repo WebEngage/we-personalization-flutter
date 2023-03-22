@@ -1,4 +1,4 @@
-package com.example.flutter_personalization_sdk.view
+package com.webengage.we_personalization_flutter.view
 
 import android.content.Context
 import android.util.DisplayMetrics
@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import com.example.flutter_personalization_sdk.R
-import com.example.flutter_personalization_sdk.extension.isVisible
-import com.example.flutter_personalization_sdk.handler.WEPluginCallbackHandler
-import com.example.flutter_personalization_sdk.handler.ScreenNavigatorCallback
-import com.example.flutter_personalization_sdk.model.WEProperty
-import com.example.flutter_personalization_sdk.registry.WEPropertyRegistry
-import com.example.flutter_personalization_sdk.utils.*
+import com.webengage.we_personalization_flutter.R
+import com.webengage.we_personalization_flutter.extension.isVisible
+import com.webengage.we_personalization_flutter.handler.WEPluginCallbackHandler
+import com.webengage.we_personalization_flutter.handler.ScreenNavigatorCallback
+import com.webengage.we_personalization_flutter.model.WEProperty
+import com.webengage.we_personalization_flutter.registry.WEPropertyRegistry
+import com.webengage.we_personalization_flutter.utils.*
 import com.webengage.personalization.WEInlineView
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
 import com.webengage.personalization.data.WECampaignData

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_personalization_sdk/WEPersonalization.dart';
+import 'package:we_personalization_flutter/WEPersonalization.dart';
 import 'package:flutter_personalization_sdk_example/src/observer/RouteObserver.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/CustomScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/DetailScreen.dart';
