@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:we_personalization_flutter/WEPersonalization.dart';
+import 'package:we_personalization_flutter/we_personalization_flutter.dart';
 import 'package:we_personalization_flutter/src/model/WECampaignData.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/customWidgets/Button.dart';
 import '../../src/models/customScreen/CustomModel.dart';

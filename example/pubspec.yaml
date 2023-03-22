@@ -29,7 +29,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.0.17
-  webengage_flutter: ^1.2.1
+  webengage_flutter: ^1.2.3
 
 dev_dependencies:
   integration_test:

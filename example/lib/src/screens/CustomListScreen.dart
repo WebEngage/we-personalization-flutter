@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:we_personalization_flutter/WEPersonalization.dart';
+import 'package:we_personalization_flutter/we_personalization_flutter.dart';
 import 'package:flutter_personalization_sdk_example/main.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
