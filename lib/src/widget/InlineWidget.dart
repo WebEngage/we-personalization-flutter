@@ -38,8 +38,6 @@ class _InlineWidgetState extends State<InlineWidget> {
   @override
   void initState() {
     super.initState();
-    height = widget.payload[PAYLOAD_VIEW_HEIGHT];
-    width = widget.payload[PAYLOAD_VIEW_WIDTH];
   }
 
   int count = 0;
@@ -65,27 +63,27 @@ class _InlineWidgetState extends State<InlineWidget> {
   Widget buildAndroidView() => Center(
     child: Stack(
       children: [
-        Center(
-          child: Container(
-            margin: EdgeInsets.only(
-              top: margin["mt"]!.toDouble(),
-              bottom: margin["mb"]!.toDouble(),
-            ),
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(roundedCorners),
-              boxShadow: [
-                BoxShadow(
-                  color: elevation == 0
-                      ? Colors.transparent
-                      : Colors.black.withOpacity(0.2),
-                  blurRadius: 5,
-                  spreadRadius: 2,
-                  offset: const Offset(1.0, 2.0),
-                ),
-              ],
-            ),
+        Container(
+          margin: EdgeInsets.only(
+            top: margin["mt"]!.toDouble(),
+            bottom: margin["mb"]!.toDouble(),
+            //left: margin["ml"]!.toDouble(),
+           // right: margin["mr"]!.toDouble(),
+          ),
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(roundedCorners),
+            boxShadow: [
+              BoxShadow(
+                color: elevation == 0
+                    ? Colors.transparent
+                    : Colors.black.withOpacity(0.2),
+                blurRadius: 5,
+                spreadRadius: 2,
+                offset: const Offset(1.0, 2.0),
+              ),
+            ],
           ),
         ),
         PlatformViewLink(
@@ -196,6 +194,7 @@ class WEGInlineViewController {
               "mt": argument["mt"].toDouble(),
               "mb": argument["mb"].toDouble()
             };
+            WELogger.v("InlineWidget _platformCallHandler2 $argument");
             Future.delayed(const Duration(milliseconds: 250), () {
               update(e, rc, false, margin, other);
             });

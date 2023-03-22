@@ -19,7 +19,6 @@ import com.example.flutter_personalization_sdk.utils.*
 import com.webengage.personalization.WEInlineView
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
 import com.webengage.personalization.data.WECampaignData
-import com.webengage.personalization.utils.TAG
 
 class WEInlineViewWidget(
     context: Context,
@@ -116,7 +115,7 @@ class WEInlineViewWidget(
         ) {
             sendImpression(data)
         } else {
-            Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
+           // Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
         }
 
         val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
