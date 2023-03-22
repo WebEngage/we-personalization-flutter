@@ -1,7 +1,8 @@
-name: flutter_personalization_sdk
-description: A new Flutter project.
-version: 0.0.1
-homepage:
+name: we_personalization_flutter
+description: WebEngage Flutter Personalization SDK.
+version: 1.0.0
+homepage: https://webengage.com/
+repository: https://github.com/WebEngage/we-personalization-flutter
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
