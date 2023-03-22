@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import '../../src/model/WEGInline.dart';
 import '../../src/utils/Constants.dart';
 

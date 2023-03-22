@@ -1,4 +1,5 @@
 import Flutter
+import WEPersonalization
 public class WEInlineWidget:NSObject, FlutterPlatformView {
     private var _inlineView: WEInlineViewWidget
     private var _methodChannel: FlutterMethodChannel
@@ -23,6 +24,7 @@ public class WEInlineWidget:NSObject, FlutterPlatformView {
 
 
     func onMethodCall(call: FlutterMethodCall, result: FlutterResult) {
+        WELogger.d("WEP I \(call.method) \(call.arguments)")
         switch(call.method){
         case WEConstants.METHOD_NAME_SEND_CLICK:
             let map = call.arguments as! [String:Any]

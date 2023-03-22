@@ -33,8 +33,7 @@ class _MyAppState extends State<MyApp> with WECampaignCallback {
   void initState() {
     super.initState();
     WebEngagePlugin _webenagePlugin = WebEngagePlugin();
-    WEPersonalization().init();
-    WEPersonalization().enableLogs();
+    WEPersonalization().init(enableLogs: true);
     WEPersonalization().registerWECampaignCallback(this);
     initSharedPref();
   }

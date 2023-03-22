@@ -7,6 +7,7 @@ public class WEPersonalizationPlugin: NSObject, FlutterPlugin {
     public static var instance :WEPersonalizationPlugin? = nil
     
     public static func register(with registrar: FlutterPluginRegistrar) {
+        WELogger.d("register attach to engine")
         if(methodChannel == nil){
             methodChannel = FlutterMethodChannel(name: WEConstants.PERSONALIZATION_SDK, binaryMessenger: registrar.messenger())
             registrar.register(WEInlineWidgetFactory(messenger: registrar.messenger()), withId: WEConstants.CHANNEL_INLINE_VIEW)
@@ -16,11 +17,13 @@ public class WEPersonalizationPlugin: NSObject, FlutterPlugin {
     }
     
     public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
+        WELogger.d("detachFromEngine")
         WEPersonalizationPlugin.methodChannel = nil;
         WEPersonalizationPlugin.instance = nil;
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        WELogger.d("WEP I \(call.method) \(String(describing: call.arguments))")
         switch call.method {
         case WEConstants.METHOD_NAME_REGISTER:
             WEPropertyRegistry.shared.registerProperty(details: call.arguments as! [String:Any])
@@ -29,6 +32,8 @@ public class WEPersonalizationPlugin: NSObject, FlutterPlugin {
             let _result = WEPropertyRegistry.shared.deRegisterProperty(details: call.arguments as! [String:Any])
             result(_result)
         case WEConstants.METHOD_NAME_INIT:
+            WELogger.initLogger()
+            WELogger.d("WEP I \(call.method) \(String(describing: call.arguments))")
             UserDefaults.standard.set(false, forKey: WEPersonalization.Constants.KEY_SHOULD_AUTO_TRACK_IMPRESSIONS)
             WEPersonalization.shared.initialise()
             WEPersonalization.shared.registerWECampaignCallback(WEPluginCallbackHandler.shared)

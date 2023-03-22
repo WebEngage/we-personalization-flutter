@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import '../../src/data/data_registry.dart';
 import '../../src/model/WEGInline.dart';
 import '../../src/utils/Constants.dart';
-import '../../src/utils/Logger.dart';
+import '../../src/utils/WELogger.dart';
 
 typedef WEGInlineHandler = void Function(WEGInlineViewController controller);
 
@@ -173,8 +173,8 @@ class WEGInlineViewController {
   }
 
   Future _platformCallHandler(MethodCall call) async {
-    WELogger.v("InlineWidget _platformCallHandler ${call.method} ${call.arguments}");
     if (Platform.isAndroid) {
+      WELogger.v("InlineWidget _platformCallHandler ${call.method} ${call.arguments}");
       if (call.method == METHOD_NAME_RESET_SHADOW_DETAILS) {
         update(0, 0, true, 0,{});
         return;

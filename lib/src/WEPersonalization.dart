@@ -1,7 +1,7 @@
 import '../../src/callbacks/WECampaignCallback.dart';
 import '../../src/data/data_registry.dart';
 import '../../src/flutter_personalization_sdk_platform_interface.dart';
-import '../../src/utils/Logger.dart';
+import '../../src/utils/WELogger.dart';
 
 import 'callbacks/WEPlaceholderCallback.dart';
 
@@ -14,7 +14,8 @@ class WEPersonalization {
 
   WEPersonalization._internal();
 
-  void init() {
+  void init({bool enableLogs = false}) {
+    WELogger.enableLogs(enableLogs);
     WEPSdkPlatform.instance.initPersonalization();
   }
 
@@ -24,7 +25,7 @@ class WEPersonalization {
   int registerWEPlaceholderCallback(
       String? androidPropertyId, int iosPropertyId, String screenName,
       {WEPlaceholderCallback? placeholderCallback}) {
-   return WEPropertyRegistry().registerWEPlaceholderCallback(
+    return WEPropertyRegistry().registerWEPlaceholderCallback(
         screenName, androidPropertyId!, iosPropertyId,
         placeholderCallback: placeholderCallback);
   }
@@ -35,15 +36,12 @@ class WEPersonalization {
   }
 
   void deregisterWEPlaceholderCallback(String screenName) {
-    WEPropertyRegistry().deRegisterWEPlaceholderCallbackByScreenName(screenName);
+    WEPropertyRegistry()
+        .deRegisterWEPlaceholderCallbackByScreenName(screenName);
   }
 
   void deregisterWEPlaceholderCallbackById(int ID) {
     WEPropertyRegistry().deRegisterWEPlaceholderCallback(ID);
-  }
-  
-  void enableLogs(){
-    WELogger.enableLogs(true);
   }
 
 }

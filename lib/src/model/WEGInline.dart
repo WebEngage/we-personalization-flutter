@@ -1,5 +1,5 @@
-import 'package:we_personalization_flutter/src/flutter_personalization_sdk_platform_interface.dart';
-import 'package:we_personalization_flutter/src/utils/Logger.dart';
+import '../../src/flutter_personalization_sdk_platform_interface.dart';
+import '../../src/utils/WELogger.dart';
 
 import '../../src/utils/Constants.dart';
 
@@ -16,7 +16,7 @@ class WEProperty {
   EventsSender? eventsSender;
 
   void trackImpression(Map<String, dynamic> map) {
-    WELogger.v("track impression called = ${eventsSender != null} with data $map");
+    WELogger.v("WEProperty track impression called = ${eventsSender != null} with data $map");
     if (eventsSender == null) {
       WEPSdkPlatform.instance.trackImpression(this, map);
     }
@@ -24,7 +24,7 @@ class WEProperty {
   }
 
   void trackClick(Map<String, dynamic> map) {
-    WELogger.v("track click called = ${eventsSender != null} with data $map");
+    WELogger.v("WEProperty track click called = ${eventsSender != null} with data $map");
     if (eventsSender == null) {
       WEPSdkPlatform.instance.trackClick(this, map);
     }

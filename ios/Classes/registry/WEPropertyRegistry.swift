@@ -10,6 +10,7 @@ class WEPropertyRegistry{
     
     
     public func registerProperty(details:[String:Any]){
+        WELogger.d("WEP I : register property for \(details)")
         let id = details[WEConstants.PAYLOAD_ID] as! Int
         let weghinline = WEProperty(id: id,
                                     screenName: details[WEConstants.PAYLOAD_SCREEN_NAME] as! String,
@@ -21,6 +22,7 @@ class WEPropertyRegistry{
     }
     
     public func deRegisterProperty(details:[String:Any])->Bool{
+        WELogger.d("WEP I : deregister property for \(details)")
         let id = details[WEConstants.PAYLOAD_ID] as! Int
         return deRegisterProperty(forId: id)
     }
@@ -77,8 +79,10 @@ class WEPropertyRegistry{
     
     //MARK: - Impression tracking helper
     func trackImpression(id:Int, attributes: [String : Any]?){
+        
         if(registryMap[id] != nil){
             var data = registryMap[id]!;
+            WELogger.d("WEP I : track Impression for ID : \(data.propertyID) \(String(describing: attributes))")
             data.campaignData?.trackImpression(attributes: attributes)
         }
     }
@@ -87,6 +91,7 @@ class WEPropertyRegistry{
     func trackClick(id:Int, attributes: [String : Any]?){
         if(registryMap[id] != nil){
             var data = registryMap[id]!;
+            WELogger.d("WEP I : track Click for ID : \(data.propertyID) \(String(describing: attributes))")
             data.campaignData?.trackClick(actionDetails: (nil,nil), attributes: attributes)
         }
     }
@@ -98,7 +103,7 @@ extension WEPropertyRegistry : WEPlaceholderCallback{
     internal func onDataReceived(_ data: WECampaignData) {
         var weProperty = getProperty(targetViewTag: data.targetViewTag)
         weProperty?.campaignData = data
-        print("_platformCallHandler onDataReceived iOS \(weProperty != nil) \(WEPersonalizationPlugin.methodChannel != nil)")
+        WELogger.d("WEP I : onDataReceived \(weProperty != nil) \(WEPersonalizationPlugin.methodChannel != nil)")
         if(weProperty != nil){
             WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_DATA_RECEIVED,
                                                                  message: WEUtils.generateMap(weginline: weProperty!,
@@ -107,7 +112,7 @@ extension WEPropertyRegistry : WEPlaceholderCallback{
     }
     
     internal func onRendered(data: WECampaignData) {
-        print("_platformCallHandler onRendered iOS \(data.targetViewTag)")
+        WELogger.d("WEP I : onRendered \(data.targetViewTag)")
         var weProperty = getProperty(targetViewTag: data.targetViewTag)
         weProperty?.campaignData = data
         if(weProperty != nil){
@@ -118,7 +123,7 @@ extension WEPropertyRegistry : WEPlaceholderCallback{
     }
     
     internal func onPlaceholderException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
-        //TODO: change targetviewid to INT
+        WELogger.d("WEP I : onPlaceholderException \(campaignId) pId : \(targetViewId) error \(exception.localizedDescription)")
         let weProperty = getProperty(targetViewTag: Int(targetViewId) ?? -1)
         if(weProperty != nil){
             WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,

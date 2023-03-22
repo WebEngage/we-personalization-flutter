@@ -3,7 +3,7 @@
 # Run `pod lib lint flutter_personalization_sdk.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_personalization_sdk'
+  s.name             = 'we_personalization_flutter'
   s.version          = '0.0.1'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC

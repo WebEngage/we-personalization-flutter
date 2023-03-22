@@ -10,6 +10,7 @@ import com.webengage.we_personalization_flutter.registry.WEPropertyRegistry
 import com.webengage.we_personalization_flutter.utils.*
 import com.webengage.we_personalization_flutter.view.WEInlineWidgetFactory
 import com.webengage.personalization.WEPersonalization
+import com.webengage.sdk.android.Logger
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -22,6 +23,8 @@ class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
     private var channel: MethodChannel? = null
     private lateinit var context: Context;
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        WELogger.setLogLevel(WELogger.VERBOSE)
+        WELogger.v("WEPersonalizationPlugin","onAttachedToEngine channel is null = ${channel == null}")
         context = flutterPluginBinding.applicationContext
         if (channel == null) {
             channel = MethodChannel(flutterPluginBinding.binaryMessenger, PERSONALIZATION_SDK)
@@ -36,6 +39,7 @@ class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+        WELogger.v("WEPersonalizationPlugin","onMethodCall ${call.method} ${call.arguments}")
         when (call.method) {
             METHOD_NAME_REGISTER -> {
                 val registered =
@@ -83,6 +87,7 @@ class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     fun sendCallback(methodName: String, message: Map<String, *>?) {
+        WELogger.v("WEPersonalizationPlugin","sendCallback to flutter $methodName $message")
         val messagePayload: MutableMap<String, Any> = java.util.HashMap()
         message?.let {
             messagePayload.put(PAYLOAD, it)
@@ -96,6 +101,7 @@ class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        WELogger.v("WEPersonalizationPlugin","onDetachedFromEngine")
         WEPropertyRegistry.instance.initFlutterPlugin(null)
         WEPluginCallbackHandler.instance.setFlutterPersonalizationSdkPlugin(null)
         channel?.setMethodCallHandler(null)

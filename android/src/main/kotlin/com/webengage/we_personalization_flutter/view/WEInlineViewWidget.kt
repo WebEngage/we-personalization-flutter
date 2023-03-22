@@ -88,6 +88,7 @@ class WEInlineViewWidget(
     }
 
     private fun loadView(weInlineView: WEInlineView) {
+        WELogger.v("WEInlineViewWidget","loadView called for TAG = $tag")
         weInlineView.load(tag, this)
     }
 
@@ -198,6 +199,7 @@ class WEInlineViewWidget(
 
     private fun sendImpression(data: WECampaignData) {
         if (isVisible()) {
+            WELogger.v("WEInlineViewWidget","sendImpression 1 called for TAG = $tag")
             data.trackImpression()
             WEPropertyRegistry.instance.setImpressionTrackedDetails(
                 data.targetViewId, data.campaignId
@@ -208,6 +210,7 @@ class WEInlineViewWidget(
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     if (v.isVisible()) {
+                        WELogger.v("WEInlineViewWidget","sendImpression 2 called for TAG = $tag")
                         data.trackImpression()
                         WEPropertyRegistry.instance.setImpressionTrackedDetails(
                             data.targetViewId, data.campaignId
@@ -225,6 +228,7 @@ class WEInlineViewWidget(
     }
 
     override fun onDetachedFromWindow() {
+        WELogger.v("WEInlineViewWidget","onDetachedFromWindow called for TAG = $tag")
         payload?.let {
             WEPluginCallbackHandler.instance.removeScreenNavigatorCallback(
                 it[PAYLOAD_SCREEN_NAME] as String, this

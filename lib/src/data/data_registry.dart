@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import '../../src/callbacks/WECampaignCallback.dart';
 import '../../src/model/WECampaignData.dart';
 import '../../src/utils/Constants.dart';
-import '../../src/utils/Logger.dart';
+import '../../src/utils/WELogger.dart';
 
 import '../callbacks/WEPlaceholderCallback.dart';
 import '../flutter_personalization_sdk_platform_interface.dart';
@@ -38,11 +38,12 @@ class WEPropertyRegistry {
     weProperty.wePlaceholderCallback = placeholderCallback;
     registerPlaceholder(weProperty);
     WELogger.v(
-        "registerWEPlaceholderCallback - ${weProperty.id} : $screenName : $androidPropertyId : $iosPropertyId");
+        "WEPropertyRegistry register property - ${weProperty.id}, ScreenName : $screenName,Property Id : ($androidPropertyId , $iosPropertyId)");
     return weProperty.id;
   }
 
   void deRegisterWEPlaceholderCallback(int id) async {
+    WELogger.v("WEPropertyRegistry deregister property $id");
     if (mapOfRegistry.containsKey(id)) {
       deregisterPlaceholder(mapOfRegistry[id]!);
     }
@@ -66,8 +67,10 @@ class WEPropertyRegistry {
   }
 
   Future<void> deregisterPlaceholder(WEProperty weProperty) async {
+    WELogger.v("WEPropertyRegistry deregister property with data ${weProperty.toJSON()}");
     var success = await WEPSdkPlatform.instance
         .deregisterInline(weProperty);
+    WELogger.v("WEPropertyRegistry deregister from native = $success");
     if (success) {
       mapOfRegistry.remove(weProperty.id);
     }
@@ -81,12 +84,13 @@ class WEPropertyRegistry {
 
   // this is for WEInline Widget
   void platformCallHandler(MethodCall call, WEProperty weProperty) {
+    WELogger.v(" WEPropertyRegistry _platformCallHandler for WEInline Widget ${call.method}");
     _callHandler(call, weProperty);
   }
 
   // this is for custom view
   Future _platformCallHandler(MethodCall call) async {
-    WELogger.v("_platformCallHandler ${call.method}");
+    WELogger.v(" WEPropertyRegistry _platformCallHandler for Custom View ${call.method}");
     _callHandler(call, null);
   }
 
@@ -99,7 +103,7 @@ class WEPropertyRegistry {
     final id = payload[PAYLOAD_ID];
     var wEGInline = weProperty ?? mapOfRegistry[id];
 
-    WELogger.v("_callHandler $methodName : $id : ${wEGInline?.id} : $data");
+    WELogger.v("WEPropertyRegistry _callHandler $methodName : $id : ${wEGInline?.id} : $data");
 
     switch (methodName) {
       case METHOD_NAME_DATA_LISTENER:

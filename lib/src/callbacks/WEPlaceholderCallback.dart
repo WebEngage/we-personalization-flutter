@@ -1,4 +1,4 @@
-import 'package:we_personalization_flutter/src/model/WECampaignData.dart';
+import '../../src/model/WECampaignData.dart';
 
 class WEPlaceholderCallback {
 

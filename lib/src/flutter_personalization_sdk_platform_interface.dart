@@ -33,10 +33,6 @@ abstract class WEPSdkPlatform extends PlatformInterface {
         'deregisterPersonalization has not been implemented');
   }
 
-  Future<bool> autoHandleClick(bool autoHandleClick) {
-    throw UnimplementedError("auto handle click has not been implemented");
-  }
-
   Future<bool> trackClick(WEProperty weProperty, Map<String, dynamic> data) {
     throw UnimplementedError("trackClick has not been implemented");
   }

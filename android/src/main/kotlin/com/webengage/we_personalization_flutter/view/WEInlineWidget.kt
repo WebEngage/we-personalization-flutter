@@ -51,6 +51,7 @@ class WEInlineWidget internal constructor(
     }
 
     fun sendCallback(methodName: String, message: Map<String, *>?) {
+        WELogger.v("WEInlineWidget","sendCallback to flutter $methodName $message")
         val messagePayload: MutableMap<String, Any> = java.util.HashMap()
         message?.let {
             messagePayload.put(PAYLOAD, it)

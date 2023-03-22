@@ -51,6 +51,7 @@ class WEPluginCallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     }
 
     override fun onPropertyCacheCleared(screenName: String) {
+        WELogger.v("WEPluginCallbackHandler","onPropertyCacheCleared for screen = $screenName")
         WEPropertyRegistry.instance.clearCacheData()
         WEPropertyRegistry.instance.onScreenNavigated(screenName)
         screenName.let {
@@ -66,6 +67,7 @@ class WEPluginCallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     override fun onCampaignClicked(
         actionId: String, deepLink: String, data: WECampaignData
     ): Boolean {
+        WELogger.v("WEPluginCallbackHandler","onCampaignClicked for actionID = $actionId deeplink = $deepLink data = ${data.toJSONString()}")
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_CLICKED, WEUtils.generateMap(actionId, deepLink, data)
         )
@@ -75,12 +77,14 @@ class WEPluginCallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     override fun onCampaignException(
         campaignId: String?, targetViewId: String, error: Exception
     ) {
+        WELogger.v("WEPluginCallbackHandler","onCampaignException for campaignId = $campaignId targetViewId = $targetViewId error = ${error.message}")
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_EXCEPTION, WEUtils.generateMap(campaignId, targetViewId, error)
         )
     }
 
     override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
+        WELogger.v("WEPluginCallbackHandler","onCampaignPrepared ${data.campaignId} ${data.targetViewId}")
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_PREPARED, WEUtils.generateMap(data)
         )
@@ -88,6 +92,7 @@ class WEPluginCallbackHandler : WEPropertyRegistryCallback, WECampaignCallback {
     }
 
     override fun onCampaignShown(data: WECampaignData) {
+        WELogger.v("WEPluginCallbackHandler","onCampaignShown ${data.campaignId} ${data.targetViewId}")
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_CAMPAIGN_SHOWN, WEUtils.generateMap(data)
         )

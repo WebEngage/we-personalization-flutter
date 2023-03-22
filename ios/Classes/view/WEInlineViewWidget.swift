@@ -20,7 +20,7 @@ public class WEInlineViewWidget:UIView{
         weProperty = generateInlineView()
         screenName = map[WEConstants.PAYLOAD_SCREEN_NAME] as! String;
         NotificationCenter.default.addObserver(self, selector: #selector(self.screenNavigate(notification:)), name: Notification.Name(screenName), object: nil)
-        print("InlineWidget added observer \(screenName)")
+        WELogger.d("InlineWidget added observer \(screenName)")
         setupView()
       }
     
@@ -36,8 +36,8 @@ public class WEInlineViewWidget:UIView{
     }
     
     deinit{
-        print("InlineWidget dinit \(screenName)")
-        NotificationCenter.default.removeObserver(self)
+        WELogger.d("InlineWidget dinit \(screenName)")
+        removeData()
     }
     
     public init(frame: CGRect,methodChannel:FlutterMethodChannel) {
@@ -79,16 +79,20 @@ public class WEInlineViewWidget:UIView{
         
     }
     
+    func removeData(){
+        WELogger.d("WEP I : removed \(screenName) | \(String(describing: weProperty?.id))")
+        NotificationCenter.default.removeObserver(self)
+        WEPersonalization.shared.unregisterWEPlaceholderCallback(map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
+        _inlineView = nil
+        map = nil
+        methodChannel = nil
+        campaignData = nil
+        weProperty = nil
+    }
+    
     public override func willMove(toSuperview newSuperview: UIView?) {
         if newSuperview == nil {
-            print("InlineWidget removed \(screenName) | \(weProperty?.id)")
-            NotificationCenter.default.removeObserver(self)
-            WEPersonalization.shared.unregisterWEPlaceholderCallback(map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
-            _inlineView = nil
-            map = nil
-            methodChannel = nil
-            campaignData = nil
-            weProperty = nil
+            removeData()
         }
     }
     
@@ -96,8 +100,7 @@ public class WEInlineViewWidget:UIView{
 
 extension WEInlineViewWidget : WEPlaceholderCallback{
     public func onRendered(data: WECampaignData) {
-        print("OnRender : \(data.targetViewTag) || \(self.screenName) || \(String(describing: weProperty?.id))")
-    //    FlutterView
+        WELogger.d("WEP I : \(data.targetViewTag) || \(self.screenName) || \(String(describing: weProperty?.id))")
         self.campaignData = data
         methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_RENDERED,
                                      message: WEUtils.generateMap(weginline: generateInlineView(),
@@ -111,12 +114,14 @@ extension WEInlineViewWidget : WEPlaceholderCallback{
     }
 
     public func onDataReceived(_ data: WECampaignData) {
+        WELogger.d("WEP I : \(data.targetViewTag)")
         methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_DATA_RECEIVED,
                                      message: WEUtils.generateMap(weginline: generateInlineView(),
                                                                 campaignData: data))
     }
 
     public func onPlaceholderException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
+        WELogger.d("WEP I : \(targetViewId) error : \(exception.localizedDescription)")
         methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
                                      message: WEUtils.generateMap(weginline: generateInlineView(),
                                                                 campaignId: campaignId,

@@ -24,6 +24,7 @@ internal class WEPropertyRegistry {
     }
 
     fun registerProperty(details: HashMap<String, Any>): Boolean {
+        WELogger.v("WEPropertyRegistry","registerProperty for details $details")
         val id = details[PAYLOAD_ID] as Int
         val weProperty = WEProperty(
             id = id,
@@ -59,11 +60,13 @@ internal class WEPropertyRegistry {
     }
 
     fun deregisterProperty(details: HashMap<String, Any>): Boolean {
+        WELogger.v("WEPropertyRegistry","deregisterProperty for details $details")
         val id = details[PAYLOAD_ID] as Int
         return deregisterProperty(id)
     }
 
     fun trackClick(id: Int, data: HashMap<String, Any>) {
+        WELogger.v("WEPropertyRegistry","trackClick called for $data")
         if (registryMap.containsKey(id)) {
             val inline = registryMap[id];
             inline?.weCampaignData?.trackClick(data)
@@ -71,6 +74,7 @@ internal class WEPropertyRegistry {
     }
 
     fun trackImpression(id: Int, data: HashMap<String, Any>) {
+        WELogger.v("WEPropertyRegistry","trackImpression called for $data")
         if (registryMap.containsKey(id)) {
             val inline = registryMap[id];
             inline?.weCampaignData?.trackImpression(data)
@@ -89,6 +93,7 @@ internal class WEPropertyRegistry {
     }
 
     private fun onDataReceived(data: WECampaignData, weProperty: WEProperty) {
+        WELogger.v("WEPropertyRegistry","onDataReceived ${data.targetViewId}")
         weProperty.weCampaignData = data
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_DATA_RECEIVED,
@@ -102,6 +107,7 @@ internal class WEPropertyRegistry {
         error: Exception,
         weProperty: WEProperty
     ) {
+        WELogger.v("WEPropertyRegistry","onPlaceholderException")
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
             WEUtils.generateMap(weProperty, campaignId, targetViewId, error)
@@ -109,6 +115,7 @@ internal class WEPropertyRegistry {
     }
 
     private fun onRendered(data: WECampaignData, weProperty: WEProperty) {
+        WELogger.v("WEPropertyRegistry","onRendered")
         weProperty.weCampaignData = data
         WEPersonalizationPlugin?.sendCallback(
             METHOD_NAME_ON_RENDERED,

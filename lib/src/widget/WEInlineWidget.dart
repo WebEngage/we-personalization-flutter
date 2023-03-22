@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import '../../src/utils/Logger.dart';
+import '../../src/utils/WELogger.dart';
 import '../../src/callbacks/WEPlaceholderCallback.dart';
 import '../../src/utils/Utils.dart';
 import '../../src/widget/InlineWidget.dart';
@@ -45,7 +45,6 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
         iosPropertyId: widget.iosPropertyId,
         wePlaceholderCallback: this);
     weProperty?.eventsSender = this;
-    WELogger.v("WEGINLINE VIEW ID ${weProperty?.id}");
   }
 
   @override
@@ -105,7 +104,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
       }
     }
     WELogger.v(
-        "onDataReceived ${weProperty?.id} ${weProperty?.screenName} ${weProperty?.androidPropertyID} ${weProperty?.iosPropertyId}");
+        "WEInlineWidget onDataReceived $data");
     widget.placeholderCallback?.onDataReceived(data);
   }
 
@@ -114,7 +113,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
       String campaignId, String targetViewId, String error) {
     super.onPlaceholderException(campaignId, targetViewId, error);
     WELogger.v(
-        "onPlaceholderException ${weProperty?.id} ${weProperty?.screenName} ${weProperty?.androidPropertyID} ${weProperty?.iosPropertyId} ${error} ${campaignId}");
+        "WEInlineWidget onPlaceholderException $campaignId $targetViewId $error");
     widget.placeholderCallback
         ?.onPlaceholderException(campaignId, targetViewId, error);
   }
@@ -128,7 +127,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
     }
     super.onRendered(data);
     WELogger.v(
-        "onRendered ${weProperty?.id} ${weProperty?.screenName} ${weProperty?.androidPropertyID} ${weProperty?.iosPropertyId}");
+        "WEInlineWidget onRendered $data");
     widget.placeholderCallback?.onRendered(data);
   }
 }
