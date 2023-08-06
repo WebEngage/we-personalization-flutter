@@ -114,10 +114,11 @@ class WEPropertyRegistry {
             ?.onDataReceived(WECampaignData.fromJson(payload[PAYLOAD_DATA],weProperty: wEGInline));
         break;
       case METHOOD_NAME_ON_PLACEHOLDER_CALLBACK:
+        var campId = payload[PAYLOAD_CAMPAIGN_ID];
         wEGInline?.wePlaceholderCallback?.onPlaceholderException(
-            payload[PAYLOAD_CAMPAIGN_ID],
-            payload[PAYLOAD_TARGET_VIEW_ID],
-            payload[PAYLOAD_ERROR]);
+            campId ?? "",
+            payload[PAYLOAD_TARGET_VIEW_ID] ?? "",
+            payload[PAYLOAD_ERROR] ?? "");
         break;
       case METHOD_NAME_ON_RENDERED:
         wEGInline?.wePlaceholderCallback
