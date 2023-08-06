@@ -1,4 +1,7 @@
 
+### Version 1.0.1 (March 22, 2023)
+* Hotfix : Null Safety - onPlaceholderException Callback
+
 ### Version 1.0.0 (March 22, 2023)
 * Initial Release.
 * Supports WebEngage Android SDK v4.3.0+
