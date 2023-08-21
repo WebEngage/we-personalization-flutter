@@ -50,15 +50,17 @@ public class WEInlineViewWidget:UIView{
       }
     
     private func setupView(){
-        let width = map![WEConstants.PAYLOAD_VIEW_WIDTH] as! Int
-        let height = map![WEConstants.PAYLOAD_VIEW_HEIGHT] as! Int
-        let propertyId = map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int
-       
-        _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-        _inlineView!.tag = propertyId
-        _inlineView?.load(tag: propertyId, callbacks: self)
-        print("InlineWidget: Load view called")
-        addSubview(_inlineView!)
+        if let map = map{
+            let width = map[WEConstants.PAYLOAD_VIEW_WIDTH] as! Int
+            let height = map[WEConstants.PAYLOAD_VIEW_HEIGHT] as! Int
+            let propertyId = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int
+            
+            _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+            _inlineView!.tag = propertyId
+            _inlineView?.load(tag: propertyId, callbacks: self)
+            print("InlineWidget: Load view called")
+            addSubview(_inlineView!)
+        }
     }
     
     public override func didMoveToWindow() {
@@ -82,7 +84,10 @@ public class WEInlineViewWidget:UIView{
     func removeData(){
         WELogger.d("WEP I : removed \(screenName) | \(String(describing: weProperty?.id))")
         NotificationCenter.default.removeObserver(self)
-        WEPersonalization.shared.unregisterWEPlaceholderCallback(map![WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int)
+        if let map = map,
+           let propertyID = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as? Int {
+            WEPersonalization.shared.unregisterWEPlaceholderCallback(propertyID)
+        }
         _inlineView = nil
         map = nil
         methodChannel = nil
