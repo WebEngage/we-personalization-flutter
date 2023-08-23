@@ -123,7 +123,7 @@ extension WEPropertyRegistry : WEPlaceholderCallback{
     }
     
     internal func onPlaceholderException(_ campaignId: String?, _ targetViewId: String, _ exception: Error) {
-        WELogger.d("WEP I : onPlaceholderException \(campaignId) pId : \(targetViewId) error \(exception.localizedDescription)")
+        WELogger.d("WEP I : onPlaceholderException \(String(describing: campaignId)) pId : \(targetViewId) error \(exception.localizedDescription)")
         let weProperty = getProperty(targetViewTag: Int(targetViewId) ?? -1)
         if(weProperty != nil){
             WEPersonalizationPlugin.methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_PLACEHOLDER_EXCEPTION,
