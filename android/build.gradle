@@ -42,11 +42,28 @@ android {
 
     defaultConfig {
         minSdkVersion 21
+        manifestPlaceholders = [we_fl_pe_version: readVersion()]
     }
+}
+String readVersion() {
+    def version = new Properties()
+    def stream
+    try {
+        stream = new FileInputStream(new File(projectDir, 'version.properties'))
+        version.load(stream)
+    } catch (FileNotFoundException ignore) {
+    } finally {
+        if (stream != null) stream.close()
+    }
+    // safety defaults in case file is missing
+    if(!version['major']) version['major'] = "1"
+    if(!version['minor']) version['minor'] = "0"
+    if(!version['patch']) version['patch'] = "0"
+    return "${version['major']}.${version['minor']}.${version['patch']}"
 }
 dependencies{
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     api 'net.sourceforge.htmlcleaner:htmlcleaner:2.26'
-    implementation 'com.webengage:we-personalization:1.1.0'
+   implementation 'com.webengage:we-personalization:1.1.0'
 }
