@@ -1,11 +1,13 @@
 import Flutter
 import UIKit
 import WEPersonalization
+import WebEngage
+
 public class WEPersonalizationPlugin: NSObject, FlutterPlugin {
     
     public static var methodChannel : FlutterMethodChannel? = nil
     public static var instance :WEPersonalizationPlugin? = nil
-    
+    let WEGPluginVersion: String = "1.0.2"
     public static func register(with registrar: FlutterPluginRegistrar) {
         WELogger.d("register attach to engine")
         if(methodChannel == nil){
@@ -38,6 +40,7 @@ public class WEPersonalizationPlugin: NSObject, FlutterPlugin {
             WEPersonalization.shared.initialise()
             WEPersonalization.shared.registerWECampaignCallback(WEPluginCallbackHandler.shared)
             WEPersonalization.shared.registerPropertyRegistryCallbacks(WEPluginCallbackHandler.shared)
+            initialiseWEGVersion()
         case WEConstants.METHOD_NAME_SEND_CLICK:
             let map = call.arguments as! [String:Any]
             let id = map[WEConstants.PAYLOAD_ID] as! Int
@@ -54,5 +57,9 @@ public class WEPersonalizationPlugin: NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
         }
     }
-    
+
+    func initialiseWEGVersion() {
+        let key: WegVersionKey = .FLPE
+        WebEngage.sharedInstance().setVersionForChildSDK(WEGPluginVersion, for: key)
+      }
 }
