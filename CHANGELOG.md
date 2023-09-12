@@ -1,5 +1,7 @@
-
-### Version 1.0.2 (Augusr 23, 2023)
+### Version 1.0.3 (September 12, 2023)
+* Hotfix : support to Isolate
+* 
+### Version 1.0.2 (August 23, 2023)
 * Hotfix : Null Safety - WEInlineView
 
 ### Version 1.0.1 (March 22, 2023)

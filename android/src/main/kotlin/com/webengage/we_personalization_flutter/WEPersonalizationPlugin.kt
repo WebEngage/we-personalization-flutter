@@ -32,8 +32,6 @@ class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
                 CHANNEL_INLINE_VIEW,
                 WEInlineWidgetFactory(flutterPluginBinding.binaryMessenger)
             )
-            WEPluginCallbackHandler.instance.setFlutterPersonalizationSdkPlugin(this)
-            WEPropertyRegistry.instance.initFlutterPlugin(this)
             channel?.setMethodCallHandler(this)
         }
     }
@@ -53,6 +51,8 @@ class WEPersonalizationPlugin : FlutterPlugin, MethodCallHandler {
             }
             METHOD_NAME_INIT -> {
                 disableAutoTracking()
+                WEPluginCallbackHandler.instance.setFlutterPersonalizationSdkPlugin(this)
+                WEPropertyRegistry.instance.initFlutterPlugin(this)
                 WEPersonalization.get().init()
                 WEPersonalization.get()
                     .registerPropertyRegistryCallback(listener = WEPluginCallbackHandler.instance)
