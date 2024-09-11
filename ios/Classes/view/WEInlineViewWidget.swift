@@ -88,8 +88,9 @@ public class WEInlineViewWidget:UIView{
     }
     
     func fireCGEvent(){
-        if(isCGEventFire)
+        if(isCGEventFire){
             return
+        }
         WEPersonalization.shared.trackCGEvent(forPropertyId: _inlineView!.tag)
         isCGEventFire = true
     }
