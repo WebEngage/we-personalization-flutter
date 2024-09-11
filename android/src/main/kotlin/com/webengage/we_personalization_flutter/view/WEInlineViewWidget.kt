@@ -17,6 +17,7 @@ import com.webengage.we_personalization_flutter.model.WEProperty
 import com.webengage.we_personalization_flutter.registry.WEPropertyRegistry
 import com.webengage.we_personalization_flutter.utils.*
 import com.webengage.personalization.WEInlineView
+import com.webengage.personalization.WEPersonalization
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
 import com.webengage.personalization.data.WECampaignData
 
@@ -77,6 +78,7 @@ class WEInlineViewWidget(
         }
         addView(view)
         loadView(weInlineView!!)
+        monitorVisibilityAndFireEvent()
     }
 
     private fun generateWEInline(): WEProperty {
@@ -88,7 +90,7 @@ class WEInlineViewWidget(
     }
 
     private fun loadView(weInlineView: WEInlineView) {
-        WELogger.v("WEInlineViewWidget","loadView called for TAG = $tag")
+        WELogger.v("WEInlineViewWidget", "loadView called 2 for TAG = $tag")
         weInlineView.load(tag, this)
     }
 
@@ -109,14 +111,17 @@ class WEInlineViewWidget(
     }
 
     override fun onRendered(data: WECampaignData) {
+
+        WELogger.v("Processing event: app_personalization_view flutter", "")
         weProperty.weCampaignData = data
         if (!WEPropertyRegistry.instance.isImpressionAlreadyTracked(
                 data.targetViewId, data.campaignId
             )
         ) {
+            println("Processing event: app_personalization_view flutter end")
             sendImpression(data)
         } else {
-           // Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
+            // Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
         }
 
         val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
@@ -197,29 +202,58 @@ class WEInlineViewWidget(
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
 
-    private fun sendImpression(data: WECampaignData) {
+
+    private fun monitorVisibilityAndFireEvent(data: WECampaignData? = null) {
+        data?.let {
+            if (isVisible()) {
+                WELogger.v("WEInlineViewWidget", "sendImpression 1 called for TAG = $tag")
+                it.trackImpression()
+                WEPropertyRegistry.instance.setImpressionTrackedDetails(
+                    it.targetViewId, it.campaignId
+                )
+            }else{
+                val v = findViewWithTag<View>("INLINE_PERSONALIZATION_TAG")
+                v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (v.isVisible()) {
+                            WELogger.v("WEInlineViewWidget", "sendImpression 2 called for TAG = $tag")
+                            data.trackImpression()
+                            WEPropertyRegistry.instance.setImpressionTrackedDetails(
+                                data.targetViewId, data.campaignId
+                            )
+                            v.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        }
+                    }
+                })
+            }
+        }
+        // For CG
         if (isVisible()) {
-            WELogger.v("WEInlineViewWidget","sendImpression 1 called for TAG = $tag")
-            data.trackImpression()
-            WEPropertyRegistry.instance.setImpressionTrackedDetails(
-                data.targetViewId, data.campaignId
-            )
+            fireCGevent()
         } else {
-            val v = findViewWithTag<View>("INLINE_PERSONALIZATION_TAG")
+            val v = this
             v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     if (v.isVisible()) {
-                        WELogger.v("WEInlineViewWidget","sendImpression 2 called for TAG = $tag")
-                        data.trackImpression()
-                        WEPropertyRegistry.instance.setImpressionTrackedDetails(
-                            data.targetViewId, data.campaignId
-                        )
-                        v.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        fireCGevent()
+                        v?.viewTreeObserver?.let {
+                            it.removeOnGlobalLayoutListener(this)
+                            it.removeGlobalOnLayoutListener(this)
+                        }
                     }
                 }
             })
         }
+    }
+
+    private fun fireCGevent() {
+        WEPersonalization.get().trackCGEvents(tag)
+    }
+
+    private fun sendImpression(data: WECampaignData) {
+       monitorVisibilityAndFireEvent(data)
     }
 
     override fun screenNavigated(screenName: String) {
@@ -228,7 +262,7 @@ class WEInlineViewWidget(
     }
 
     override fun onDetachedFromWindow() {
-        WELogger.v("WEInlineViewWidget","onDetachedFromWindow called for TAG = $tag")
+        WELogger.v("WEInlineViewWidget", "onDetachedFromWindow called for TAG = $tag")
         payload?.let {
             WEPluginCallbackHandler.instance.removeScreenNavigatorCallback(
                 it[PAYLOAD_SCREEN_NAME] as String, this
@@ -236,5 +270,6 @@ class WEInlineViewWidget(
         }
         super.onDetachedFromWindow()
     }
+
 
 }
