@@ -88,6 +88,7 @@ public class WEInlineViewWidget:UIView{
     
     func fireCGEvent(){
        WEPersonalization.shared.trackCGEvent(forPropertyId: _inlineView!.tag)
+        WEPersonalization.shared.registerCampaignControlGroupCallback(tag: _inlineView!.tag, callback: self)
     }
     
     func addScrollViewListener(){
@@ -108,6 +109,7 @@ public class WEInlineViewWidget:UIView{
     
     func removeData(){
         WELogger.d("WEP I : removed \(screenName) | \(String(describing: weProperty?.id))")
+        WEPersonalization.shared.deRegisterCampaignControlGroupCallback(tag: _inlineView!.tag)
         NotificationCenter.default.removeObserver(self)
         if let map = map,
            let propertyID = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as? Int {
@@ -126,6 +128,12 @@ public class WEInlineViewWidget:UIView{
         }
     }
     
+}
+
+extension WEInlineViewWidget : WECampaignControlInternalCallback{
+    public func onControlGroupTriggered(propertyID: Int) {
+        self.monitorVisibilityAndFireEvent()
+    }
 }
 
 extension WEInlineViewWidget : WEPlaceholderCallback{
