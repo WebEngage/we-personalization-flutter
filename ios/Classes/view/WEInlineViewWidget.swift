@@ -14,7 +14,6 @@ public class WEInlineViewWidget:UIView{
     var weProperty:WEProperty? = nil
     var screenName = ""
     var isScrollViewListnerAdded = false
-    var isCGEventFire = false
 
 
     func setMap(map : Dictionary<String,Any?>) {
@@ -88,11 +87,7 @@ public class WEInlineViewWidget:UIView{
     }
     
     func fireCGEvent(){
-        if(isCGEventFire){
-            return
-        }
-        WEPersonalization.shared.trackCGEvent(forPropertyId: _inlineView!.tag)
-        isCGEventFire = true
+       WEPersonalization.shared.trackCGEvent(forPropertyId: _inlineView!.tag)
     }
     
     func addScrollViewListener(){
