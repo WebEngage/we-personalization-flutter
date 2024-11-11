@@ -50,19 +50,29 @@ public class WEInlineViewWidget:UIView{
         super.init(coder: aDecoder)
       }
     
-    private func setupView(){
-        if let map = map{
-            let width = map[WEConstants.PAYLOAD_VIEW_WIDTH] as! Int
-            let height = map[WEConstants.PAYLOAD_VIEW_HEIGHT] as! Int
-            let propertyId = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int
+    private func setupView() {
+        if let map = map {
             
-            _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-            _inlineView!.tag = propertyId
-            _inlineView?.load(tag: propertyId, callbacks: self)
-            print("InlineWidget: Load view called")
-            addSubview(_inlineView!)
+            if let width = map[WEConstants.PAYLOAD_VIEW_WIDTH] as? NSNumber,
+               let height = map[WEConstants.PAYLOAD_VIEW_HEIGHT] as? NSNumber,
+               let propertyId = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as? NSNumber {
+                
+                // Convert to Int by rounding or truncating as needed
+                let intWidth = Int(width.intValue) // Truncate to nearest Int
+                let intHeight = Int(height.intValue)
+                let intPropertyId = Int(propertyId.intValue)
+                
+                _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: intWidth, height: intHeight))
+                _inlineView!.tag = intPropertyId
+                _inlineView?.load(tag: intPropertyId, callbacks: self)
+                print("InlineWidget: Load view called")
+                addSubview(_inlineView!)
+            } else {
+                print("Error: Width, height, or propertyId is missing or has an unexpected type.")
+            }
         }
     }
+
     
     public override func didMoveToWindow() {
         monitorVisibilityAndFireEvent()
