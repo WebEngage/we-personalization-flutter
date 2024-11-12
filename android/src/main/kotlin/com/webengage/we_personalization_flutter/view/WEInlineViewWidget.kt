@@ -70,7 +70,6 @@ class WEInlineViewWidget(
             )
             param.height = height.toInt()
         }
-
         if (viewWidth > 0) {
             val width = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -92,9 +91,8 @@ class WEInlineViewWidget(
     }
 
     private fun loadView(weInlineView: WEInlineView) {
-        WELogger.v("WEInlineViewWidget", "loadView called 2 for TAG = $tag")
+        WEPersonalization.get().registerCampaignControlGroupCallback(tag,this)
         weInlineView.load(tag, this)
-        monitorVisibilityAndFireEvent()
     }
 
     override fun onControlGroupTriggered(propertyID : String){
@@ -118,8 +116,6 @@ class WEInlineViewWidget(
     }
 
     override fun onRendered(data: WECampaignData) {
-
-        WELogger.v("Processing event: app_personalization_view flutter", "")
         weProperty.weCampaignData = data
         if (!WEPropertyRegistry.instance.isImpressionAlreadyTracked(
                 data.targetViewId, data.campaignId
@@ -131,14 +127,14 @@ class WEInlineViewWidget(
             // Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
         }
 
-        val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
+        val view = weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
 
         val observer: ViewTreeObserver? = view?.viewTreeObserver
         observer?.let {
             val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     val map = getShadowDetails(data)
-                    val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
+                    val view = weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
                     view?.let {
                         val layoutParams: ViewGroup.MarginLayoutParams =
                             view.layoutParams as ViewGroup.MarginLayoutParams
@@ -213,7 +209,6 @@ class WEInlineViewWidget(
     private fun monitorVisibilityAndFireEvent(data: WECampaignData? = null) {
         data?.let {
             if (isVisible()) {
-                WELogger.v("WEInlineViewWidget", "sendImpression 1 called for TAG = $tag")
                 it.trackImpression()
                 WEPropertyRegistry.instance.setImpressionTrackedDetails(
                     it.targetViewId, it.campaignId
@@ -224,7 +219,6 @@ class WEInlineViewWidget(
                     ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (v.isVisible()) {
-                            WELogger.v("WEInlineViewWidget", "sendImpression 2 called for TAG = $tag")
                             data.trackImpression()
                             WEPropertyRegistry.instance.setImpressionTrackedDetails(
                                 data.targetViewId, data.campaignId
@@ -237,7 +231,6 @@ class WEInlineViewWidget(
         }
         // For CG
         if(data == null) {
-            WELogger.v("WEInlineViewWidget", "Fire CG event")
             if (isVisible()) {
                 fireCGevent()
             } else {
@@ -259,8 +252,8 @@ class WEInlineViewWidget(
     }
 
     private fun fireCGevent() {
+        WELogger.v("WEInlineViewWidget", "Fire CG event ====> $tag")
         WEPersonalization.get().trackCGEvents(tag)
-        WEPersonalization.get().registerCampaignControlGroupCallback(tag,this)
     }
 
 
