@@ -14,6 +14,7 @@ public class WEInlineViewWidget:UIView{
     var weProperty:WEProperty? = nil
     var screenName = ""
     var isScrollViewListnerAdded = false
+    var propertyTag : Int = -1
 
 
     func setMap(map : Dictionary<String,Any?>) {
@@ -64,6 +65,7 @@ public class WEInlineViewWidget:UIView{
                 
                 _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: intWidth, height: intHeight))
                 _inlineView!.tag = intPropertyId
+                propertyTag = intPropertyId
                 _inlineView?.load(tag: intPropertyId, callbacks: self)
                 print("InlineWidget: Load view called")
                 addSubview(_inlineView!)
@@ -119,7 +121,7 @@ public class WEInlineViewWidget:UIView{
     
     func removeData(){
         WELogger.d("WEP I : removed \(screenName) | \(String(describing: weProperty?.id))")
-        WEPersonalization.shared.deRegisterCampaignControlGroupCallback(tag: _inlineView!.tag)
+        WEPersonalization.shared.deRegisterCampaignControlGroupCallback(tag: propertyTag)
         NotificationCenter.default.removeObserver(self)
         if let map = map,
            let propertyID = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as? Int {
