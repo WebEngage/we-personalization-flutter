@@ -1,18 +1,19 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import '../../src/utils/WELogger.dart';
+
 import '../../src/callbacks/WEPlaceholderCallback.dart';
 import '../../src/utils/Utils.dart';
+import '../../src/utils/WELogger.dart';
 import '../../src/widget/InlineWidget.dart';
 import '../model/WEGInline.dart';
 
 class WEInlineWidget extends StatefulWidget {
-  String screenName;
-  String androidPropertyId;
-  int iosPropertyId;
+  final String screenName;
+  final String androidPropertyId;
+  final int iosPropertyId;
   double viewWidth;
-  double viewHeight;
+  final double viewHeight;
   WEPlaceholderCallback? placeholderCallback;
 
   WEInlineWidget(
@@ -30,7 +31,7 @@ class WEInlineWidget extends StatefulWidget {
 }
 
 class _WEInlineWidgetState extends State<WEInlineWidget>
-    with AutomaticKeepAliveClientMixin, WEPlaceholderCallback,EventsSender {
+    with AutomaticKeepAliveClientMixin, WEPlaceholderCallback, EventsSender {
   final GlobalKey _platformViewKey = GlobalKey();
   WEProperty? weProperty;
   var defaultViewHeight = 0.1;
@@ -103,8 +104,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
         });
       }
     }
-    WELogger.v(
-        "WEInlineWidget onDataReceived $data");
+    WELogger.v("WEInlineWidget onDataReceived $data");
     widget.placeholderCallback?.onDataReceived(data);
   }
 
@@ -120,14 +120,13 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
 
   @override
   void onRendered(data) {
-      if (defaultViewHeight != widget.viewHeight) {
-        setState(() {
-          defaultViewHeight = widget.viewHeight;
-        });
+    if (defaultViewHeight != widget.viewHeight) {
+      setState(() {
+        defaultViewHeight = widget.viewHeight;
+      });
     }
     super.onRendered(data);
-    WELogger.v(
-        "WEInlineWidget onRendered $data");
+    WELogger.v("WEInlineWidget onRendered $data");
     widget.placeholderCallback?.onRendered(data);
   }
 }

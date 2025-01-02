@@ -119,14 +119,14 @@ class WEInlineViewWidget(
            // Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
         }
 
-        val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
+        val view = weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
 
         val observer: ViewTreeObserver? = view?.viewTreeObserver
         observer?.let {
             val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     val map = getShadowDetails(data)
-                    val view = weInlineView!!.findViewById<FrameLayout>(R.id.we_parent_card_view)
+                    val view = weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
                     view?.let {
                         val layoutParams: ViewGroup.MarginLayoutParams =
                             view.layoutParams as ViewGroup.MarginLayoutParams

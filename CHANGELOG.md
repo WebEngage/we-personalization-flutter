@@ -1,6 +1,10 @@
+### Version 1.0.4 (January 2, 2025)
+* Namespace added.
+* Fixed view issue encountered while building with the latest Flutter plugin.
+
 ### Version 1.0.3 (September 12, 2023)
 * Hotfix : support to Isolate
-* 
+
 ### Version 1.0.2 (August 23, 2023)
 * Hotfix : Null Safety - WEInlineView
 

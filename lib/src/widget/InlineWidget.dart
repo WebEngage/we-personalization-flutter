@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+
 import '../../src/data/data_registry.dart';
 import '../../src/model/WEGInline.dart';
 import '../../src/utils/Constants.dart';
@@ -13,12 +14,12 @@ import '../../src/utils/WELogger.dart';
 typedef WEGInlineHandler = void Function(WEGInlineViewController controller);
 
 class InlineWidget extends StatefulWidget {
-  Map<String, dynamic> payload;
+  final Map<String, dynamic> payload;
   final WEGInlineHandler wegInlineHandler;
-  WEProperty weProperty;
+  final WEProperty weProperty;
 
-  InlineWidget(
-      {Key? key,
+  const InlineWidget(
+      {key,
       required this.wegInlineHandler,
       required this.weProperty,
       required this.payload})
@@ -61,67 +62,67 @@ class _InlineWidgetState extends State<InlineWidget> {
   }
 
   Widget buildAndroidView() => Center(
-    child: Stack(
-      children: [
-        Container(
-          margin: EdgeInsets.only(
-            top: margin["mt"]!.toDouble(),
-            bottom: margin["mb"]!.toDouble(),
-            //left: margin["ml"]!.toDouble(),
-           // right: margin["mr"]!.toDouble(),
-          ),
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(roundedCorners),
-            boxShadow: [
-              BoxShadow(
-                color: elevation == 0
-                    ? Colors.transparent
-                    : Colors.black.withOpacity(0.2),
-                blurRadius: 5,
-                spreadRadius: 2,
-                offset: const Offset(1.0, 2.0),
+        child: Stack(
+          children: [
+            Container(
+              margin: EdgeInsets.only(
+                top: margin["mt"]!.toDouble(),
+                bottom: margin["mb"]!.toDouble(),
+                //left: margin["ml"]!.toDouble(),
+                // right: margin["mr"]!.toDouble(),
               ),
-            ],
-          ),
-        ),
-        PlatformViewLink(
-            viewType: CHANNEL_INLINE_VIEW,
-            surfaceFactory: (context, controller) {
-              return AndroidViewSurface(
-                controller: controller as AndroidViewController,
-                gestureRecognizers: const <
-                    Factory<OneSequenceGestureRecognizer>>{},
-                hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-              );
-            },
-            onCreatePlatformView: (params) {
-              _onPlatformViewCreated(params.id);
-              return PlatformViewsService.initSurfaceAndroidView(
-                id: params.id,
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(roundedCorners),
+                boxShadow: [
+                  BoxShadow(
+                    color: elevation == 0
+                        ? Colors.transparent
+                        : Colors.black.withOpacity(0.2),
+                    blurRadius: 5,
+                    spreadRadius: 2,
+                    offset: const Offset(1.0, 2.0),
+                  ),
+                ],
+              ),
+            ),
+            PlatformViewLink(
                 viewType: CHANNEL_INLINE_VIEW,
-                layoutDirection: TextDirection.ltr,
-                creationParams: widget.payload,
-                creationParamsCodec: const StandardMessageCodec(),
-                onFocus: () {
-                  params.onFocusChanged(true);
+                surfaceFactory: (context, controller) {
+                  return AndroidViewSurface(
+                    controller: controller as AndroidViewController,
+                    gestureRecognizers: const <Factory<
+                        OneSequenceGestureRecognizer>>{},
+                    hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+                  );
                 },
-              )
-                ..addOnPlatformViewCreatedListener(
-                    params.onPlatformViewCreated)
-                ..create();
-            }),
-      ],
-    ),
-  );
+                onCreatePlatformView: (params) {
+                  _onPlatformViewCreated(params.id);
+                  return PlatformViewsService.initSurfaceAndroidView(
+                    id: params.id,
+                    viewType: CHANNEL_INLINE_VIEW,
+                    layoutDirection: TextDirection.ltr,
+                    creationParams: widget.payload,
+                    creationParamsCodec: const StandardMessageCodec(),
+                    onFocus: () {
+                      params.onFocusChanged(true);
+                    },
+                  )
+                    ..addOnPlatformViewCreatedListener(
+                        params.onPlatformViewCreated)
+                    ..create();
+                }),
+          ],
+        ),
+      );
 
   Widget buildIOSView() => UiKitView(
-    viewType: CHANNEL_INLINE_VIEW,
-    creationParams: widget.payload,
-    creationParamsCodec: const StandardMessageCodec(),
-    onPlatformViewCreated: _onPlatformViewCreated,
-  );
+        viewType: CHANNEL_INLINE_VIEW,
+        creationParams: widget.payload,
+        creationParamsCodec: const StandardMessageCodec(),
+        onPlatformViewCreated: _onPlatformViewCreated,
+      );
 
   void _onPlatformViewCreated(int id) {
     var controller = WEGInlineViewController._(id, widget.weProperty, update);
@@ -129,7 +130,7 @@ class _InlineWidgetState extends State<InlineWidget> {
     controller.setListener();
   }
 
-  void update(int e, int rc, bool reset, margin_,other) {
+  void update(int e, int rc, bool reset, margin_, other) {
     try {
       if (reset) {
         setState(() {
@@ -174,9 +175,10 @@ class WEGInlineViewController {
 
   Future _platformCallHandler(MethodCall call) async {
     if (Platform.isAndroid) {
-      WELogger.v("InlineWidget _platformCallHandler ${call.method} ${call.arguments}");
+      WELogger.v(
+          "InlineWidget _platformCallHandler ${call.method} ${call.arguments}");
       if (call.method == METHOD_NAME_RESET_SHADOW_DETAILS) {
-        update(0, 0, true, 0,{});
+        update(0, 0, true, 0, {});
         return;
       }
       if (call.method == METHOD_NAME_ON_RENDERED) {
