@@ -98,7 +98,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
   void onDataReceived(data) {
     super.onDataReceived(data);
     if (Platform.isIOS) {
-      if (defaultViewHeight != widget.viewHeight) {
+      if (defaultViewHeight != widget.viewHeight && mounted) {
         setState(() {
           defaultViewHeight = widget.viewHeight;
         });
@@ -120,7 +120,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
 
   @override
   void onRendered(data) {
-    if (defaultViewHeight != widget.viewHeight) {
+    if (defaultViewHeight != widget.viewHeight && mounted) {
       setState(() {
         defaultViewHeight = widget.viewHeight;
       });
