@@ -1,14 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:we_personalization_flutter/we_personalization_flutter.dart';
 import 'package:flutter_personalization_sdk_example/main.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
-import 'package:flutter_personalization_sdk_example/src/screens/BaseScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/screens/CustomScreen.dart';
 import 'package:flutter_personalization_sdk_example/src/utils/Logger.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/CustomViewWidget.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/SimpleWidget.dart';
+import 'package:we_personalization_flutter/we_personalization_flutter.dart';
 import 'package:webengage_flutter/webengage_flutter.dart';
 
 class CustomListScreen extends StatefulWidget {
@@ -35,7 +32,6 @@ class _CustomListScreenState extends State<CustomListScreen>
   void initState() {
     _trackScreen();
     super.initState();
-
   }
 
   void _trackScreen() {
@@ -54,12 +50,13 @@ class _CustomListScreenState extends State<CustomListScreen>
         WebEngagePlugin.trackScreen(widget.customModel.screenName);
       }
     }
-    Future.delayed(Duration(milliseconds: 1000), () {
-      if (widget.customModel.event.isNotEmpty) {
-        WebEngagePlugin.trackEvent(widget.customModel.event);
-      }
-    });
 
+    //  WEPersonalization().registerWEPlaceholderCallback("S1P5", 1, "screen1");
+    // Future.delayed(Duration(milliseconds: 1000), () {
+    //   if (widget.customModel.event.isNotEmpty) {
+    //     WebEngagePlugin.trackEvent(widget.customModel.event);
+    //   }
+    // });
   }
 
   @override
@@ -124,15 +121,17 @@ class _CustomListScreenState extends State<CustomListScreen>
         body: Column(
           children: [
             Container(
-              color: Colors.grey,
+                color: Colors.grey,
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(10),
                 child: Text("Exception : \n $exceptionText")),
-            ElevatedButton(onPressed: (){
-              if (widget.customModel.event.isNotEmpty) {
-                WebEngagePlugin.trackEvent(widget.customModel.event);
-              }
-            }, child: Text("EVENT")),
+            ElevatedButton(
+                onPressed: () {
+                  if (widget.customModel.event.isNotEmpty) {
+                    WebEngagePlugin.trackEvent(widget.customModel.event);
+                  }
+                },
+                child: Text("EVENT")),
             Expanded(
               child: Container(
                 child: !widget.customModel.isRecycledView
@@ -147,7 +146,8 @@ class _CustomListScreenState extends State<CustomListScreen>
                               if (pos != -1) {
                                 var data = widget.customModel.list[pos];
                                 if (data.isCustomView) {
-                                  return CustomViewWidget(customWidgetData: data);
+                                  return CustomViewWidget(
+                                      customWidgetData: data);
                                 } else {
                                   return WEInlineWidget(
                                     screenName: widget.customModel.screenName,
@@ -226,9 +226,7 @@ class _CustomListScreenState extends State<CustomListScreen>
     super.onPlaceholderException(campaignId, targetViewId, error);
 
     exceptionText = "$exceptionText Target Id : $targetViewId -> $error \n";
-    setState(() {
-
-    });
+    setState(() {});
     Logger.v("onPlaceholderException : $campaignId $targetViewId $error");
   }
 
