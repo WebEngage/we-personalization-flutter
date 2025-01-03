@@ -218,17 +218,20 @@ class WEInlineViewWidget(
                 )
                 fireCGevent();
             }else{
-                val v = findViewWithTag<View>("INLINE_PERSONALIZATION_TAG")
+                val v = this
                 v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
+                        println("listening for view... ${data.campaignId} ${v.isVisible()}")
                         if (v.isVisible()) {
                             data.trackImpression()
                             WEPropertyRegistry.instance.setImpressionTrackedDetails(
                                 data.targetViewId, data.campaignId
                             )
                             fireCGevent()
-                            v.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            v?.viewTreeObserver?.let {
+                                it.removeOnGlobalLayoutListener(this)
+                            }
                         }
                     }
                 })
@@ -248,12 +251,12 @@ class WEInlineViewWidget(
                 v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
+                        println("listening for cg... ${data}")
                         if (v.isVisible()) {
                             println("fire from visibility global 2")
                             fireCGevent()
                             v?.viewTreeObserver?.let {
                                 it.removeOnGlobalLayoutListener(this)
-                                it.removeGlobalOnLayoutListener(this)
                             }
                             isCGViewListenerAlreadyAttach = false;
                         }
