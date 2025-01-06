@@ -28,6 +28,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 android {
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+    namespace "com.example.flutter_personalization_sdk_example"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

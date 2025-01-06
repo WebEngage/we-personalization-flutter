@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 31
-
+    namespace 'com.webengage.we_personalization_flutter'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -48,5 +48,5 @@ dependencies{
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     api 'net.sourceforge.htmlcleaner:htmlcleaner:2.26'
-    implementation 'com.webengage:we-personalization:1.1.0'
+    implementation 'com.webengage:we-personalization:1.2.+'
 }

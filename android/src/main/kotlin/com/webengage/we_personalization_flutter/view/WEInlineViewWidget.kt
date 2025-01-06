@@ -34,8 +34,6 @@ class WEInlineViewWidget(
     var tag = ""
 
     init {
-
-        println("init ** onControlGroupTriggered **");
         setLayerType(LAYER_TYPE_NONE, null);
         weProperty = generateWEInline()
         initView(payload)
@@ -92,14 +90,12 @@ class WEInlineViewWidget(
     }
 
     private fun loadView(weInlineView: WEInlineView) {
-        println("** loadView onControlGroupTriggered  register**");
         WEPersonalization.get().registerCampaignControlGroupCallback(tag,this)
         weInlineView.load(tag, this)
         monitorVisibilityAndFireEvent()
     }
 
     override fun onControlGroupTriggered(propertyID : String){
-        println("** onControlGroupTriggered **");
         monitorVisibilityAndFireEvent()
     }
 
@@ -125,7 +121,6 @@ class WEInlineViewWidget(
                 data.targetViewId, data.campaignId
             )
         ) {
-            println("Processing event: app_personalization_view flutter end")
             sendImpression(data)
         } else {
             // for cg
@@ -222,7 +217,6 @@ class WEInlineViewWidget(
                 v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        println("listening for view... ${data.campaignId} ${v.isVisible()}")
                         if (v.isVisible()) {
                             data.trackImpression()
                             WEPropertyRegistry.instance.setImpressionTrackedDetails(
@@ -241,7 +235,6 @@ class WEInlineViewWidget(
         if(data == null) {
 
             if (isVisible()) {
-                println("fire from visibility global 1")
                 fireCGevent()
             } else {
                 if(isCGViewListenerAlreadyAttach)
@@ -251,9 +244,7 @@ class WEInlineViewWidget(
                 v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        println("listening for cg... ${data}")
                         if (v.isVisible()) {
-                            println("fire from visibility global 2")
                             fireCGevent()
                             v?.viewTreeObserver?.let {
                                 it.removeOnGlobalLayoutListener(this)
@@ -267,7 +258,6 @@ class WEInlineViewWidget(
     }
 
     private fun fireCGevent() {
-        println("** onControlGroupTriggered  firedd**");
         WELogger.v("WEInlineViewWidget", "Fire CG event ====> $tag")
         WEPersonalization.get().trackCGEvents(tag)
     }
@@ -285,7 +275,6 @@ class WEInlineViewWidget(
     }
 
     override fun onDetachedFromWindow() {
-        println("****** onDetachedFromWindow ***** onControlGroupTriggered")
         WELogger.v("WEInlineViewWidget", "onDetachedFromWindow called for TAG = $tag")
         WEPersonalization.get().unregisterCampaignControlGroupCallback(tag)
         payload?.let {
