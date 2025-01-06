@@ -202,7 +202,7 @@ class WEInlineViewWidget(
     }
 
     var isCGViewListenerAlreadyAttach = false;
-
+    private var globalLayoutListenerForViewImpression: ViewTreeObserver.OnGlobalLayoutListener? = null
     private fun monitorVisibilityAndFireEvent(data: WECampaignData? = null) {
       //onrendered
         data?.let {
@@ -214,8 +214,11 @@ class WEInlineViewWidget(
                 fireCGevent();
             }else{
                 val v = this
-                v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                    ViewTreeObserver.OnGlobalLayoutListener {
+                // Remove any existing listener
+                globalLayoutListenerForViewImpression?.let { listener ->
+                    v.viewTreeObserver?.removeOnGlobalLayoutListener(listener)
+                }
+                globalLayoutListenerForViewImpression = object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (v.isVisible()) {
                             data.trackImpression()
@@ -226,9 +229,12 @@ class WEInlineViewWidget(
                             v?.viewTreeObserver?.let {
                                 it.removeOnGlobalLayoutListener(this)
                             }
+                            globalLayoutListenerForViewImpression = null // Clear reference
                         }
                     }
-                })
+                }
+
+                v.viewTreeObserver?.addOnGlobalLayoutListener(globalLayoutListenerForViewImpression)
             }
         }
         // For CG
