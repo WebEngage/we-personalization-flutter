@@ -13,6 +13,8 @@ public class WEInlineViewWidget:UIView{
     var campaignData:WECampaignData? = nil
     var weProperty:WEProperty? = nil
     var screenName = ""
+    var isScrollViewListnerAdded = false
+    var propertyTag : Int = -1
 
 
     func setMap(map : Dictionary<String,Any?>) {
@@ -49,28 +51,64 @@ public class WEInlineViewWidget:UIView{
         super.init(coder: aDecoder)
       }
     
-    private func setupView(){
-        if let map = map{
-            let width = map[WEConstants.PAYLOAD_VIEW_WIDTH] as! Int
-            let height = map[WEConstants.PAYLOAD_VIEW_HEIGHT] as! Int
-            let propertyId = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as! Int
+    private func setupView() {
+        if let map = map {
             
-            _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-            _inlineView!.tag = propertyId
-            _inlineView?.load(tag: propertyId, callbacks: self)
-            print("InlineWidget: Load view called")
-            addSubview(_inlineView!)
+            if let width = map[WEConstants.PAYLOAD_VIEW_WIDTH] as? NSNumber,
+               let height = map[WEConstants.PAYLOAD_VIEW_HEIGHT] as? NSNumber,
+               let propertyId = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as? NSNumber {
+                
+                // Convert to Int by rounding or truncating as needed
+                let intWidth = Int(width.intValue) // Truncate to nearest Int
+                let intHeight = Int(height.intValue)
+                let intPropertyId = Int(propertyId.intValue)
+                
+                _inlineView = WEInlineView(frame: CGRect(x: 0, y: 0, width: intWidth, height: intHeight))
+                _inlineView!.tag = intPropertyId
+                propertyTag = intPropertyId
+                _inlineView?.load(tag: intPropertyId, callbacks: self)
+                print("InlineWidget: Load view called")
+                addSubview(_inlineView!)
+            } else {
+                print("Error: Width, height, or propertyId is missing or has an unexpected type.")
+            }
+        }
+    }
+
+    
+    public override func didMoveToWindow() {
+        monitorVisibilityAndFireEvent()
+    }
+    
+    func monitorVisibilityAndFireEvent(){
+        if let data = self.campaignData{ // For Impression
+            if self.isVisibleToUser{
+                if WEPropertyRegistry.shared.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false {
+                        self.campaignData?.trackImpression(attributes: nil)
+                        WEPropertyRegistry.shared.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
+                } //  dont add else because addScrollViewListener for impressiion is going to after rendered methond is called
+            }
+        }
+        
+        // for cg
+        if(self.isVisibleToUser){
+            fireCGEvent()
+        }else{
+            addScrollViewListener()
         }
     }
     
-    public override func didMoveToWindow() {
-        if let data = self.campaignData{
-            if self.isVisibleToUser{
-                if WEPropertyRegistry.shared.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
-                    self.campaignData?.trackImpression(attributes: nil)
-                    WEPropertyRegistry.shared.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
+    func fireCGEvent(){
+       WEPersonalization.shared.trackCGEvent(forPropertyId: _inlineView!.tag)
+        WEPersonalization.shared.registerCampaignControlGroupCallback(tag: _inlineView!.tag, callback: self)
+    }
+    
+    func addScrollViewListener(){
+        if(!isScrollViewListnerAdded){
+            if let scrollView = self.getScrollview(view: self) {
+                isScrollViewListnerAdded = true
+                scrollView.addObserver(self, forKeyPath: #keyPath(UIScrollView.contentOffset), options: [.new, .old], context: nil)
                 }
-            }
         }
     }
     
@@ -83,6 +121,7 @@ public class WEInlineViewWidget:UIView{
     
     func removeData(){
         WELogger.d("WEP I : removed \(screenName) | \(String(describing: weProperty?.id))")
+        WEPersonalization.shared.deRegisterCampaignControlGroupCallback(tag: propertyTag)
         NotificationCenter.default.removeObserver(self)
         if let map = map,
            let propertyID = map[WEConstants.PAYLOAD_IOS_PROPERTY_ID] as? Int {
@@ -103,6 +142,12 @@ public class WEInlineViewWidget:UIView{
     
 }
 
+extension WEInlineViewWidget : WECampaignControlInternalCallback{
+    public func onControlGroupTriggered(propertyID: Int) {
+        self.monitorVisibilityAndFireEvent()
+    }
+}
+
 extension WEInlineViewWidget : WEPlaceholderCallback{
     public func onRendered(data: WECampaignData) {
         WELogger.d("WEP I : \(data.targetViewTag) || \(self.screenName) || \(String(describing: weProperty?.id))")
@@ -110,12 +155,7 @@ extension WEInlineViewWidget : WEPlaceholderCallback{
         methodChannel?.sendCallbacks(methodName: WEConstants.METHOD_NAME_ON_RENDERED,
                                      message: WEUtils.generateMap(weginline: generateInlineView(),
                                                                 campaignData: data))
-        if self.isVisibleToUser{
-            if WEPropertyRegistry.shared.isImpressionAlreadyTracked(forTag: data.targetViewTag, campaignId: data.campaignId!) == false{
-                self.campaignData?.trackImpression(attributes: nil)
-                WEPropertyRegistry.shared.setImpressionTrackedDetails(forTag: data.targetViewTag, campaignId: data.campaignId!)
-            }
-        }
+        monitorVisibilityAndFireEvent()
     }
 
     public func onDataReceived(_ data: WECampaignData) {
@@ -142,12 +182,15 @@ extension WEInlineViewWidget : WEPlaceholderCallback{
         }
         return view.superview == nil ? nil : getScrollview(view: view.superview!)
     }
+    
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if self.isVisibleToUser == true{
+            self.campaignData?.trackImpression(attributes: nil)
+            fireCGEvent()
             if let scrollview = self.getScrollview(view: self){
                 // remove observer added to scrollview
                 scrollview.removeObserver(self, forKeyPath:  #keyPath(UIScrollView.contentOffset))
-                self.campaignData?.trackImpression(attributes: nil)
+                isScrollViewListnerAdded = false
             }
         }
     }

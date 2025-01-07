@@ -34,7 +34,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
     with AutomaticKeepAliveClientMixin, WEPlaceholderCallback, EventsSender {
   final GlobalKey _platformViewKey = GlobalKey();
   WEProperty? weProperty;
-  var defaultViewHeight = 0.1;
+  var defaultViewHeight = 0.9;
   WEGInlineViewController? controller;
 
   @override
@@ -98,7 +98,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
   void onDataReceived(data) {
     super.onDataReceived(data);
     if (Platform.isIOS) {
-      if (defaultViewHeight != widget.viewHeight) {
+      if (defaultViewHeight != widget.viewHeight && mounted) {
         setState(() {
           defaultViewHeight = widget.viewHeight;
         });
@@ -120,7 +120,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
 
   @override
   void onRendered(data) {
-    if (defaultViewHeight != widget.viewHeight) {
+    if (defaultViewHeight != widget.viewHeight && mounted) {
       setState(() {
         defaultViewHeight = widget.viewHeight;
       });

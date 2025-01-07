@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
-import 'package:flutter_personalization_sdk_example/src/utils/ScreenNavigator.dart';
-import 'package:flutter_personalization_sdk_example/src/utils/Utils.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/customWidgets/Edittext.dart';
 
 class CustomModelWidget extends StatefulWidget {
@@ -53,12 +49,13 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                 ),
                 Edittext(
                   title: "Enter Screen attribute",
-                  defaultValue: "${getValue(widget.customModel!.screenAttribute)}",
+                  defaultValue:
+                      "${getValue(widget.customModel!.screenAttribute)}",
                   onChange: (text) {
                     if (text.toString().isNotEmpty) {
                       try {
                         widget.customModel?.screenAttribute = text;
-                      }catch(e){
+                      } catch (e) {
                         print("ERROR : $e");
                       }
                     }
@@ -100,10 +97,16 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
                     ElevatedButton(
                         onPressed: _addData, child: Text("Add data")),
                     ElevatedButton(
+                        onPressed: _addDataAutomatic, child: Text("10")),
+                    ElevatedButton(
+                        onPressed: _deleteAll, child: Text("Delete")),
+                    ElevatedButton(
                         onPressed: () {
                           if (widget.customModel != null)
-                            for (var data in widget.customModel!.list) {
-                              data.screenName = widget.customModel?.screenName ?? "";
+                            for (CustomWidgetData data
+                                in widget.customModel!.list) {
+                              data.screenName =
+                                  widget.customModel?.screenName ?? "";
                             }
 
                           widget.save!(widget.customModel);
@@ -157,7 +160,15 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
               onPressed: () {
                 showDialogToAddData(customWidgetData);
               },
-              child: Text("Edit"))
+              child: Text("Edit")),
+          ElevatedButton(
+              onPressed: () {
+                deleteData(customWidgetData);
+              },
+              child: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ))
         ],
       ),
     );
@@ -166,6 +177,30 @@ class _CustomModelWidgetState extends State<CustomModelWidget> {
   void _addData() {
     var _customWidgetData = CustomWidgetData();
     showDialogToAddData(_customWidgetData);
+  }
+
+  void _deleteAll() {
+    widget.customModel?.list.clear();
+    setState(() {});
+  }
+
+  void _addDataAutomatic() {
+    for (var i = 1; i <= 10; i++) {
+      CustomWidgetData customWidgetData = CustomWidgetData()
+        ..androidPropertyId = "S1P$i"
+        ..position = i
+        ..iosPropertyID = i
+        ..isCustomView = false
+        ..viewHeight = 100
+        ..viewWidth = 0;
+      widget.customModel?.list.add(customWidgetData);
+    }
+    setState(() {});
+  }
+
+  void deleteData(CustomWidgetData _customWidgetData) {
+    widget.customModel!.list.remove(_customWidgetData);
+    setState(() {});
   }
 
   void showDialogToAddData(CustomWidgetData _customWidgetData) {
