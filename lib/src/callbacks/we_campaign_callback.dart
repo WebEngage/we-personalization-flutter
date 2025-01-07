@@ -1,8 +1,6 @@
-import '../../src/model/WECampaignData.dart';
+import '../../src/model/we_campaign_data.dart';
 
 class WECampaignCallback {
-
-
   /// this method will get called whenever the campaign is clicked,
   /// Any button or view clicked on campaign this method is called and data related to that clicked is received
   /// ** actionId : ID for the view clicked

@@ -17,6 +17,8 @@ import com.webengage.we_personalization_flutter.model.WEProperty
 import com.webengage.we_personalization_flutter.registry.WEPropertyRegistry
 import com.webengage.we_personalization_flutter.utils.*
 import com.webengage.personalization.WEInlineView
+import com.webengage.personalization.WEPersonalization
+import com.webengage.personalization.callbacks.WECampaignControlInternalCallback
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
 import com.webengage.personalization.data.WECampaignData
 
@@ -25,7 +27,7 @@ class WEInlineViewWidget(
     private val payload: HashMap<String, Any>?,
     private val parentWidget: WEInlineWidget
 
-) : FrameLayout(context), WEPlaceholderCallback, ScreenNavigatorCallback {
+) : FrameLayout(context), WEPlaceholderCallback, ScreenNavigatorCallback, WECampaignControlInternalCallback{
 
     private val weProperty: WEProperty
     var weInlineView: WEInlineView? = null
@@ -40,6 +42,7 @@ class WEInlineViewWidget(
     fun getWEGInlineView(): WEProperty {
         return weProperty
     }
+
 
 
     private fun initView(payload: HashMap<String, Any>?) {
@@ -66,7 +69,6 @@ class WEInlineViewWidget(
             )
             param.height = height.toInt()
         }
-
         if (viewWidth > 0) {
             val width = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -88,8 +90,13 @@ class WEInlineViewWidget(
     }
 
     private fun loadView(weInlineView: WEInlineView) {
-        WELogger.v("WEInlineViewWidget","loadView called for TAG = $tag")
+        WEPersonalization.get().registerCampaignControlGroupCallback(tag,this)
         weInlineView.load(tag, this)
+        monitorVisibilityAndFireEvent()
+    }
+
+    override fun onControlGroupTriggered(propertyID : String){
+        monitorVisibilityAndFireEvent()
     }
 
     override fun onDataReceived(data: WECampaignData) {
@@ -116,38 +123,34 @@ class WEInlineViewWidget(
         ) {
             sendImpression(data)
         } else {
-           // Log.d(TAG, "Impression for ${data.targetViewId} has already tracked")
+            // for cg
+            monitorVisibilityAndFireEvent()
         }
+        try {
+            val view =
+                weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
 
-        val view = weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
-
-        val observer: ViewTreeObserver? = view?.viewTreeObserver
-        observer?.let {
-            val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val map = getShadowDetails(data)
-                    val view = weInlineView!!.findViewById<FrameLayout>(com.webengage.personalization.R.id.we_parent_card_view)
-                    view?.let {
-                        val layoutParams: ViewGroup.MarginLayoutParams =
-                            view.layoutParams as ViewGroup.MarginLayoutParams
-                        layoutParams.setMargins(
-                            layoutParams.marginStart,
-                            layoutParams.topMargin,
-                            layoutParams.marginEnd,
-                            layoutParams.bottomMargin
-                        )
-                    }
-                    val width = pxToDp(weInlineView!!.context, view.width)
-                    val height = pxToDp(weInlineView!!.context, view.height)
-                    map["w"] = width
-                    map["h"] = height
-                    parentWidget.sendCallback(
-                        METHOD_NAME_ON_RENDERED, WEUtils.generateMap(weProperty, data, map)
-                    )
-                    observer.removeOnGlobalLayoutListener(this)
-                }
+            val map = getShadowDetails(data)
+            view?.let {
+                val layoutParams: ViewGroup.MarginLayoutParams =
+                    view.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.setMargins(
+                    layoutParams.marginStart,
+                    layoutParams.topMargin,
+                    layoutParams.marginEnd,
+                    layoutParams.bottomMargin
+                )
             }
-            it.addOnGlobalLayoutListener(listener)
+            val width = pxToDp(weInlineView!!.context, view.width)
+            val height = pxToDp(weInlineView!!.context, view.height)
+            map["w"] = width
+            map["h"] = height
+
+            parentWidget.sendCallback(
+                METHOD_NAME_ON_RENDERED, WEUtils.generateMap(weProperty, data, map)
+            )
+        }catch (e:Exception){
+
         }
 
     }
@@ -197,29 +200,78 @@ class WEInlineViewWidget(
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
 
-    private fun sendImpression(data: WECampaignData) {
-        if (isVisible()) {
-            WELogger.v("WEInlineViewWidget","sendImpression 1 called for TAG = $tag")
-            data.trackImpression()
-            WEPropertyRegistry.instance.setImpressionTrackedDetails(
-                data.targetViewId, data.campaignId
-            )
-        } else {
-            val v = findViewWithTag<View>("INLINE_PERSONALIZATION_TAG")
-            v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    if (v.isVisible()) {
-                        WELogger.v("WEInlineViewWidget","sendImpression 2 called for TAG = $tag")
-                        data.trackImpression()
-                        WEPropertyRegistry.instance.setImpressionTrackedDetails(
-                            data.targetViewId, data.campaignId
-                        )
-                        v.viewTreeObserver.removeOnGlobalLayoutListener(this)
+    var isCGViewListenerAlreadyAttach = false;
+    private var globalLayoutListenerForViewImpression: ViewTreeObserver.OnGlobalLayoutListener? = null
+    private fun monitorVisibilityAndFireEvent(data: WECampaignData? = null) {
+      //onrendered
+        data?.let {
+            if (isVisible()) {
+                it.trackImpression()
+                WEPropertyRegistry.instance.setImpressionTrackedDetails(
+                    it.targetViewId, it.campaignId
+                )
+                fireCGevent();
+            }else{
+                val v = this
+                // Remove any existing listener
+                globalLayoutListenerForViewImpression?.let { listener ->
+                    v.viewTreeObserver?.removeOnGlobalLayoutListener(listener)
+                }
+                globalLayoutListenerForViewImpression = object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (v.isVisible()) {
+                            data.trackImpression()
+                            WEPropertyRegistry.instance.setImpressionTrackedDetails(
+                                data.targetViewId, data.campaignId
+                            )
+                            fireCGevent()
+                            v?.viewTreeObserver?.let {
+                                it.removeOnGlobalLayoutListener(this)
+                            }
+                            globalLayoutListenerForViewImpression = null // Clear reference
+                        }
                     }
                 }
-            })
+
+                v.viewTreeObserver?.addOnGlobalLayoutListener(globalLayoutListenerForViewImpression)
+            }
         }
+        // For CG
+        if(data == null) {
+
+            if (isVisible()) {
+                fireCGevent()
+            } else {
+                if(isCGViewListenerAlreadyAttach)
+                    return;
+                val v = this
+                isCGViewListenerAlreadyAttach = true;
+                v?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (v.isVisible()) {
+                            fireCGevent()
+                            v?.viewTreeObserver?.let {
+                                it.removeOnGlobalLayoutListener(this)
+                            }
+                            isCGViewListenerAlreadyAttach = false;
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    private fun fireCGevent() {
+        WELogger.v("WEInlineViewWidget", "Fire CG event ====> $tag")
+        WEPersonalization.get().trackCGEvents(tag)
+    }
+
+
+
+
+    private fun sendImpression(data: WECampaignData) {
+       monitorVisibilityAndFireEvent(data)
     }
 
     override fun screenNavigated(screenName: String) {
@@ -228,7 +280,8 @@ class WEInlineViewWidget(
     }
 
     override fun onDetachedFromWindow() {
-        WELogger.v("WEInlineViewWidget","onDetachedFromWindow called for TAG = $tag")
+        WELogger.v("WEInlineViewWidget", "onDetachedFromWindow called for TAG = $tag")
+        WEPersonalization.get().unregisterCampaignControlGroupCallback(tag)
         payload?.let {
             WEPluginCallbackHandler.instance.removeScreenNavigatorCallback(
                 it[PAYLOAD_SCREEN_NAME] as String, this
@@ -236,5 +289,6 @@ class WEInlineViewWidget(
         }
         super.onDetachedFromWindow()
     }
+
 
 }

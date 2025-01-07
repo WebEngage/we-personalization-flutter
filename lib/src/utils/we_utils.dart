@@ -1,5 +1,5 @@
-import '../../src/model/WEGInline.dart';
-import '../../src/utils/Constants.dart';
+import '../../src/model/weg_inline.dart';
+import '../../src/utils/we_constant.dart';
 
 class Utils {
   static final Utils _singleton = Utils._internal();

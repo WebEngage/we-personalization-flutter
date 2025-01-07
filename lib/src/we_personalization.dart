@@ -1,9 +1,8 @@
-import '../../src/callbacks/WECampaignCallback.dart';
-import '../../src/data/data_registry.dart';
-import '../../src/flutter_personalization_sdk_platform_interface.dart';
-import '../../src/utils/WELogger.dart';
-
-import 'callbacks/WEPlaceholderCallback.dart';
+import '../src/callbacks/we_campaign_callback.dart';
+import '../src/data/data_registry.dart';
+import '../src/flutter_personalization_sdk_platform_interface.dart';
+import '../src/utils/we_logger.dart';
+import 'callbacks/we_placeholder_callback.dart';
 
 class WEPersonalization {
   static final WEPersonalization _singleton = WEPersonalization._internal();
@@ -40,8 +39,7 @@ class WEPersonalization {
         .deRegisterWEPlaceholderCallbackByScreenName(screenName);
   }
 
-  void deregisterWEPlaceholderCallbackById(int ID) {
-    WEPropertyRegistry().deRegisterWEPlaceholderCallback(ID);
+  void deregisterWEPlaceholderCallbackById(int id) {
+    WEPropertyRegistry().deRegisterWEPlaceholderCallback(id);
   }
-
 }

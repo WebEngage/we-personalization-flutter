@@ -2,21 +2,21 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 
-import '../../src/callbacks/WEPlaceholderCallback.dart';
-import '../../src/utils/Utils.dart';
-import '../../src/utils/WELogger.dart';
-import '../../src/widget/InlineWidget.dart';
-import '../model/WEGInline.dart';
+import '../../src/callbacks/we_placeholder_callback.dart';
+import '../../src/utils/we_logger.dart';
+import '../../src/utils/we_utils.dart';
+import '../../src/widget/inline_widget.dart';
+import '../model/weg_inline.dart';
 
 class WEInlineWidget extends StatefulWidget {
   final String screenName;
   final String androidPropertyId;
   final int iosPropertyId;
-  double viewWidth;
+  final double viewWidth;
   final double viewHeight;
-  WEPlaceholderCallback? placeholderCallback;
+  final WEPlaceholderCallback? placeholderCallback;
 
-  WEInlineWidget(
+  const WEInlineWidget(
       {Key? key,
       required this.screenName,
       required this.androidPropertyId,
@@ -34,12 +34,14 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
     with AutomaticKeepAliveClientMixin, WEPlaceholderCallback, EventsSender {
   final GlobalKey _platformViewKey = GlobalKey();
   WEProperty? weProperty;
-  var defaultViewHeight = 0.1;
+  var defaultViewHeight = 0.9;
   WEGInlineViewController? controller;
+  double viewWidth = 0;
 
   @override
   void initState() {
     super.initState();
+    viewWidth = widget.viewWidth;
     weProperty = WEProperty(
         screenName: widget.screenName,
         androidPropertyID: widget.androidPropertyId,
@@ -51,7 +53,6 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
   @override
   void dispose() {
     weProperty = null;
-    widget.placeholderCallback = null;
     controller = null;
     super.dispose();
   }
@@ -61,8 +62,8 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
     super.build(context);
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (widget.viewWidth == 0) {
-          widget.viewWidth = constraints.maxWidth;
+        if (viewWidth == 0) {
+          viewWidth = constraints.maxWidth;
         }
         return SizedBox(
             height: defaultViewHeight,
@@ -70,7 +71,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
               weProperty: weProperty!,
               key: _platformViewKey,
               payload: Utils().generateWidgetPayload(
-                  weProperty!, widget.viewWidth, widget.viewHeight),
+                  weProperty!, viewWidth, widget.viewHeight),
               wegInlineHandler: (controller) async {
                 this.controller = controller;
               },
@@ -98,7 +99,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
   void onDataReceived(data) {
     super.onDataReceived(data);
     if (Platform.isIOS) {
-      if (defaultViewHeight != widget.viewHeight) {
+      if (defaultViewHeight != widget.viewHeight && mounted) {
         setState(() {
           defaultViewHeight = widget.viewHeight;
         });
@@ -120,7 +121,7 @@ class _WEInlineWidgetState extends State<WEInlineWidget>
 
   @override
   void onRendered(data) {
-    if (defaultViewHeight != widget.viewHeight) {
+    if (defaultViewHeight != widget.viewHeight && mounted) {
       setState(() {
         defaultViewHeight = widget.viewHeight;
       });
