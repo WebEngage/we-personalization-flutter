@@ -1,7 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import '../src/flutter_personalization_sdk_method_channel.dart';
-import 'model/WEGInline.dart';
+import 'model/weg_inline.dart';
 
 /// This Class is a bridge between flutter and native.
 abstract class WEPSdkPlatform extends PlatformInterface {
@@ -9,8 +9,7 @@ abstract class WEPSdkPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static WEPSdkPlatform _instance =
-      WEPMethodChannel();
+  static WEPSdkPlatform _instance = WEPMethodChannel();
 
   static WEPSdkPlatform get instance => _instance;
 
@@ -37,7 +36,8 @@ abstract class WEPSdkPlatform extends PlatformInterface {
     throw UnimplementedError("trackClick has not been implemented");
   }
 
-  Future<bool> trackImpression(WEProperty weProperty, Map<String, dynamic> data) {
+  Future<bool> trackImpression(
+      WEProperty weProperty, Map<String, dynamic> data) {
     throw UnimplementedError("trackImpression has not been implemented");
   }
 }

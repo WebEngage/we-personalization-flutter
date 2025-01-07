@@ -1,7 +1,6 @@
-import '../../src/model/WECampaignData.dart';
+import '../../src/model/we_campaign_data.dart';
 
 class WEPlaceholderCallback {
-
   /// In WeCampaignData you will receive all the data related to the UI
   void onDataReceived(WECampaignData data) {}
 

@@ -1,3 +1,7 @@
+### Version 1.1.0 (January 7, 2025)
+* Added support for control groups.
+* Optimized the plugin for impressions.
+
 ### Version 1.0.4 (January 2, 2025)
 * Namespace added.
 * Fixed view issue encountered while building with the latest Flutter plugin.

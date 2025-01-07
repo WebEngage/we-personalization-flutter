@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../../src/model/WEGInline.dart';
-import '../../src/utils/WELogger.dart';
+import '../../src/model/weg_inline.dart';
+import '../../src/utils/we_logger.dart';
 
 class WECampaignData {
   String? campaignId;
@@ -11,7 +11,7 @@ class WECampaignData {
 
   WECampaignData();
 
-  WECampaignData.fromJson(dynamic data,{WEProperty? weProperty}) {
+  WECampaignData.fromJson(dynamic data, {WEProperty? weProperty}) {
     WELogger.v("WECampaignData.fromJson $data");
     if (data != null) {
       var parsedJson = jsonDecode(data);
@@ -22,20 +22,19 @@ class WECampaignData {
     }
   }
 
-
-  void trackImpression({Map<String, dynamic> map = const {}}){
+  void trackImpression({Map<String, dynamic> map = const {}}) {
     _wegInline?.trackImpression(map);
   }
 
-  void trackClick({Map<String, dynamic> map = const {}}){
+  void trackClick({Map<String, dynamic> map = const {}}) {
     _wegInline?.trackClick(map);
   }
 
   Map toJson() {
     var map = {
-      "campaignId" : campaignId,
-      "targetViewId" : targetViewId,
-      "content" : weCampaignContent?.toJson()
+      "campaignId": campaignId,
+      "targetViewId": targetViewId,
+      "content": weCampaignContent?.toJson()
     };
     return map;
   }

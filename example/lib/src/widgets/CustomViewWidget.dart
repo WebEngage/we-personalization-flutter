@@ -1,9 +1,9 @@
-import 'dart:ffi';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:we_personalization_flutter/we_personalization_flutter.dart';
-import 'package:we_personalization_flutter/src/model/WECampaignData.dart';
 import 'package:flutter_personalization_sdk_example/src/widgets/customWidgets/Button.dart';
+import 'package:we_personalization_flutter/we_personalization_flutter.dart';
+
 import '../../src/models/customScreen/CustomModel.dart';
 
 class CustomViewWidget extends StatefulWidget {
@@ -55,10 +55,10 @@ class _CustomViewWidgetState extends State<CustomViewWidget>
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomWidgets.button2("Impression", () {
-                      weCampaignData?.trackImpression(map: {"1":1});
+                      weCampaignData?.trackImpression(map: {"1": 1});
                     }),
                     CustomWidgets.button2("click", () {
-                      weCampaignData?.trackClick(map : {"2":2});
+                      weCampaignData?.trackClick(map: {"2": 2});
                     })
                   ],
                 )

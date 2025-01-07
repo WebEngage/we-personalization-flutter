@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_personalization_sdk_example/main.dart';
 import 'package:flutter_personalization_sdk_example/src/models/customScreen/CustomModel.dart';
@@ -35,6 +37,7 @@ class _CustomListScreenState extends State<CustomListScreen>
   }
 
   void _trackScreen() {
+    print("_trackScreen ${widget.customModel.toJson()}");
     exceptionText = "";
     if ("${widget.customModel.screenAttribute}".isEmpty) {
       WebEngagePlugin.trackScreen(widget.customModel.screenName);
@@ -51,7 +54,15 @@ class _CustomListScreenState extends State<CustomListScreen>
       }
     }
 
-    //  WEPersonalization().registerWEPlaceholderCallback("S1P5", 1, "screen1");
+    for (var data in widget.customModel.list) {
+      if (data.isCustomView) {
+        WEPersonalization().registerWEPlaceholderCallback(
+            data.androidPropertyId, data.iosPropertyID, data.screenName,
+            placeholderCallback: this);
+      }
+    }
+
+    //  WebEngagePlugin.trackEvent(widget.customModel.event);
     // Future.delayed(Duration(milliseconds: 1000), () {
     //   if (widget.customModel.event.isNotEmpty) {
     //     WebEngagePlugin.trackEvent(widget.customModel.event);
@@ -149,14 +160,7 @@ class _CustomListScreenState extends State<CustomListScreen>
                                   return CustomViewWidget(
                                       customWidgetData: data);
                                 } else {
-                                  return WEInlineWidget(
-                                    screenName: widget.customModel.screenName,
-                                    androidPropertyId: data.androidPropertyId,
-                                    iosPropertyId: data.iosPropertyID,
-                                    viewWidth: data.viewWidth,
-                                    viewHeight: data.viewHeight,
-                                    placeholderCallback: this,
-                                  );
+                                  return inline(data);
                                 }
                               } else {
                                 return SimpleWidget(
@@ -171,6 +175,40 @@ class _CustomListScreenState extends State<CustomListScreen>
             )
           ],
         ));
+  }
+
+  Widget inline(CustomWidgetData data) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10, top: 10),
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.blueAccent, width: 1)),
+      height: data.viewHeight,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                Platform.isAndroid
+                    ? "${data.iosPropertyID}"
+                    : data.androidPropertyId,
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+          ),
+          Expanded(
+            child: WEInlineWidget(
+              screenName: widget.customModel.screenName,
+              androidPropertyId: data.androidPropertyId,
+              iosPropertyId: data.iosPropertyID,
+              viewWidth: data.viewWidth,
+              viewHeight: data.viewHeight,
+              placeholderCallback: this,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget notRecycledView() {
@@ -195,14 +233,7 @@ class _CustomListScreenState extends State<CustomListScreen>
         if (data.isCustomView) {
           list.add(CustomViewWidget(customWidgetData: data));
         } else {
-          list.add(WEInlineWidget(
-            screenName: widget.customModel.screenName,
-            androidPropertyId: data.androidPropertyId,
-            iosPropertyId: data.iosPropertyID,
-            viewWidth: data.viewWidth,
-            viewHeight: data.viewHeight,
-            placeholderCallback: this,
-          ));
+          list.add(inline(data));
         }
       } else {
         list.add(SimpleWidget(

@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import '../../src/utils/WELogger.dart';
-import '../src/utils/Constants.dart';
-import '../src/flutter_personalization_sdk_platform_interface.dart';
-import 'model/WEGInline.dart';
 
-class WEPMethodChannel
-    extends WEPSdkPlatform {
+import '../src/flutter_personalization_sdk_platform_interface.dart';
+import '../src/utils/we_constant.dart';
+import '../src/utils/we_logger.dart';
+import 'model/weg_inline.dart';
+
+class WEPMethodChannel extends WEPSdkPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel(INLINE_SDK_CHANNEL_NAME);
 
@@ -20,7 +20,8 @@ class WEPMethodChannel
 
   @override
   Future<bool> registerInline(WEProperty weProperty) async {
-    WELogger.v("WEPMethodChannel register custom property with data ${weProperty.toJSON()}");
+    WELogger.v(
+        "WEPMethodChannel register custom property with data ${weProperty.toJSON()}");
     final registered = await methodChannel.invokeMethod<dynamic>(
         METHOD_NAME_REGISTER_INLINE, weProperty.toJSON());
     return registered as bool;
@@ -28,7 +29,8 @@ class WEPMethodChannel
 
   @override
   Future<bool> deregisterInline(WEProperty weProperty) async {
-    WELogger.v("WEPMethodChannel deregister custom property with data ${weProperty.toJSON()}");
+    WELogger.v(
+        "WEPMethodChannel deregister custom property with data ${weProperty.toJSON()}");
     final deRegistered = await methodChannel.invokeMethod<dynamic>(
         METHOD_NAME_DEREGISTER_INLINE, weProperty.toJSON());
     return deRegistered as bool;
@@ -38,7 +40,8 @@ class WEPMethodChannel
   Future<bool> trackClick(
       WEProperty weProperty, Map<String, dynamic> data) async {
     var map = weProperty.toJSON();
-    WELogger.v("WEPMethodChannel trackClick for custom property with data ${weProperty.toJSON()} attributes : $data");
+    WELogger.v(
+        "WEPMethodChannel trackClick for custom property with data ${weProperty.toJSON()} attributes : $data");
     map["data"] = data;
     final tracked =
         await methodChannel.invokeMethod<dynamic>(METHOD_NAME_SEND_CLICK, map);
@@ -48,7 +51,8 @@ class WEPMethodChannel
   @override
   Future<bool> trackImpression(
       WEProperty weProperty, Map<String, dynamic> data) async {
-    WELogger.v("WEPMethodChannel trackImpression for custom property with data ${weProperty.toJSON()} attributes : $data");
+    WELogger.v(
+        "WEPMethodChannel trackImpression for custom property with data ${weProperty.toJSON()} attributes : $data");
     var map = weProperty.toJSON();
     map["data"] = data;
     final tracked = await methodChannel.invokeMethod<dynamic>(
