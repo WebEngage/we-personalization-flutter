@@ -7,9 +7,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../src/data/data_registry.dart';
-import '../../src/model/WEGInline.dart';
-import '../../src/utils/Constants.dart';
-import '../../src/utils/WELogger.dart';
+import '../../src/model/weg_inline.dart';
+import '../../src/utils/we_constant.dart';
+import '../../src/utils/we_logger.dart';
 
 typedef WEGInlineHandler = void Function(WEGInlineViewController controller);
 
