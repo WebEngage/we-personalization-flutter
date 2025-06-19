@@ -102,7 +102,7 @@ class _InlineWidgetState extends State<InlineWidget> {
                   return PlatformViewsService.initSurfaceAndroidView(
                     id: params.id,
                     viewType: CHANNEL_INLINE_VIEW,
-                    layoutDirection: TextDirection.ltr,
+                    layoutDirection: Directionality.of(context),
                     creationParams: widget.payload,
                     creationParamsCodec: const StandardMessageCodec(),
                     onFocus: () {
