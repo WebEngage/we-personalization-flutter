@@ -1,3 +1,6 @@
+### Version 1.1.1 (June 19, 2025)
+* Resolved an issue with incorrect layout direction in Flutter, ensuring proper support for RTL and LTR languages.
+
 ### Version 1.1.0 (January 7, 2025)
 * Added support for control groups.
 * Optimized the plugin for impressions.
