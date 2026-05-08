@@ -1,3 +1,8 @@
+### Version 2.0.0 (May 8, 2026)
+* Added Swift Package Manager (SPM) support for iOS.
+* Restructured iOS source files to follow SPM conventions.
+* Updated minimum iOS deployment target to 13.0.
+
 ### Version 1.1.1 (June 19, 2025)
 * Resolved an issue with incorrect layout direction in Flutter, ensuring proper support for RTL and LTR languages.
 

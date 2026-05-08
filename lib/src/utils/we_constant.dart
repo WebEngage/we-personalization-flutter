@@ -33,5 +33,3 @@ const PAYLOAD_SHADOW_DATA = "shadow_data";
 const PAYLOAD = "payload";
 
 const CHANNEL_INLINE_VIEW = "channel_inline_view";
-
-
