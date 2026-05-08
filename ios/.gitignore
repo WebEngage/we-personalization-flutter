@@ -36,3 +36,9 @@ Icon?
 /Flutter/Generated.xcconfig
 /Flutter/ephemeral/
 /Flutter/flutter_export_environment.sh
+
+# Swift Package Manager
+.build/
+Package.resolved
+we_personalization_flutter/.build/
+we_personalization_flutter/Package.resolved

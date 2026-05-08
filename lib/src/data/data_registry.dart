@@ -75,7 +75,7 @@ class WEPropertyRegistry {
     }
   }
 
-  void _passDataToWidget(id, payload) {
+  void _passDataToWidget(dynamic id, dynamic payload) {
     if (mapOfRegistry.containsKey(id)) {
       mapOfRegistry[id]!.callback!(payload);
     }
