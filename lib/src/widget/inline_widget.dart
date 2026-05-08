@@ -19,7 +19,7 @@ class InlineWidget extends StatefulWidget {
   final WEProperty weProperty;
 
   const InlineWidget(
-      {key,
+      {Key? key,
       required this.wegInlineHandler,
       required this.weProperty,
       required this.payload})
@@ -43,7 +43,7 @@ class _InlineWidgetState extends State<InlineWidget> {
 
   int count = 0;
 
-  double getMargin(margin, minus) {
+  double getMargin(dynamic margin, dynamic minus) {
     var value = margin - minus;
     if (value < 0) return margin;
     return margin;
@@ -79,7 +79,7 @@ class _InlineWidgetState extends State<InlineWidget> {
                   BoxShadow(
                     color: elevation == 0
                         ? Colors.transparent
-                        : Colors.black.withOpacity(0.2),
+                        : Colors.black.withValues(alpha: 0.2),
                     blurRadius: 5,
                     spreadRadius: 2,
                     offset: const Offset(1.0, 2.0),

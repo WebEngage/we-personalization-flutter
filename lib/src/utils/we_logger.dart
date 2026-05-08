@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 class WELogger {
   static bool _enableLogs = false;
 
-  static void enableLogs(bool enable){
+  static void enableLogs(bool enable) {
     _enableLogs = enable;
   }
 
@@ -25,7 +25,7 @@ class WELogger {
     }
   }
 
-  static String getFormattedText(text){
+  static String getFormattedText(dynamic text) {
     return "WEP H $text";
   }
 
