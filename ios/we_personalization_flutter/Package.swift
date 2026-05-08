@@ -11,16 +11,13 @@ let package = Package(
         .library(name: "we-personalization-flutter", targets: ["we_personalization_flutter"])
     ],
     dependencies: [
-        .package(url: "https://github.com/WebEngage/webengage-ios-sdk.git", branch: "main")
+        .package(url: "https://github.com/WebEngage/webengage-ios-sdk.git", from: "1.0.0")
     ],
     targets: [
         .target(
             name: "we_personalization_flutter",
             dependencies: [
                 .product(name: "WebEngagePersonalization", package: "webengage-ios-sdk")
-            ],
-            resources: [
-                .process("Resources")
             ]
         )
     ]
