@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'we_personalization_flutter'
-  s.version          = '2.0.0'
+  s.version          = '2.1.0'
   s.summary          = 'WebEngage Flutter Personalization iOS SDK.'
   s.description      = <<-DESC
 WebEngage Flutter Personalization iOS SDK.
