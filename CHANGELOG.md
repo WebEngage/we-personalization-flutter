@@ -1,3 +1,10 @@
+### Version 2.2.0 (November 4, 2026)
+* **Android Gradle Plugin 9:** supports built-in Kotlin. The plugin applies the Kotlin Gradle Plugin only on AGP 8 and earlier, or when the app sets `android.builtInKotlin=false`, so apps can build with `android.builtInKotlin=true` (Flutter 3.47+). Apps on AGP 7 and 8 keep working as before.
+* **Requires Flutter 3.27 or later** (Dart SDK constraint `>=2.18.6 <4.0.0`). Apps on older Flutter versions keep using 2.1.0.
+* **Gradle:** the Android build script no longer declares its own Android Gradle Plugin and Kotlin Gradle Plugin versions; it uses the app's. On AGP 7 and 8, or with `android.builtInKotlin=false`, the app must have the Kotlin Gradle Plugin set up, as Flutter's Kotlin app template already does. The script also no longer uses the Groovy `name value` syntax that Gradle 9 deprecates and Gradle 10 removes.
+* **compileSdk:** the plugin now compiles against Android API 34 (was 33). If your app compiles against a lower API level, Flutter shows a warning asking you to raise `compileSdk`, which is backward compatible.
+* No Dart API changes. No iOS changes.
+
 ### Version 2.1.0 (November 2, 2026)
 * **Swift Package Manager:** added support for `webengage-ios-sdk` **2.x** (WebEngage iOS SDK **7.x**). The supported range is now `1.0.0 ..< 3.0.0`, so both iOS SDK 6.x and 7.x work.
 * **CocoaPods:** no change.
