@@ -1,20 +1,7 @@
-group 'com.webengage.we_personalization_flutter'
-version '2.1.0'
+group = 'com.webengage.we_personalization_flutter'
+version = '2.2.0'
 
-buildscript {
-    ext.kotlin_version = '1.7.10'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-allprojects {
+rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
@@ -22,28 +9,42 @@ allprojects {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+
+def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0] as int
+def builtInKotlin = providers.gradleProperty("android.builtInKotlin")
+        .map { it.toBoolean() }
+        .orElse(agpMajor >= 9)
+        .get()
+if (agpMajor < 9 || !builtInKotlin) {
+    apply plugin: 'kotlin-android'
+}
 
 android {
-    compileSdkVersion 33
-    namespace 'com.webengage.we_personalization_flutter'
+    compileSdk = 34
+    namespace = 'com.webengage.we_personalization_flutter'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main.java.srcDir 'src/main/kotlin'
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdk = 21
     }
 }
+
+plugins.withId("org.jetbrains.kotlin.android") {
+    def kotlinExtension = project.extensions.getByName("kotlin")
+    if (kotlinExtension.hasProperty("compilerOptions")) {
+        kotlinExtension.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+    } else {
+        android.kotlinOptions.jvmTarget = '1.8'
+    }
+}
+
 dependencies{
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.cardview:cardview:1.0.0'
